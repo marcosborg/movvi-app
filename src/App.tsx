@@ -1,7 +1,11 @@
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import Home from './pages/Home';
+import PublicMenu from './components/PublicMenu';
+import PublicTabs from './components/PublicTabs';
+import { useAuth } from './auth/AuthContext';
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -35,19 +39,34 @@ import './theme/variables.css';
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route exact path="/home">
-          <Home />
-        </Route>
-        <Route exact path="/">
-          <Redirect to="/home" />
-        </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
-);
+const App: React.FC = () => {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <IonApp />;
+  }
+
+  return (
+    <IonApp>
+      <IonReactRouter>
+        <PublicMenu />
+        <IonRouterOutlet id="main-content">
+          <Route path="/tabs">
+            <PublicTabs />
+          </Route>
+          <Route exact path="/login">
+            {isAuthenticated ? <Redirect to="/dashboard" /> : <Login />}
+          </Route>
+          <Route exact path="/dashboard">
+            {isAuthenticated ? <Dashboard /> : <Redirect to="/login" />}
+          </Route>
+          <Route exact path="/">
+            <Redirect to="/tabs/home" />
+          </Route>
+        </IonRouterOutlet>
+      </IonReactRouter>
+    </IonApp>
+  );
+};
 
 export default App;

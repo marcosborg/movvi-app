@@ -1,0 +1,74 @@
+.home-page {
+  --background:
+    radial-gradient(circle at top left, rgba(173, 51, 38, 0.14), transparent 28%),
+    linear-gradient(180deg, #f4efe7 0%, #fcfaf7 100%);
+}
+
+.home-shell {
+  padding: 88px 20px 32px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.hero-panel {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 24px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, #fff7f3 0%, #f4e0d2 100%);
+  box-shadow: 0 18px 50px rgba(85, 42, 19, 0.1);
+  margin-bottom: 20px;
+}
+
+.dashboard-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.hero-eyebrow {
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  color: #8a4d2f;
+}
+
+.hero-panel h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.hero-copy {
+  margin: 8px 0 0;
+  color: #5d463a;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.loading-state {
+  display: grid;
+  place-items: center;
+  padding: 32px 0;
+}
+
+.status-error {
+  color: #b42318;
+  padding: 16px 0;
+}
+
+@media (max-width: 640px) {
+  .home-shell {
+    padding-top: 76px;
+  }
+
+  .hero-panel {
+    flex-direction: column;
+  }
+}

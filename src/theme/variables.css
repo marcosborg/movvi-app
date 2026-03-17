@@ -1,2 +1,218 @@
-/* For information on how to create your own theme, please refer to:
-http://ionicframework.com/docs/theming/ */
+:root {
+  --ion-font-family: 'Kanit', sans-serif;
+  --ion-color-primary: #b55338;
+  --ion-color-primary-rgb: 181, 83, 56;
+  --ion-color-primary-contrast: #fff8f4;
+  --ion-color-primary-contrast-rgb: 255, 248, 244;
+  --ion-color-primary-shade: #9f4931;
+  --ion-color-primary-tint: #bd654c;
+
+  --ion-color-secondary: #3f6c5c;
+  --ion-color-secondary-rgb: 63, 108, 92;
+  --ion-color-secondary-contrast: #f5fbf7;
+  --ion-color-secondary-contrast-rgb: 245, 251, 247;
+  --ion-color-secondary-shade: #375f51;
+  --ion-color-secondary-tint: #527b6c;
+
+  --ion-color-light: #fffaf6;
+  --ion-color-light-rgb: 255, 250, 246;
+  --ion-color-light-contrast: #251915;
+  --ion-color-light-contrast-rgb: 37, 25, 21;
+
+  --ion-background-color: #fffaf6;
+  --ion-text-color: #2e1d18;
+  --ion-toolbar-background: rgba(255, 248, 243, 0.88);
+  --ion-toolbar-color: #2e1d18;
+  --ion-card-background: #fffdfb;
+  --ion-tab-bar-background: rgba(255, 249, 245, 0.96);
+}
+
+ion-toolbar {
+  --border-color: rgba(120, 74, 54, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+ion-toolbar.public-toolbar {
+  --background: rgba(255, 248, 242, 0.94);
+  --min-height: 76px;
+  padding-inline: 6px;
+}
+
+ion-tab-bar.public-tabbar {
+  border-top: 1px solid rgba(121, 80, 61, 0.08);
+  box-shadow: 0 -8px 28px rgba(59, 34, 22, 0.08);
+}
+
+.menu-shell {
+  --background: #f7efe7;
+}
+
+ion-menu.public-menu {
+  --width: min(86vw, 340px);
+}
+
+.menu-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 28px 20px 10px;
+}
+
+.menu-brand h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: #2e1d18;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.menu-avatar {
+  width: 52px;
+  height: 52px;
+  background: white;
+  box-shadow: 0 12px 24px rgba(82, 45, 29, 0.08);
+  overflow: hidden;
+}
+
+.menu-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+  background: white;
+}
+
+.menu-brand-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.menu-brand-copy ion-note {
+  color: #8f5b46;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.menu-intro {
+  padding: 0 20px 8px;
+}
+
+.menu-intro p {
+  margin: 0;
+  color: #6f5145;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.menu-section-list {
+  margin: 14px 16px 0;
+  padding: 10px 10px 12px;
+  border-radius: 26px;
+  background: #fffaf6;
+  border: 1px solid rgba(176, 126, 99, 0.08);
+  box-shadow: 0 12px 34px rgba(77, 44, 30, 0.07);
+}
+
+.menu-section-list ion-list-header {
+  min-height: auto;
+  padding-inline: 8px;
+  margin-bottom: 8px;
+  color: #8b553a;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.menu-link-item {
+  --background: transparent;
+  --color: #2c1b15;
+  --border-radius: 18px;
+  --inner-padding-end: 12px;
+  --padding-start: 8px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.menu-link-item ion-icon {
+  color: #9a583d;
+  font-size: 1.1rem;
+}
+
+.menu-link-item.selected {
+  --background: #f5e6dc;
+  --color: #8d3e25;
+  box-shadow: inset 0 0 0 1px rgba(181, 83, 56, 0.08);
+}
+
+.menu-shortcuts {
+  margin-top: 12px;
+}
+
+.public-header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.public-header-logo {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 10px 24px rgba(92, 50, 30, 0.1);
+  overflow: hidden;
+}
+
+.public-header-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 5px;
+  background: white;
+}
+
+.public-header-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  line-height: 1;
+}
+
+.public-header-copy strong {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.public-header-copy ion-note {
+  font-size: 0.68rem;
+  color: #8f5b46;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.public-header-action {
+  --border-radius: 999px;
+  --padding-start: 14px;
+  --padding-end: 14px;
+  --background: rgba(181, 83, 56, 0.1);
+  --color: #8f3f25;
+  font-weight: 700;
+}
+
+.public-header-lock {
+  --padding-start: 0;
+  --padding-end: 0;
+  width: 42px;
+  height: 42px;
+}
+
+.public-header-lock ion-icon {
+  font-size: 1.2rem;
+}
