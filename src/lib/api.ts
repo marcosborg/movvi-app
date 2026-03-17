@@ -29,12 +29,13 @@ type ApiRequestOptions = RequestInit & {
 
 export async function apiRequest<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
   const { token, headers, ...rest } = options;
+  const isFormData = typeof FormData !== 'undefined' && rest.body instanceof FormData;
 
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...rest,
     headers: {
       Accept: 'application/json',
-      ...(rest.body ? { 'Content-Type': 'application/json' } : {}),
+      ...(!isFormData && rest.body ? { 'Content-Type': 'application/json' } : {}),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...headers,
     },

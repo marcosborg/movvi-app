@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'ionic.movvi',
-  appName: 'movvi',
+  appId: 'pt.movvi.app',
+  appName: 'Movvi',
   webDir: 'dist'
 };
 

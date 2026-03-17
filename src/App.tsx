@@ -1,10 +1,10 @@
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
+import DriverTabs from './components/DriverTabs';
 import PublicMenu from './components/PublicMenu';
 import PublicTabs from './components/PublicTabs';
 import { useAuth } from './auth/AuthContext';
-import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 
 /* Core CSS required for Ionic components to work properly */
@@ -57,8 +57,8 @@ const App: React.FC = () => {
           <Route exact path="/login">
             {isAuthenticated ? <Redirect to="/dashboard" /> : <Login />}
           </Route>
-          <Route exact path="/dashboard">
-            {isAuthenticated ? <Dashboard /> : <Redirect to="/login" />}
+          <Route path="/dashboard">
+            {isAuthenticated ? <DriverTabs /> : <Redirect to="/login" />}
           </Route>
           <Route exact path="/">
             <Redirect to="/tabs/home" />
