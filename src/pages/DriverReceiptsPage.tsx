@@ -12,6 +12,7 @@ import { useAuth } from '../auth/AuthContext';
 import DriverWeekPicker from '../components/DriverWeekPicker';
 import { useDriverWeek } from '../components/DriverWeekContext';
 import DriverPageHeader from '../components/DriverPageHeader';
+import ImageSourceField from '../components/ImageSourceField';
 import { apiRequest } from '../lib/api';
 import { DriverReceiptMutationResponse, DriverReceiptsResponse, formatMoney } from './driverArea';
 import './Home.css';
@@ -203,14 +204,12 @@ const DriverReceiptsPage: React.FC = () => {
                       <span>Valor final: {formatMoney(data.submission.balance?.final)}</span>
                     </div>
                     <div className="form-stack">
-                      <label className="upload-field">
-                        <span>Ficheiro do recibo</span>
-                        <input
-                          type="file"
-                          accept=".pdf,image/*"
-                          onChange={(event) => setReceiptFile(event.target.files?.[0] ?? null)}
-                        />
-                      </label>
+                      <ImageSourceField
+                        label="Ficheiro do recibo"
+                        galleryAccept=".pdf,image/*"
+                        galleryLabel="Galeria / ficheiros"
+                        onFilesSelected={(files) => setReceiptFile(files?.[0] ?? null)}
+                      />
                       {receiptFile ? <p className="file-chip">{receiptFile.name}</p> : null}
                       <IonButton
                         expand="block"
@@ -246,16 +245,14 @@ const DriverReceiptsPage: React.FC = () => {
                         placeholder="0,00"
                         disabled={Boolean(data.submission.expense_receipt?.verified)}
                       />
-                      <label className="upload-field">
-                        <span>Ficheiros de despesa</span>
-                        <input
-                          type="file"
-                          accept=".pdf,image/*"
-                          multiple
-                          onChange={(event) => setExpenseFiles(Array.from(event.target.files ?? []))}
-                          disabled={Boolean(data.submission.expense_receipt?.verified)}
-                        />
-                      </label>
+                      <ImageSourceField
+                        label="Ficheiros de despesa"
+                        multiple
+                        disabled={Boolean(data.submission.expense_receipt?.verified)}
+                        galleryAccept=".pdf,image/*"
+                        galleryLabel="Galeria / ficheiros"
+                        onFilesSelected={(files) => setExpenseFiles(Array.from(files ?? []))}
+                      />
                       {expenseFiles.length > 0 ? (
                         <div className="file-chip-list">
                           {expenseFiles.map((file) => (
@@ -294,14 +291,12 @@ const DriverReceiptsPage: React.FC = () => {
                         onChange={(event) => setReimbursementValue(event.target.value)}
                         placeholder="0,00"
                       />
-                      <label className="upload-field">
-                        <span>Comprovativo</span>
-                        <input
-                          type="file"
-                          accept=".pdf,image/*"
-                          onChange={(event) => setReimbursementFile(event.target.files?.[0] ?? null)}
-                        />
-                      </label>
+                      <ImageSourceField
+                        label="Comprovativo"
+                        galleryAccept=".pdf,image/*"
+                        galleryLabel="Galeria / ficheiros"
+                        onFilesSelected={(files) => setReimbursementFile(files?.[0] ?? null)}
+                      />
                       {reimbursementFile ? <p className="file-chip">{reimbursementFile.name}</p> : null}
                       <IonButton
                         expand="block"

@@ -292,12 +292,30 @@
   gap: 10px;
 }
 
+.upload-source-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .upload-field span {
   color: #975236;
   font-size: 0.76rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.visually-hidden-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .file-chip-list {
@@ -341,6 +359,224 @@
   border-color: rgba(151, 82, 54, 0.22);
 }
 
+.inspection-list-card,
+.inspection-field-block {
+  display: grid;
+  gap: 14px;
+}
+
+.search-panel {
+  padding: 18px;
+  background: #f9f1ea;
+  box-shadow: none;
+}
+
+.search-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.transfer-search-grid {
+  margin-top: 8px;
+}
+
+.driver-choice-list {
+  display: grid;
+  gap: 10px;
+}
+
+.transfer-mode-list {
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.transfer-mode-panel {
+  margin-bottom: 2px;
+}
+
+.driver-choice-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(184, 129, 103, 0.18);
+  background: #fff;
+  color: #2e1d18;
+  text-align: left;
+}
+
+.transfer-mode-card {
+  display: grid;
+  grid-template-columns: minmax(72px, auto) minmax(0, 1fr);
+  align-items: start;
+  justify-content: start;
+  column-gap: 14px;
+  row-gap: 2px;
+  padding: 14px 16px;
+}
+
+.driver-choice-card strong,
+.driver-choice-card span {
+  color: inherit;
+}
+
+.transfer-mode-card strong {
+  margin: 0;
+  line-height: 1.2;
+}
+
+.transfer-mode-card span {
+  display: block;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.driver-choice-card-active {
+  border-color: #c55d3d;
+  background: #f5e6dc;
+  color: #8d3e25;
+}
+
+.form-label-compact {
+  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+}
+
+.inspection-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.inspection-meta-grid strong {
+  display: block;
+  color: #2e1d18;
+  margin-top: 6px;
+}
+
+.inspection-step-strip {
+  display: flex;
+  overflow-x: auto;
+  gap: 10px;
+  padding-bottom: 6px;
+  scrollbar-width: none;
+}
+
+.inspection-step-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.inspection-step-pill {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 56px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #f3e8de;
+  color: #6f5145;
+}
+
+.inspection-step-pill strong {
+  color: inherit;
+  font-size: 0.88rem;
+  line-height: 1;
+}
+
+.inspection-step-pill span {
+  font-size: 0.82rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.inspection-step-pill-active {
+  justify-content: flex-start;
+  min-width: 220px;
+  padding-inline: 16px;
+}
+
+.inspection-step-pill-active strong,
+.inspection-step-pill-active span {
+  color: #fff4ee;
+}
+
+.inspection-step-pill-active {
+  background: #c55d3d;
+  color: #fff4ee;
+}
+
+.inspection-step-pill-done {
+  background: #ddeee0;
+  color: #2f5d3f;
+}
+
+.inspection-step-pill-done strong,
+.inspection-step-pill-done span {
+  color: #2f5d3f;
+}
+
+.inspection-checkbox {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: #2e1d18;
+  font-weight: 600;
+}
+
+.inspection-thumb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+  gap: 10px;
+}
+
+.inspection-thumb-card {
+  display: block;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid rgba(184, 129, 103, 0.18);
+  min-height: 84px;
+}
+
+.inspection-thumb-card img {
+  width: 100%;
+  height: 100%;
+  min-height: 84px;
+  object-fit: cover;
+  display: block;
+}
+
+.inspection-file-link {
+  display: grid;
+  place-items: center;
+  min-height: 84px;
+  padding: 12px;
+  color: #8d3e25;
+  font-weight: 700;
+  text-align: center;
+}
+
+.inspection-damages-list {
+  display: grid;
+  gap: 12px;
+}
+
+.text-area-field {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.dashboard-actions-top {
+  margin-top: 18px;
+}
+
 .loading-state {
   display: grid;
   place-items: center;
@@ -368,6 +604,10 @@
   .card-head,
   .receipt-item {
     align-items: start;
+  }
+
+  .transfer-mode-card {
+    grid-template-columns: 1fr;
   }
 
   .receipt-item {
