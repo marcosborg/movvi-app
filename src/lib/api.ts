@@ -1,12 +1,34 @@
+import { Capacitor } from '@capacitor/core';
+
 const PRODUCTION_SITE_URL = 'https://movvi.com.pt';
 const LOCAL_API_URL = 'http://127.0.0.1:8000';
+const LOCAL_ANDROID_EMULATOR_API_URL = 'http://10.0.2.2:8000';
 
 const runtimeHost = typeof window !== 'undefined' ? window.location.hostname : '';
 const isLocalRuntime = runtimeHost === 'localhost' || runtimeHost === '127.0.0.1';
+const runtimePlatform = Capacitor.getPlatform();
+const isNativePlatform = runtimePlatform === 'android' || runtimePlatform === 'ios';
+
+function resolveNativeApiBaseUrl() {
+  if (runtimePlatform === 'android') {
+    return (
+      import.meta.env.VITE_ANDROID_API_BASE_URL?.replace(/\/$/, '') ||
+      PRODUCTION_SITE_URL
+    );
+  }
+
+  if (runtimePlatform === 'ios') {
+    return import.meta.env.VITE_IOS_API_BASE_URL?.replace(/\/$/, '') || PRODUCTION_SITE_URL;
+  }
+
+  return PRODUCTION_SITE_URL;
+}
 
 export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '') ||
-  (isLocalRuntime ? LOCAL_API_URL : PRODUCTION_SITE_URL);
+  (isNativePlatform
+    ? resolveNativeApiBaseUrl()
+    : (isLocalRuntime ? LOCAL_API_URL : PRODUCTION_SITE_URL));
 
 export const PUBLIC_SITE_URL =
   import.meta.env.VITE_PUBLIC_SITE_URL?.replace(/\/$/, '') || PRODUCTION_SITE_URL;
@@ -31,15 +53,25 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
   const { token, headers, ...rest } = options;
   const isFormData = typeof FormData !== 'undefined' && rest.body instanceof FormData;
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...rest,
-    headers: {
-      Accept: 'application/json',
-      ...(!isFormData && rest.body ? { 'Content-Type': 'application/json' } : {}),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...headers,
-    },
-  });
+  let response: Response;
+
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      ...rest,
+      headers: {
+        Accept: 'application/json',
+        ...(!isFormData && rest.body ? { 'Content-Type': 'application/json' } : {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...headers,
+      },
+    });
+  } catch (error) {
+    throw new ApiError(
+      `Nao foi possivel ligar a API em ${API_BASE_URL}. Verifica o host configurado para este dispositivo.`,
+      0,
+      error,
+    );
+  }
 
   const text = await response.text();
   const payload = text ? JSON.parse(text) : null;
