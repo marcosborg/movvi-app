@@ -10,10 +10,12 @@ import { useAuth } from '../auth/AuthContext';
 import { Redirect, Route } from 'react-router-dom';
 import {
   analyticsOutline,
+  barChartOutline,
   carSportOutline,
   documentTextOutline,
   documentsOutline,
   gridOutline,
+  walletOutline,
   swapHorizontalOutline,
 } from 'ionicons/icons';
 import { DriverWeekProvider } from './DriverWeekContext';
@@ -24,17 +26,31 @@ import DriverInspectionsPage from '../pages/DriverInspectionsPage';
 import DriverOverviewPage from '../pages/DriverOverviewPage';
 import DriverReceiptsPage from '../pages/DriverReceiptsPage';
 import DriverStatementPage from '../pages/DriverStatementPage';
+import ManagerExpensesPage from '../pages/ManagerExpensesPage';
+import ManagerMovementsPage from '../pages/ManagerMovementsPage';
+import ManagerProfitLossPage from '../pages/ManagerProfitLossPage';
 
 const DriverTabs: React.FC = () => {
   const { user, driver } = useAuth();
   const isAdmin = Boolean(user?.roles.includes('Admin'));
+  const isGestor = Boolean(user?.roles.includes('Gestor'));
+  const canViewFinance = isAdmin || isGestor;
   const hasDriverProfile = Boolean(driver);
-  const adminOnlyMode = isAdmin && !hasDriverProfile;
+  const adminOperationsOnlyMode = isAdmin && !hasDriverProfile;
 
   return (
     <DriverWeekProvider>
       <IonTabs>
       <IonRouterOutlet id="driver-tabs-content">
+        <Route exact path="/dashboard/finance/profit-loss">
+          <ManagerProfitLossPage />
+        </Route>
+        <Route exact path="/dashboard/finance/movements">
+          <ManagerMovementsPage />
+        </Route>
+        <Route exact path="/dashboard/finance/expenses">
+          <ManagerExpensesPage />
+        </Route>
         <Route exact path="/dashboard/overview">
           <DriverOverviewPage />
         </Route>
@@ -57,24 +73,50 @@ const DriverTabs: React.FC = () => {
           <DriverDocumentsPage />
         </Route>
         <Route exact path="/dashboard">
-          <Redirect to={adminOnlyMode ? "/dashboard/inspections" : "/dashboard/overview"} />
+          <Redirect to={
+            hasDriverProfile
+              ? '/dashboard/overview'
+              : canViewFinance
+                ? '/dashboard/finance/profit-loss'
+                : adminOperationsOnlyMode
+                  ? '/dashboard/inspections'
+                  : '/dashboard/overview'
+          } />
         </Route>
       </IonRouterOutlet>
 
       <IonTabBar slot="bottom" className="driver-tabbar">
-        {!adminOnlyMode ? (
+        {canViewFinance ? (
+          <IonTabButton tab="profit-loss" href="/dashboard/finance/profit-loss">
+            <IonIcon icon={barChartOutline} />
+            <IonLabel>DRE</IonLabel>
+          </IonTabButton>
+        ) : null}
+        {canViewFinance ? (
+          <IonTabButton tab="movements" href="/dashboard/finance/movements">
+            <IonIcon icon={analyticsOutline} />
+            <IonLabel>Movimentos</IonLabel>
+          </IonTabButton>
+        ) : null}
+        {canViewFinance ? (
+          <IonTabButton tab="expenses" href="/dashboard/finance/expenses">
+            <IonIcon icon={walletOutline} />
+            <IonLabel>Despesas</IonLabel>
+          </IonTabButton>
+        ) : null}
+        {hasDriverProfile ? (
           <IonTabButton tab="overview" href="/dashboard/overview">
             <IonIcon icon={gridOutline} />
             <IonLabel>Resumo</IonLabel>
           </IonTabButton>
         ) : null}
-        {!adminOnlyMode ? (
+        {hasDriverProfile ? (
           <IonTabButton tab="statement" href="/dashboard/statement">
             <IonIcon icon={analyticsOutline} />
             <IonLabel>Extrato</IonLabel>
           </IonTabButton>
         ) : null}
-        {!adminOnlyMode ? (
+        {hasDriverProfile ? (
           <IonTabButton tab="receipts" href="/dashboard/receipts">
             <IonIcon icon={documentTextOutline} />
             <IonLabel>Recibos</IonLabel>
@@ -92,7 +134,7 @@ const DriverTabs: React.FC = () => {
             <IonLabel>Passagens</IonLabel>
           </IonTabButton>
         ) : null}
-        {!adminOnlyMode ? (
+        {hasDriverProfile ? (
           <IonTabButton tab="documents" href="/dashboard/documents">
             <IonIcon icon={documentsOutline} />
             <IonLabel>Documentos</IonLabel>
