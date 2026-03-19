@@ -139,6 +139,16 @@ const DriverOverviewPage: React.FC = () => {
                         <strong>{formatMoney(driverHub.balance?.final)}</strong>
                         <span>Com IVA e retencao aplicados</span>
                       </article>
+                      <article className="dashboard-card dashboard-metric-card">
+                        <p className="metric-label">KM da semana</p>
+                        <strong>{(driverHub.statement_metrics?.weekly_km ?? 0).toFixed(1)} km</strong>
+                        <span>Quilometros atribuidos a esta semana</span>
+                      </article>
+                      <article className="dashboard-card dashboard-metric-card">
+                        <p className="metric-label">Valor por km</p>
+                        <strong>{formatMoney(driverHub.statement_metrics?.earnings_per_km)}/km</strong>
+                        <span>Relacao entre total e quilometros</span>
+                      </article>
                     </div>
                   </section>
 

@@ -69,6 +69,8 @@ export type DriverDashboardResponse = {
       uber_net: number;
       bolt_net: number;
       total: number;
+      weekly_km: number;
+      earnings_per_km: number;
     } | null;
     account_summary: Record<string, unknown> | null;
     balance: {

@@ -62,6 +62,8 @@ const DriverStatementPage: React.FC = () => {
   const carTrack = getAccountValue(accountSummary, 'car_track');
   const fuelTransactions = getAccountValue(accountSummary, 'fuel_transactions');
   const vatValue = getAccountValue(accountSummary, 'vat_value');
+  const weeklyKm = driverHub?.statement_metrics?.weekly_km ?? getAccountValue(accountSummary, 'weekly_km');
+  const earningsPerKm = driverHub?.statement_metrics?.earnings_per_km ?? getAccountValue(accountSummary, 'earnings_per_km');
 
   return (
     <IonPage>
@@ -108,6 +110,8 @@ const DriverStatementPage: React.FC = () => {
                     <p>Ganhos brutos: {formatMoney(totalGross)}</p>
                     <p>Ganhos liquidos: {formatMoney(totalNet)}</p>
                     <p>Total da semana: {formatMoney(driverHub.statement_metrics?.total)}</p>
+                    <p>KM da semana: {weeklyKm.toFixed(1)} km</p>
+                    <p>Valor por km: {formatMoney(earningsPerKm)}/km</p>
                     <p>Taxa: {formatMoney(vatValue)}</p>
                   </article>
                 </div>

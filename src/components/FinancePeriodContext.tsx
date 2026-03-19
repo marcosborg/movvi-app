@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo, useState } from 'react';
 
-export type FinancePeriodPreset = 'current_month' | 'last_30_days' | 'current_year' | 'custom';
+export type FinancePeriodPreset = 'current_month' | 'previous_month' | 'last_3_months' | 'current_year' | 'custom';
 
 type FinancePeriodContextValue = {
   preset: FinancePeriodPreset;
@@ -28,13 +28,17 @@ function buildPresetRange(preset: FinancePeriodPreset) {
     };
   }
 
-  if (preset === 'last_30_days') {
-    const start = new Date(now);
-    start.setDate(start.getDate() - 29);
-
+  if (preset === 'previous_month') {
     return {
-      startDate: toDateInputValue(start),
-      endDate: toDateInputValue(now),
+      startDate: toDateInputValue(new Date(now.getFullYear(), now.getMonth() - 1, 1)),
+      endDate: toDateInputValue(new Date(now.getFullYear(), now.getMonth(), 0)),
+    };
+  }
+
+  if (preset === 'last_3_months') {
+    return {
+      startDate: toDateInputValue(new Date(now.getFullYear(), now.getMonth() - 2, 1)),
+      endDate: toDateInputValue(new Date(now.getFullYear(), now.getMonth() + 1, 0)),
     };
   }
 

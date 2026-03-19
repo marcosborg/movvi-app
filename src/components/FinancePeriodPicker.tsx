@@ -3,7 +3,8 @@ import { useFinancePeriod, type FinancePeriodPreset } from './FinancePeriodConte
 
 const presets: Array<{ key: FinancePeriodPreset; label: string }> = [
   { key: 'current_month', label: 'Este mes' },
-  { key: 'last_30_days', label: '30 dias' },
+  { key: 'previous_month', label: 'Mes anterior' },
+  { key: 'last_3_months', label: '3 meses' },
   { key: 'current_year', label: 'Este ano' },
 ];
 
