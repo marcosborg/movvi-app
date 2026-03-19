@@ -18,6 +18,7 @@ import {
   walletOutline,
   swapHorizontalOutline,
 } from 'ionicons/icons';
+import { FinancePeriodProvider } from './FinancePeriodContext';
 import { DriverWeekProvider } from './DriverWeekContext';
 import AdminTransferPage from '../pages/AdminTransferPage';
 import DriverDocumentsPage from '../pages/DriverDocumentsPage';
@@ -40,6 +41,7 @@ const DriverTabs: React.FC = () => {
 
   return (
     <DriverWeekProvider>
+      <FinancePeriodProvider>
       <IonTabs>
       <IonRouterOutlet id="driver-tabs-content">
         <Route exact path="/dashboard/finance/profit-loss">
@@ -142,6 +144,7 @@ const DriverTabs: React.FC = () => {
         ) : null}
       </IonTabBar>
       </IonTabs>
+      </FinancePeriodProvider>
     </DriverWeekProvider>
   );
 };

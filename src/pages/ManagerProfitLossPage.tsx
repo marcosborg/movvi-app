@@ -9,6 +9,8 @@ import type { RefresherEventDetail } from '@ionic/core';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../auth/AuthContext';
 import DriverPageHeader from '../components/DriverPageHeader';
+import FinancePeriodPicker from '../components/FinancePeriodPicker';
+import { useFinancePeriod } from '../components/FinancePeriodContext';
 import { apiRequest } from '../lib/api';
 import { formatMoney } from './driverArea';
 import { ProfitLossResponse } from './managerFinanceArea';
@@ -16,13 +18,14 @@ import './Home.css';
 
 const ManagerProfitLossPage: React.FC = () => {
   const { token, user } = useAuth();
+  const { query } = useFinancePeriod();
   const [response, setResponse] = useState<ProfitLossResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     void loadData();
-  }, [token]);
+  }, [token, query]);
 
   async function loadData() {
     if (!token) {
@@ -33,7 +36,7 @@ const ManagerProfitLossPage: React.FC = () => {
     setError(null);
 
     try {
-      const payload = await apiRequest<ProfitLossResponse>('/api/v1/conta-azul/manager/profit-loss', {
+      const payload = await apiRequest<ProfitLossResponse>(`/api/v1/conta-azul/manager/profit-loss?${query}`, {
         method: 'GET',
         token,
       });
@@ -75,6 +78,8 @@ const ManagerProfitLossPage: React.FC = () => {
               </div>
             </div>
           </section>
+
+          <FinancePeriodPicker />
 
           {isLoading ? (
             <div className="loading-state">

@@ -359,6 +359,56 @@
   border-color: rgba(151, 82, 54, 0.22);
 }
 
+.finance-period-card {
+  display: grid;
+  gap: 14px;
+}
+
+.finance-period-summary {
+  margin: 8px 0 0;
+  color: #6b554a;
+}
+
+.finance-period-presets {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.finance-period-chip {
+  --border-radius: 999px;
+  font-weight: 700;
+}
+
+.finance-period-range {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.finance-period-field {
+  display: grid;
+  gap: 8px;
+}
+
+.finance-period-field span {
+  color: #975236;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.finance-period-field input {
+  width: 100%;
+  border: 1px solid rgba(184, 129, 103, 0.18);
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px 16px;
+  color: #2e1d18;
+  font: inherit;
+}
+
 .inspection-list-card,
 .inspection-field-block {
   display: grid;
