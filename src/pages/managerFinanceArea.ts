@@ -92,3 +92,50 @@ export type ExpensesResponse = FinanceEnvelope<{
     amount: number;
   }>;
 }>;
+
+export type CompanyReportResponse = {
+  company: CompanySummary;
+  week: {
+    id: number;
+    number: number | null;
+    start_date: string;
+    end_date: string;
+    requested_date: string | null;
+  };
+  data: {
+    drivers: Array<{
+      id: number;
+      name: string;
+      license_plate: string | null;
+      weekly_km: number;
+      earnings_per_km: number;
+      uber_net: number;
+      bolt_net: number;
+      tips_total: number;
+      vat_value: number;
+      fuel: number;
+      adjustments: number;
+      via_verde: number;
+      percent_value: number;
+      car_hire: number;
+      total: number;
+      last_balance: number;
+      new_balance: number;
+      validated: boolean;
+    }>;
+    totals: {
+      net_uber: number;
+      net_bolt: number;
+      total_weekly_km: number;
+      total_earnings_per_km: number;
+      total_drivers: number;
+      tips_total: number;
+      total_iva_value: number;
+      total_fuel_transactions: number;
+      total_adjustments: number;
+      total_car_track: number;
+      total_percent_value: number;
+      total_car_hire: number;
+    };
+  };
+};

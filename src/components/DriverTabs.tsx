@@ -12,10 +12,10 @@ import {
   analyticsOutline,
   barChartOutline,
   carSportOutline,
+  clipboardOutline,
   documentTextOutline,
   documentsOutline,
   gridOutline,
-  walletOutline,
   swapHorizontalOutline,
 } from 'ionicons/icons';
 import { FinancePeriodProvider } from './FinancePeriodContext';
@@ -27,9 +27,8 @@ import DriverInspectionsPage from '../pages/DriverInspectionsPage';
 import DriverOverviewPage from '../pages/DriverOverviewPage';
 import DriverReceiptsPage from '../pages/DriverReceiptsPage';
 import DriverStatementPage from '../pages/DriverStatementPage';
-import ManagerExpensesPage from '../pages/ManagerExpensesPage';
-import ManagerMovementsPage from '../pages/ManagerMovementsPage';
-import ManagerProfitLossPage from '../pages/ManagerProfitLossPage';
+import ManagerCompanyReportsPage from '../pages/ManagerCompanyReportsPage';
+import ManagerFinancePage from '../pages/ManagerFinancePage';
 
 const DriverTabs: React.FC = () => {
   const { user, driver } = useAuth();
@@ -44,14 +43,20 @@ const DriverTabs: React.FC = () => {
       <FinancePeriodProvider>
       <IonTabs>
       <IonRouterOutlet id="driver-tabs-content">
+        <Route exact path="/dashboard/finance">
+          <ManagerFinancePage />
+        </Route>
         <Route exact path="/dashboard/finance/profit-loss">
-          <ManagerProfitLossPage />
+          <Redirect to="/dashboard/finance" />
         </Route>
         <Route exact path="/dashboard/finance/movements">
-          <ManagerMovementsPage />
+          <Redirect to="/dashboard/finance" />
         </Route>
         <Route exact path="/dashboard/finance/expenses">
-          <ManagerExpensesPage />
+          <Redirect to="/dashboard/finance" />
+        </Route>
+        <Route exact path="/dashboard/company-reports">
+          <ManagerCompanyReportsPage />
         </Route>
         <Route exact path="/dashboard/overview">
           <DriverOverviewPage />
@@ -76,10 +81,10 @@ const DriverTabs: React.FC = () => {
         </Route>
         <Route exact path="/dashboard">
           <Redirect to={
-            hasDriverProfile
+             hasDriverProfile
               ? '/dashboard/overview'
               : canViewFinance
-                ? '/dashboard/finance/profit-loss'
+                ? '/dashboard/finance'
                 : adminOperationsOnlyMode
                   ? '/dashboard/inspections'
                   : '/dashboard/overview'
@@ -89,21 +94,15 @@ const DriverTabs: React.FC = () => {
 
       <IonTabBar slot="bottom" className="driver-tabbar">
         {canViewFinance ? (
-          <IonTabButton tab="profit-loss" href="/dashboard/finance/profit-loss">
+          <IonTabButton tab="finance" href="/dashboard/finance">
             <IonIcon icon={barChartOutline} />
-            <IonLabel>DRE</IonLabel>
+            <IonLabel>Financeiro</IonLabel>
           </IonTabButton>
         ) : null}
         {canViewFinance ? (
-          <IonTabButton tab="movements" href="/dashboard/finance/movements">
-            <IonIcon icon={analyticsOutline} />
-            <IonLabel>Movimentos</IonLabel>
-          </IonTabButton>
-        ) : null}
-        {canViewFinance ? (
-          <IonTabButton tab="expenses" href="/dashboard/finance/expenses">
-            <IonIcon icon={walletOutline} />
-            <IonLabel>Despesas</IonLabel>
+          <IonTabButton tab="company-reports" href="/dashboard/company-reports">
+            <IonIcon icon={clipboardOutline} />
+            <IonLabel>Relatorios</IonLabel>
           </IonTabButton>
         ) : null}
         {hasDriverProfile ? (

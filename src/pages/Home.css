@@ -409,6 +409,138 @@
   font: inherit;
 }
 
+.finance-subtabs-card {
+  padding: 14px;
+}
+
+.finance-subtabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.finance-subtab {
+  border: 1px solid rgba(184, 129, 103, 0.18);
+  background: #fff;
+  color: #6f5145;
+  border-radius: 999px;
+  padding: 10px 16px;
+  font: inherit;
+  font-weight: 700;
+}
+
+.finance-subtab-active {
+  background: #c55f3c;
+  border-color: #c55f3c;
+  color: #fff;
+}
+
+.receipt-item-stacked {
+  display: grid;
+  gap: 12px;
+  align-items: start;
+}
+
+.receipt-item-main {
+  display: grid;
+  gap: 4px;
+}
+
+.report-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.report-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px 14px;
+  color: #6b554a;
+  font-size: 0.92rem;
+}
+
+.report-hero-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.report-hero-panel::after {
+  content: '';
+  position: absolute;
+  inset: auto -40px -40px auto;
+  width: 180px;
+  height: 180px;
+  border-radius: 999px;
+  background: rgba(197, 95, 60, 0.08);
+  pointer-events: none;
+}
+
+.report-highlight-card {
+  display: grid;
+  gap: 10px;
+}
+
+.report-highlight-value {
+  color: #2e1d18;
+  font-size: 1.4rem;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.report-highlight-meta {
+  color: #8d3e25;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.report-rank-card .receipt-item {
+  background: #fff6ef;
+}
+
+.report-rank-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.report-rank-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #c55f3c;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.report-rank-number-soft {
+  background: #f0ddcf;
+  color: #8d3e25;
+}
+
+.report-driver-card {
+  background: #fff6ef;
+  border: 1px solid rgba(197, 95, 60, 0.08);
+}
+
+.report-driver-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+}
+
+.report-driver-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .inspection-list-card,
 .inspection-field-block {
   display: grid;

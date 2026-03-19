@@ -29,7 +29,7 @@ const DriverWeekPicker: React.FC = () => {
     }
 
     try {
-      const response = await apiRequest<DriverWeeksResponse>('/api/v1/mobile/driver/weeks', {
+      const response = await apiRequest<DriverWeeksResponse>('/api/v1/weeks', {
         method: 'GET',
         token,
       });
