@@ -33,7 +33,7 @@ const ManagerMovementsPage: React.FC = () => {
     setError(null);
 
     try {
-      const payload = await apiRequest<MovementsResponse>('/api/v1/conta-azul/movements', {
+      const payload = await apiRequest<MovementsResponse>('/api/v1/conta-azul/manager/movements', {
         method: 'GET',
         token,
       });

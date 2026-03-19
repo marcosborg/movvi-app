@@ -93,6 +93,57 @@
   --color: #2e1d18;
 }
 
+.login-password-toggle {
+  --color: #8f5b46;
+  --padding-start: 6px;
+  --padding-end: 0;
+  margin-top: 22px;
+}
+
+.login-password-toggle ion-icon {
+  font-size: 1.15rem;
+}
+
+.login-recovery {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+
+.login-recovery-trigger {
+  --padding-start: 0;
+  --padding-end: 0;
+  --color: #8f3f25;
+  margin: 0;
+  font-weight: 700;
+}
+
+.login-recovery-panel {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: #f8efe7;
+  border: 1px solid rgba(184, 129, 103, 0.14);
+}
+
+.login-recovery-panel p {
+  margin: 0;
+  color: #5d4a42;
+  line-height: 1.5;
+}
+
+.login-recovery-action {
+  margin-top: 12px;
+  --border-color: rgba(181, 83, 56, 0.8);
+  --color: #8f3f25;
+  font-weight: 700;
+}
+
+.login-feedback {
+  margin: 12px 0 0;
+  line-height: 1.5;
+}
+
 .login-error {
   margin: 0;
   padding: 0 4px;

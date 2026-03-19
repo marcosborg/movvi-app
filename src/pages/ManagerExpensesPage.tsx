@@ -33,7 +33,7 @@ const ManagerExpensesPage: React.FC = () => {
     setError(null);
 
     try {
-      const payload = await apiRequest<ExpensesResponse>('/api/v1/conta-azul/expenses', {
+      const payload = await apiRequest<ExpensesResponse>('/api/v1/conta-azul/manager/expenses', {
         method: 'GET',
         token,
       });

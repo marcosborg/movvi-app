@@ -1,10 +1,12 @@
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
+import { useEffect, useState } from 'react';
 import DriverTabs from './components/DriverTabs';
 import PublicMenu from './components/PublicMenu';
 import PublicTabs from './components/PublicTabs';
 import { useAuth } from './auth/AuthContext';
+import { getActiveApiRequests, subscribeToApiActivity } from './lib/api';
 import Login from './pages/Login';
 
 /* Core CSS required for Ionic components to work properly */
@@ -41,6 +43,11 @@ setupIonicReact();
 
 const App: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
+  const [activeApiRequests, setActiveApiRequests] = useState(() => getActiveApiRequests());
+
+  useEffect(() => {
+    return subscribeToApiActivity(setActiveApiRequests);
+  }, []);
 
   if (isLoading) {
     return <IonApp />;
@@ -48,6 +55,10 @@ const App: React.FC = () => {
 
   return (
     <IonApp>
+      <div className={`global-api-indicator ${activeApiRequests > 0 ? 'is-visible' : ''}`}>
+        <div className="global-api-indicator-bar" />
+        <span>A carregar dados</span>
+      </div>
       <IonReactRouter>
         <PublicMenu />
         <IonRouterOutlet id="main-content">

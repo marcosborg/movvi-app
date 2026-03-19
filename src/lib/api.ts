@@ -33,6 +33,55 @@ export const API_BASE_URL =
 export const PUBLIC_SITE_URL =
   import.meta.env.VITE_PUBLIC_SITE_URL?.replace(/\/$/, '') || PRODUCTION_SITE_URL;
 
+const API_ACTIVITY_EVENT = 'movvi:api-activity';
+let activeApiRequests = 0;
+
+function notifyApiActivity() {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  window.dispatchEvent(new CustomEvent(API_ACTIVITY_EVENT, {
+    detail: {
+      activeRequests: activeApiRequests,
+    },
+  }));
+}
+
+function beginApiActivity() {
+  activeApiRequests += 1;
+  notifyApiActivity();
+}
+
+function endApiActivity() {
+  activeApiRequests = Math.max(0, activeApiRequests - 1);
+  notifyApiActivity();
+}
+
+export function getActiveApiRequests() {
+  return activeApiRequests;
+}
+
+export function subscribeToApiActivity(listener: (activeRequests: number) => void) {
+  if (typeof window === 'undefined') {
+    return () => undefined;
+  }
+
+  const handler = (event: Event) => {
+    const activeRequests = event instanceof CustomEvent
+      && event.detail
+      && typeof event.detail.activeRequests === 'number'
+      ? event.detail.activeRequests
+      : 0;
+
+    listener(activeRequests);
+  };
+
+  window.addEventListener(API_ACTIVITY_EVENT, handler);
+
+  return () => window.removeEventListener(API_ACTIVITY_EVENT, handler);
+}
+
 export class ApiError extends Error {
   status: number;
   payload: unknown;
@@ -54,6 +103,7 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
   const isFormData = typeof FormData !== 'undefined' && rest.body instanceof FormData;
 
   let response: Response;
+  beginApiActivity();
 
   try {
     response = await fetch(`${API_BASE_URL}${path}`, {
@@ -66,6 +116,7 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
       },
     });
   } catch (error) {
+    endApiActivity();
     throw new ApiError(
       `Nao foi possivel ligar a API em ${API_BASE_URL}. Verifica o host configurado para este dispositivo.`,
       0,
@@ -73,25 +124,29 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
     );
   }
 
-  const text = await response.text();
-  const payload = text ? JSON.parse(text) : null;
+  try {
+    const text = await response.text();
+    const payload = text ? JSON.parse(text) : null;
 
-  if (!response.ok) {
-    const fallbackMessage = response.status === 401
-      ? 'Sessao invalida. Volta a iniciar sessao.'
-      : 'Nao foi possivel concluir o pedido.';
+    if (!response.ok) {
+      const fallbackMessage = response.status === 401
+        ? 'Sessao invalida. Volta a iniciar sessao.'
+        : 'Nao foi possivel concluir o pedido.';
 
-    const message =
-      (payload && typeof payload === 'object' && 'message' in payload && typeof payload.message === 'string'
-        ? payload.message
-        : null) ||
-      (payload && typeof payload === 'object' && 'error' in payload && typeof payload.error === 'string'
-        ? payload.error
-        : null) ||
-      fallbackMessage;
+      const message =
+        (payload && typeof payload === 'object' && 'message' in payload && typeof payload.message === 'string'
+          ? payload.message
+          : null) ||
+        (payload && typeof payload === 'object' && 'error' in payload && typeof payload.error === 'string'
+          ? payload.error
+          : null) ||
+        fallbackMessage;
 
-    throw new ApiError(message, response.status, payload);
+      throw new ApiError(message, response.status, payload);
+    }
+
+    return payload as T;
+  } finally {
+    endApiActivity();
   }
-
-  return payload as T;
 }

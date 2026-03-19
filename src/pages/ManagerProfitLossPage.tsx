@@ -33,7 +33,7 @@ const ManagerProfitLossPage: React.FC = () => {
     setError(null);
 
     try {
-      const payload = await apiRequest<ProfitLossResponse>('/api/v1/conta-azul/profit-loss', {
+      const payload = await apiRequest<ProfitLossResponse>('/api/v1/conta-azul/manager/profit-loss', {
         method: 'GET',
         token,
       });
