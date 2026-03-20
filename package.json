@@ -18,6 +18,7 @@
     "@capacitor/app": "latest",
     "@capacitor/core": "latest",
     "@capacitor/haptics": "latest",
+    "@capacitor/ios": "8.2.0",
     "@capacitor/keyboard": "latest",
     "@capacitor/status-bar": "latest",
     "@ionic/react": "^8.5.0",
