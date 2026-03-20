@@ -1,5 +1,7 @@
 import {
+  IonButton,
   IonContent,
+  IonModal,
   IonPage,
   IonRefresher,
   IonRefresherContent,
@@ -11,12 +13,14 @@ import { useAuth } from '../auth/AuthContext';
 import DriverPageHeader from '../components/DriverPageHeader';
 import FinancePeriodPicker from '../components/FinancePeriodPicker';
 import { useFinancePeriod } from '../components/FinancePeriodContext';
+import { HorizontalMetricChart } from '../components/InsightCharts';
 import { apiRequest } from '../lib/api';
 import { formatMoney } from './driverArea';
-import type { ExpensesResponse, MovementsResponse, ProfitLossResponse } from './managerFinanceArea';
+import type { ExpensesResponse, FinancialMovementItem, MovementsResponse, ProfitLossResponse } from './managerFinanceArea';
 import './Home.css';
 
 type FinanceView = 'profit-loss' | 'movements' | 'expenses';
+type ProfitLossModalKind = 'receivables' | 'payables' | null;
 
 const subTabs: Array<{ key: FinanceView; label: string }> = [
   { key: 'profit-loss', label: 'DRE' },
@@ -33,10 +37,15 @@ const ManagerFinancePage: React.FC = () => {
   const [expenses, setExpenses] = useState<ExpensesResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [profitLossModal, setProfitLossModal] = useState<ProfitLossModalKind>(null);
 
   useEffect(() => {
     void loadData();
   }, [token, query, view]);
+
+  useEffect(() => {
+    setProfitLossModal(null);
+  }, [view, query]);
 
   async function loadData() {
     if (!token) {
@@ -83,6 +92,21 @@ const ManagerFinancePage: React.FC = () => {
     (view === 'movements' ? movements?.company.name : null) ||
     (view === 'expenses' ? expenses?.company.name : null) ||
     'Area financeira';
+
+  const modalItems: FinancialMovementItem[] =
+    profitLossModal === 'receivables'
+      ? (profitLoss?.data.raw.receivables ?? [])
+      : profitLossModal === 'payables'
+        ? (profitLoss?.data.raw.payables ?? [])
+        : [];
+
+  const modalTitle = profitLossModal === 'receivables' ? 'Receitas do periodo' : 'Despesas do periodo';
+  const modalSummary = profitLossModal === 'receivables'
+    ? `${profitLoss?.data.totals.receivables_count ?? 0} movimentos de entrada`
+    : `${profitLoss?.data.totals.payables_count ?? 0} movimentos de saida`;
+  const modalTotal = profitLossModal === 'receivables'
+    ? profitLoss?.data.summary.revenue ?? 0
+    : profitLoss?.data.summary.expenses ?? 0;
 
   return (
     <IonPage>
@@ -139,16 +163,26 @@ const ManagerFinancePage: React.FC = () => {
             <>
               <section className="dashboard-section">
                 <div className="dashboard-metric-grid">
-                  <article className="dashboard-card dashboard-metric-card">
+                  <button
+                    type="button"
+                    className="dashboard-card dashboard-metric-card dashboard-metric-action"
+                    onClick={() => setProfitLossModal('receivables')}
+                  >
                     <p className="metric-label">Receitas</p>
                     <strong>{formatMoney(profitLoss.data.summary.revenue)}</strong>
                     <span>{profitLoss.data.totals.receivables_count} movimentos de entrada</span>
-                  </article>
-                  <article className="dashboard-card dashboard-metric-card">
+                    <span className="metric-link">Ver movimentos</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="dashboard-card dashboard-metric-card dashboard-metric-action"
+                    onClick={() => setProfitLossModal('payables')}
+                  >
                     <p className="metric-label">Despesas</p>
                     <strong>{formatMoney(profitLoss.data.summary.expenses)}</strong>
                     <span>{profitLoss.data.totals.payables_count} movimentos de saida</span>
-                  </article>
+                    <span className="metric-link">Ver movimentos</span>
+                  </button>
                   <article className="dashboard-card dashboard-metric-card">
                     <p className="metric-label">Resultado bruto</p>
                     <strong>{formatMoney(profitLoss.data.summary.gross_result)}</strong>
@@ -159,6 +193,53 @@ const ManagerFinancePage: React.FC = () => {
                     <strong>{formatMoney(profitLoss.data.summary.net_result)}</strong>
                     <span>Estado final do periodo consultado</span>
                   </article>
+                </div>
+              </section>
+
+              <section className="dashboard-section">
+                <div className="dashboard-card-grid">
+                  <HorizontalMetricChart
+                    title="Receitas vs despesas"
+                    emptyText="Sem valores para comparar."
+                    items={[
+                      {
+                        label: 'Receitas',
+                        value: profitLoss.data.summary.revenue,
+                        formattedValue: formatMoney(profitLoss.data.summary.revenue),
+                        helper: `${profitLoss.data.totals.receivables_count} movimentos`,
+                        tone: 'positive',
+                      },
+                      {
+                        label: 'Despesas',
+                        value: profitLoss.data.summary.expenses,
+                        formattedValue: formatMoney(profitLoss.data.summary.expenses),
+                        helper: `${profitLoss.data.totals.payables_count} movimentos`,
+                        tone: 'warm',
+                      },
+                    ]}
+                  />
+                  <HorizontalMetricChart
+                    title="Receitas por categoria"
+                    emptyText="Sem receitas disponiveis."
+                    items={profitLoss.data.revenue_categories.slice(0, 6).map((item) => ({
+                      label: item.category,
+                      value: item.amount,
+                      formattedValue: formatMoney(item.amount),
+                      helper: `${item.count} movimentos`,
+                      tone: 'positive',
+                    }))}
+                  />
+                  <HorizontalMetricChart
+                    title="Despesas por categoria"
+                    emptyText="Sem despesas disponiveis."
+                    items={profitLoss.data.expense_categories.slice(0, 6).map((item) => ({
+                      label: item.category,
+                      value: item.amount,
+                      formattedValue: formatMoney(item.amount),
+                      helper: `${item.count} movimentos`,
+                      tone: 'warm',
+                    }))}
+                  />
                 </div>
               </section>
 
@@ -226,6 +307,42 @@ const ManagerFinancePage: React.FC = () => {
                     <strong>{formatMoney(movements.data.summary.net_cashflow)}</strong>
                     <span>{movements.data.summary.movements_count} movimentos agregados</span>
                   </article>
+                </div>
+              </section>
+
+              <section className="dashboard-section">
+                <div className="dashboard-card-grid">
+                  <HorizontalMetricChart
+                    title="Fluxo financeiro"
+                    emptyText="Sem movimentos disponiveis."
+                    items={[
+                      {
+                        label: 'Entradas',
+                        value: movements.data.summary.incoming_total,
+                        formattedValue: formatMoney(movements.data.summary.incoming_total),
+                        helper: 'Recebimentos do periodo',
+                        tone: 'positive',
+                      },
+                      {
+                        label: 'Saidas',
+                        value: movements.data.summary.outgoing_total,
+                        formattedValue: formatMoney(movements.data.summary.outgoing_total),
+                        helper: 'Pagamentos do periodo',
+                        tone: 'warm',
+                      },
+                    ]}
+                  />
+                  <HorizontalMetricChart
+                    title="Saldos por conta"
+                    emptyText="Sem contas financeiras disponiveis."
+                    items={movements.data.accounts.items.slice(0, 6).map((account) => ({
+                      label: account.name,
+                      value: account.balance,
+                      formattedValue: formatMoney(account.balance),
+                      helper: account.type || 'Conta',
+                      tone: 'neutral',
+                    }))}
+                  />
                 </div>
               </section>
 
@@ -300,6 +417,49 @@ const ManagerFinancePage: React.FC = () => {
 
               <section className="dashboard-section">
                 <div className="dashboard-card-grid">
+                  <HorizontalMetricChart
+                    title="Estado das despesas"
+                    emptyText="Sem despesas disponiveis."
+                    items={[
+                      {
+                        label: 'Pagas',
+                        value: expenses.data.summary.paid_expenses,
+                        formattedValue: formatMoney(expenses.data.summary.paid_expenses),
+                        helper: 'Liquidadas no periodo',
+                        tone: 'positive',
+                      },
+                      {
+                        label: 'Em aberto',
+                        value: expenses.data.summary.open_expenses,
+                        formattedValue: formatMoney(expenses.data.summary.open_expenses),
+                        helper: 'Por liquidar',
+                        tone: 'neutral',
+                      },
+                      {
+                        label: 'Vencidas',
+                        value: expenses.data.summary.overdue_expenses,
+                        formattedValue: formatMoney(expenses.data.summary.overdue_expenses),
+                        helper: 'Fora de prazo',
+                        tone: 'warm',
+                      },
+                    ]}
+                  />
+                  <HorizontalMetricChart
+                    title="Despesa por categoria"
+                    emptyText="Sem categorias de despesa disponiveis."
+                    items={expenses.data.categories.expense_breakdown.slice(0, 6).map((item) => ({
+                      label: item.category,
+                      value: item.amount,
+                      formattedValue: formatMoney(item.amount),
+                      helper: `${item.count} movimentos`,
+                      tone: 'warm',
+                    }))}
+                  />
+                </div>
+              </section>
+
+              <section className="dashboard-section">
+                <div className="dashboard-card-grid">
                   <article className="dashboard-card">
                     <div className="card-head">
                       <h3>Despesa por categoria</h3>
@@ -338,6 +498,57 @@ const ManagerFinancePage: React.FC = () => {
             </>
           ) : null}
         </div>
+
+        <IonModal
+          isOpen={profitLossModal !== null}
+          onDidDismiss={() => setProfitLossModal(null)}
+          initialBreakpoint={0.95}
+          breakpoints={[0, 0.95]}
+        >
+          <div className="finance-modal-shell">
+            <div className="finance-modal-header">
+              <div>
+                <p className="hero-eyebrow">Detalhe</p>
+                <h2>{modalTitle}</h2>
+                <p className="finance-modal-copy">{modalSummary}</p>
+              </div>
+              <IonButton fill="clear" onClick={() => setProfitLossModal(null)}>
+                Fechar
+              </IonButton>
+            </div>
+
+            <div className="dashboard-metric-grid finance-modal-summary-grid">
+              <article className="dashboard-card dashboard-metric-card">
+                <p className="metric-label">Total</p>
+                <strong>{formatMoney(modalTotal)}</strong>
+                <span>Periodo financeiro ativo</span>
+              </article>
+              <article className="dashboard-card dashboard-metric-card">
+                <p className="metric-label">Movimentos</p>
+                <strong>{modalItems.length}</strong>
+                <span>Itens devolvidos pela ligacao financeira</span>
+              </article>
+            </div>
+
+            <div className="receipt-list finance-modal-list">
+              {modalItems.length ? modalItems.map((item) => (
+                <article key={`${profitLossModal}-${item.id}-${item.date}-${item.description}`} className="receipt-item receipt-item-stacked">
+                  <div className="receipt-item-main">
+                    <strong>{item.description}</strong>
+                    <span>{item.counterparty || item.category || 'Sem detalhe adicional'}</span>
+                    <span>{item.date || 'Sem data'}</span>
+                  </div>
+                  <div className="receipt-meta-col">
+                    {item.status ? <span className="status-pill">{item.status}</span> : null}
+                    <span className={`status-badge ${profitLossModal === 'receivables' ? 'status-available' : 'status-planned'}`}>
+                      {formatMoney(item.amount)}
+                    </span>
+                  </div>
+                </article>
+              )) : <p className="dashboard-empty">Sem movimentos disponiveis para este periodo.</p>}
+            </div>
+          </div>
+        </IonModal>
       </IonContent>
     </IonPage>
   );

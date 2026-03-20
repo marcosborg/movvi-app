@@ -8,6 +8,16 @@ export type FinanceEnvelope<T> = {
   data: T;
 };
 
+export type FinancialMovementItem = {
+  id: string | null;
+  description: string;
+  counterparty: string | null;
+  category: string | null;
+  status: string | null;
+  date: string | null;
+  amount: number;
+};
+
 export type ProfitLossResponse = FinanceEnvelope<{
   summary: {
     revenue: number;
@@ -28,6 +38,10 @@ export type ProfitLossResponse = FinanceEnvelope<{
   totals: {
     receivables_count: number;
     payables_count: number;
+  };
+  raw: {
+    receivables: FinancialMovementItem[];
+    payables: FinancialMovementItem[];
   };
 }>;
 
@@ -50,15 +64,8 @@ export type MovementsResponse = FinanceEnvelope<{
     net_cashflow: number;
     movements_count: number;
   };
-  movements: Array<{
-    id: string | null;
+  movements: Array<FinancialMovementItem & {
     direction: 'incoming' | 'outgoing';
-    description: string;
-    counterparty: string | null;
-    category: string | null;
-    status: string | null;
-    date: string | null;
-    amount: number;
   }>;
 }>;
 
@@ -82,15 +89,7 @@ export type ExpensesResponse = FinanceEnvelope<{
       type: string | null;
     }>;
   };
-  items: Array<{
-    id: string | null;
-    description: string;
-    counterparty: string | null;
-    category: string | null;
-    status: string | null;
-    date: string | null;
-    amount: number;
-  }>;
+  items: FinancialMovementItem[];
 }>;
 
 export type CompanyReportResponse = {

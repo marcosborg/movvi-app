@@ -11,6 +11,7 @@ import { useAuth } from '../auth/AuthContext';
 import DriverPageHeader from '../components/DriverPageHeader';
 import DriverWeekPicker from '../components/DriverWeekPicker';
 import { useDriverWeek } from '../components/DriverWeekContext';
+import { HorizontalMetricChart } from '../components/InsightCharts';
 import { apiRequest } from '../lib/api';
 import { formatMoney } from './driverArea';
 import type { CompanyReportResponse } from './managerFinanceArea';
@@ -143,6 +144,71 @@ const ManagerCompanyReportsPage: React.FC = () => {
                     <strong>{formatMoney(response.data.totals.total_earnings_per_km)}/km</strong>
                     <span>Media consolidada do relatorio</span>
                   </article>
+                </div>
+              </section>
+
+              <section className="dashboard-section">
+                <div className="dashboard-card-grid">
+                  <HorizontalMetricChart
+                    title="Operadores"
+                    emptyText="Sem valores por operador."
+                    items={[
+                      {
+                        label: 'Uber',
+                        value: response.data.totals.net_uber,
+                        formattedValue: formatMoney(response.data.totals.net_uber),
+                        helper: 'Liquido semanal',
+                        tone: 'neutral',
+                      },
+                      {
+                        label: 'Bolt',
+                        value: response.data.totals.net_bolt,
+                        formattedValue: formatMoney(response.data.totals.net_bolt),
+                        helper: 'Liquido semanal',
+                        tone: 'warm',
+                      },
+                    ]}
+                  />
+                  <HorizontalMetricChart
+                    title="Top faturacao"
+                    emptyText="Sem motoristas disponiveis."
+                    items={rankedDrivers.slice(0, 6).map((driver) => ({
+                      label: driver.name,
+                      value: driver.total,
+                      formattedValue: formatMoney(driver.total),
+                      helper: driver.license_plate || 'Sem viatura atribuida',
+                      tone: 'neutral',
+                    }))}
+                  />
+                  <HorizontalMetricChart
+                    title="Top quilometros"
+                    emptyText="Sem quilometros atribuidos."
+                    items={[...rankedDrivers]
+                      .sort((left, right) => right.weekly_km - left.weekly_km)
+                      .slice(0, 6)
+                      .map((driver) => ({
+                        label: driver.name,
+                        value: driver.weekly_km,
+                        formattedValue: `${driver.weekly_km.toFixed(1)} km`,
+                        helper: driver.license_plate || 'Sem viatura atribuida',
+                        tone: 'positive',
+                      }))}
+                  />
+                  <HorizontalMetricChart
+                    title="Top eur/km"
+                    emptyText="Sem dados de eficiencia."
+                    items={[...rankedDrivers]
+                      .filter((driver) => driver.earnings_per_km > 0)
+                      .sort((left, right) => right.earnings_per_km - left.earnings_per_km)
+                      .slice(0, 6)
+                      .map((driver) => ({
+                        label: driver.name,
+                        value: driver.earnings_per_km,
+                        formattedValue: `${formatMoney(driver.earnings_per_km)}/km`,
+                        helper: `${driver.weekly_km.toFixed(1)} km`,
+                        tone: 'warm',
+                      }))}
+                  />
                 </div>
               </section>
 

@@ -26,6 +26,7 @@ const DriverInspectionsPage: React.FC = () => {
   const [options, setOptions] = useState<InspectionCreateOptionsResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
+  const [deletingInspectionId, setDeletingInspectionId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [plateQuery, setPlateQuery] = useState('');
   const [driverQuery, setDriverQuery] = useState('');
@@ -144,6 +145,32 @@ const DriverInspectionsPage: React.FC = () => {
       vehicle_id: value,
       driver_id: matchedVehicle?.driver_id ? String(matchedVehicle.driver_id) : '',
     }));
+  }
+
+  async function handleDeleteInspection(inspectionId: number) {
+    if (!token) {
+      return;
+    }
+
+    const confirmed = window.confirm('Eliminar esta inspecao? Esta acao nao pode ser revertida.');
+    if (!confirmed) {
+      return;
+    }
+
+    setDeletingInspectionId(inspectionId);
+    setError(null);
+
+    try {
+      await apiRequest<InspectionMutationResponse>(`/api/v1/mobile/inspections/${inspectionId}`, {
+        method: 'DELETE',
+        token,
+      });
+      await loadPage();
+    } catch (deleteError) {
+      setError(deleteError instanceof Error ? deleteError.message : 'Nao foi possivel eliminar a inspecao.');
+    } finally {
+      setDeletingInspectionId(null);
+    }
   }
 
   if (!isAdmin) {
@@ -324,6 +351,16 @@ const DriverInspectionsPage: React.FC = () => {
                           >
                             Abrir fluxo
                           </IonButton>
+                          {!inspection.locked_at ? (
+                            <IonButton
+                              color="danger"
+                              fill="clear"
+                              onClick={() => void handleDeleteInspection(inspection.id)}
+                              disabled={deletingInspectionId === inspection.id}
+                            >
+                              {deletingInspectionId === inspection.id ? 'A eliminar...' : 'Eliminar'}
+                            </IonButton>
+                          ) : null}
                         </div>
                       </article>
                     ))
