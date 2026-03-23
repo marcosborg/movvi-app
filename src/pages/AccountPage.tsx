@@ -11,7 +11,7 @@ import { brandAssets } from '../lib/publicContent';
 import './PublicPages.css';
 
 const AccountPage: React.FC = () => {
-  const { isAuthenticated, user, driver } = useAuth();
+  const { isAuthenticated, user, driver, logout } = useAuth();
 
   return (
     <IonPage>
@@ -33,6 +33,11 @@ const AccountPage: React.FC = () => {
               <IonButton routerLink={isAuthenticated ? '/dashboard' : '/login'}>
                 {isAuthenticated ? 'Abrir dashboard' : 'Iniciar sessao'}
               </IonButton>
+              {isAuthenticated ? (
+                <IonButton fill="outline" onClick={logout}>
+                  Terminar sessao
+                </IonButton>
+              ) : null}
               {!isAuthenticated ? (
                 <IonButton fill="outline" routerLink="/tabs/home">
                   Continuar na area publica

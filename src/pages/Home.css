@@ -851,6 +851,40 @@
   gap: 12px;
 }
 
+.signature-pad-block {
+  display: grid;
+  gap: 10px;
+}
+
+.signature-pad-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.signature-pad-clear {
+  border: 0;
+  background: transparent;
+  color: #975236;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.signature-pad-surface {
+  border: 1px dashed rgba(184, 129, 103, 0.32);
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.signature-pad-canvas {
+  display: block;
+  width: 100%;
+  touch-action: none;
+}
+
 .text-area-field {
   min-height: 120px;
   resize: vertical;

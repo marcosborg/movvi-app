@@ -12,6 +12,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import DriverPageHeader from '../components/DriverPageHeader';
 import ImageSourceField from '../components/ImageSourceField';
+import SignaturePad from '../components/SignaturePad';
 import { apiRequest } from '../lib/api';
 import {
   accessoryLabels,
@@ -38,6 +39,8 @@ const DriverInspectionDetailPage: React.FC = () => {
   const [extraObservations, setExtraObservations] = useState('');
   const [driverSignatureName, setDriverSignatureName] = useState('');
   const [responsibleSignatureName, setResponsibleSignatureName] = useState('');
+  const [driverSignatureData, setDriverSignatureData] = useState('');
+  const [responsibleSignatureData, setResponsibleSignatureData] = useState('');
   const [damageForm, setDamageForm] = useState({
     location: '',
     part: '',
@@ -76,6 +79,8 @@ const DriverInspectionDetailPage: React.FC = () => {
       setExtraObservations(response.inspection.extra_observations || '');
       setDriverSignatureName(response.signatures.driver || response.inspection.driver.name || '');
       setResponsibleSignatureName(response.signatures.responsible || '');
+      setDriverSignatureData('');
+      setResponsibleSignatureData('');
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : 'Nao foi possivel carregar a inspecao.');
     } finally {
@@ -203,8 +208,14 @@ const DriverInspectionDetailPage: React.FC = () => {
 
     if (step === 11) {
       formData.append('driver_signature_name', driverSignatureName);
+      if (driverSignatureData) {
+        formData.append('driver_signature_data', driverSignatureData);
+      }
       if (isManager && responsibleSignatureName) {
         formData.append('inspector_name', responsibleSignatureName);
+        if (responsibleSignatureData) {
+          formData.append('inspector_signature_data', responsibleSignatureData);
+        }
       }
     }
 
@@ -554,11 +565,20 @@ const DriverInspectionDetailPage: React.FC = () => {
             <>
               <label className="form-label" htmlFor="responsible-name">Nome do responsavel</label>
               <input id="responsible-name" className="text-field" value={responsibleSignatureName} onChange={(event) => setResponsibleSignatureName(event.target.value)} />
+              <SignaturePad
+                label="Assinatura do responsavel"
+                value={responsibleSignatureData}
+                onChange={setResponsibleSignatureData}
+              />
             </>
           ) : null}
           <label className="form-label" htmlFor="driver-name">Nome do condutor</label>
           <input id="driver-name" className="text-field" value={driverSignatureName} onChange={(event) => setDriverSignatureName(event.target.value)} />
-          <p className="dashboard-empty">Nesta primeira versao a assinatura fica textual, mas o backend ja suporta assinatura desenhada no futuro.</p>
+          <SignaturePad
+            label="Assinatura do condutor"
+            value={driverSignatureData}
+            onChange={setDriverSignatureData}
+          />
         </div>
       );
     }

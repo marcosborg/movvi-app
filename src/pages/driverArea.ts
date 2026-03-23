@@ -172,6 +172,34 @@ export type DriverDocumentsResponse = {
   }>;
 };
 
+export type DriverWeeklyEvaluationResponse = {
+  driver: DriverDashboardResponse['driver_hub']['driver'];
+  week: DriverDashboardResponse['week'];
+  vehicles: Array<{
+    id: number;
+    license_plate: string;
+    model: string | null;
+    label: string;
+  }>;
+  options: {
+    fuel_levels: Record<string, string>;
+    tire_statuses: Record<string, string>;
+    oil_levels: Record<string, string>;
+  };
+  evaluation: {
+    id: number;
+    vehicle_id: number;
+    final_mileage: number | null;
+    fuel_level: string | null;
+    front_tire_status: string | null;
+    rear_tire_status: string | null;
+    oil_level: string | null;
+    has_vehicle_issue: boolean;
+    issue_notes: string | null;
+    submitted_at: string | null;
+  } | null;
+};
+
 export const euro = new Intl.NumberFormat('pt-PT', {
   style: 'currency',
   currency: 'EUR',

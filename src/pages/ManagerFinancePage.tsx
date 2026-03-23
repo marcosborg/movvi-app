@@ -21,6 +21,19 @@ import './Home.css';
 
 type FinanceView = 'profit-loss' | 'movements' | 'expenses';
 type ProfitLossModalKind = 'receivables' | 'payables' | null;
+type FinanceConnectionStatus = {
+  company: {
+    id: number;
+    name: string;
+  };
+  connection: {
+    enabled: boolean;
+    configured: boolean;
+    connected: boolean;
+    disabled_message: string | null;
+    last_error: string | null;
+  };
+};
 
 const subTabs: Array<{ key: FinanceView; label: string }> = [
   { key: 'profit-loss', label: 'DRE' },
@@ -38,6 +51,7 @@ const ManagerFinancePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [profitLossModal, setProfitLossModal] = useState<ProfitLossModalKind>(null);
+  const [connectionStatus, setConnectionStatus] = useState<FinanceConnectionStatus | null>(null);
 
   useEffect(() => {
     void loadData();
@@ -54,8 +68,27 @@ const ManagerFinancePage: React.FC = () => {
 
     setIsLoading(true);
     setError(null);
+    setProfitLoss(null);
+    setMovements(null);
+    setExpenses(null);
 
     try {
+      const status = await apiRequest<FinanceConnectionStatus>('/api/v1/conta-azul/status', {
+        method: 'GET',
+        token,
+      });
+      setConnectionStatus(status);
+
+      if (!status.connection.enabled) {
+        setError(status.connection.disabled_message || 'Integracao financeira desativada neste ambiente.');
+        return;
+      }
+
+      if (!status.connection.connected) {
+        setError(status.connection.last_error || 'A ligacao Conta Azul nao esta ativa para esta empresa.');
+        return;
+      }
+
       if (view === 'profit-loss') {
         const payload = await apiRequest<ProfitLossResponse>(`/api/v1/conta-azul/manager/profit-loss?${query}`, {
           method: 'GET',
@@ -88,6 +121,7 @@ const ManagerFinancePage: React.FC = () => {
   }
 
   const activeCompany =
+    connectionStatus?.company.name ||
     (view === 'profit-loss' ? profitLoss?.company.name : null) ||
     (view === 'movements' ? movements?.company.name : null) ||
     (view === 'expenses' ? expenses?.company.name : null) ||

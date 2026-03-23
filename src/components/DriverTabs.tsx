@@ -27,6 +27,7 @@ import DriverInspectionsPage from '../pages/DriverInspectionsPage';
 import DriverOverviewPage from '../pages/DriverOverviewPage';
 import DriverReceiptsPage from '../pages/DriverReceiptsPage';
 import DriverStatementPage from '../pages/DriverStatementPage';
+import DriverWeeklyEvaluationPage from '../pages/DriverWeeklyEvaluationPage';
 import ManagerCompanyReportsPage from '../pages/ManagerCompanyReportsPage';
 import ManagerFinancePage from '../pages/ManagerFinancePage';
 
@@ -78,6 +79,9 @@ const DriverTabs: React.FC = () => {
         </Route>
         <Route exact path="/dashboard/documents">
           <DriverDocumentsPage />
+        </Route>
+        <Route exact path="/dashboard/weekly-evaluation">
+          <DriverWeeklyEvaluationPage />
         </Route>
         <Route exact path="/dashboard">
           <Redirect to={
@@ -133,6 +137,12 @@ const DriverTabs: React.FC = () => {
           <IonTabButton tab="transfers" href="/dashboard/transfers">
             <IonIcon icon={swapHorizontalOutline} />
             <IonLabel>Passagens</IonLabel>
+          </IonTabButton>
+        ) : null}
+        {hasDriverProfile ? (
+          <IonTabButton tab="weekly-evaluation" href="/dashboard/weekly-evaluation">
+            <IonIcon icon={clipboardOutline} />
+            <IonLabel>Semanal</IonLabel>
           </IonTabButton>
         ) : null}
         {hasDriverProfile ? (
