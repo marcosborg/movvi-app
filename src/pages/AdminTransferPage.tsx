@@ -50,8 +50,9 @@ const AdminTransferPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [plateQuery, setPlateQuery] = useState('');
-  const [driverQuery, setDriverQuery] = useState('');
+  const [success, setSuccess] = useState<string | null>(null);
+  const [vehicleSearch, setVehicleSearch] = useState('');
+  const [targetDriverSearch, setTargetDriverSearch] = useState('');
   const [mode, setMode] = useState<TransferMode>('passagem');
   const [showInspectionChoice, setShowInspectionChoice] = useState(false);
   const [form, setForm] = useState({
@@ -70,6 +71,7 @@ const AdminTransferPage: React.FC = () => {
 
     setIsLoading(true);
     setError(null);
+    setSuccess(null);
 
     try {
       const response = await apiRequest<InspectionCreateOptionsResponse>('/api/v1/mobile/inspections/create-options', {
@@ -79,9 +81,11 @@ const AdminTransferPage: React.FC = () => {
 
       setOptions(response);
       setForm({
-        vehicle_id: response.vehicles[0]?.id ? String(response.vehicles[0].id) : '',
+        vehicle_id: '',
         driver_id: '',
       });
+      setVehicleSearch('');
+      setTargetDriverSearch('');
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : 'Nao foi possivel carregar os dados de passagem.');
     } finally {
@@ -95,26 +99,60 @@ const AdminTransferPage: React.FC = () => {
   }
 
   const filteredVehicles = useMemo(() => {
-    const plateNeedle = plateQuery.trim().toLowerCase();
-    const driverNeedle = driverQuery.trim().toLowerCase();
+    const needle = vehicleSearch.trim().toLowerCase();
 
     return (options?.vehicles ?? []).filter((vehicle) => {
-      const matchesPlate = plateNeedle === '' || vehicle.license_plate.toLowerCase().includes(plateNeedle);
-      const matchesDriver = driverNeedle === '' || (vehicle.driver_name ?? '').toLowerCase().includes(driverNeedle);
-      return matchesPlate && matchesDriver;
-    });
-  }, [options?.vehicles, plateQuery, driverQuery]);
+      if (needle === '') {
+        return true;
+      }
 
-  const filteredDrivers = useMemo(() => {
-    const driverNeedle = driverQuery.trim().toLowerCase();
-    return (options?.drivers ?? []).filter((driver) => driverNeedle === '' || driver.name.toLowerCase().includes(driverNeedle));
-  }, [options?.drivers, driverQuery]);
+      return [
+        vehicle.license_plate,
+        vehicle.driver_name ?? '',
+      ].some((value) => value.toLowerCase().includes(needle));
+    });
+  }, [options?.vehicles, vehicleSearch]);
 
   const selectedVehicle = options?.vehicles.find((vehicle) => String(vehicle.id) === form.vehicle_id) || null;
   const selectedDriver = options?.drivers.find((driver) => String(driver.id) === form.driver_id) || null;
+  const filteredDrivers = useMemo(() => {
+    const needle = targetDriverSearch.trim().toLowerCase();
+
+    return (options?.drivers ?? []).filter((driver) => {
+      if (mode === 'passagem' && String(driver.id) === String(selectedVehicle?.driver_id ?? '')) {
+        return false;
+      }
+
+      return needle === '' || driver.name.toLowerCase().includes(needle);
+    });
+  }, [options?.drivers, targetDriverSearch, mode, selectedVehicle?.driver_id]);
+
+  const vehicleSuggestions = filteredVehicles.slice(0, 8);
+  const driverSuggestions = filteredDrivers.slice(0, 8);
+
   const requiresTargetDriver = mode !== 'recolha';
   const sourceDriverName = selectedVehicle?.driver_name || 'Sem motorista atribuido';
   const primaryActionLabel = mode === 'recolha' ? 'Iniciar recolha' : mode === 'passagem' ? 'Iniciar passagem' : 'Iniciar entrega';
+
+  function buildVehicleLabel(vehicle: InspectionCreateOptionsResponse['vehicles'][number]) {
+    return `${vehicle.license_plate}${vehicle.driver_name ? ` · atual: ${vehicle.driver_name}` : ' · sem motorista'}`;
+  }
+
+  function selectVehicle(vehicleId: string) {
+    const vehicle = options?.vehicles.find((item) => String(item.id) === vehicleId);
+    setForm((current) => ({ ...current, vehicle_id: vehicleId }));
+    setVehicleSearch(vehicle ? buildVehicleLabel(vehicle) : '');
+    if (mode === 'passagem' && String(vehicle?.driver_id ?? '') === form.driver_id) {
+      setForm((current) => ({ ...current, vehicle_id: vehicleId, driver_id: '' }));
+      setTargetDriverSearch('');
+    }
+  }
+
+  function selectDriver(driverId: string) {
+    const driver = options?.drivers.find((item) => String(item.id) === driverId);
+    setForm((current) => ({ ...current, driver_id: driverId }));
+    setTargetDriverSearch(driver?.name || '');
+  }
 
   async function executeTransfer(withInspection: boolean) {
     if (!token || !form.vehicle_id || (requiresTargetDriver && !form.driver_id)) {
@@ -123,10 +161,11 @@ const AdminTransferPage: React.FC = () => {
 
     setIsCreating(true);
     setError(null);
+    setSuccess(null);
 
     try {
       if (!withInspection) {
-        await apiRequest<InspectionMutationResponse>('/api/v1/mobile/inspections/transfers', {
+        const response = await apiRequest<InspectionMutationResponse>('/api/v1/mobile/inspections/transfers', {
           method: 'POST',
           token,
           body: JSON.stringify({
@@ -138,6 +177,7 @@ const AdminTransferPage: React.FC = () => {
         });
 
         setShowInspectionChoice(false);
+        setSuccess(response.message || 'Operacao registada com sucesso.');
         await loadOptions();
         return;
       }
@@ -170,6 +210,7 @@ const AdminTransferPage: React.FC = () => {
       return;
     }
 
+    setSuccess(null);
     setShowInspectionChoice(true);
   }
 
@@ -205,6 +246,7 @@ const AdminTransferPage: React.FC = () => {
           ) : null}
 
           {error ? <p className="status-error">{error}</p> : null}
+          {success ? <p className="status-success">{success}</p> : null}
 
           {!isLoading ? (
             <section className="dashboard-section">
@@ -238,44 +280,31 @@ const AdminTransferPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="search-grid transfer-search-grid">
-                  <div>
-                    <label className="form-label form-label-compact" htmlFor="transfer-search-plate">Pesquisar matricula</label>
-                    <input
-                      id="transfer-search-plate"
-                      className="text-field"
-                      value={plateQuery}
-                      onChange={(event) => setPlateQuery(event.target.value)}
-                      placeholder="AA-00-AA"
-                    />
-                  </div>
-                  <div>
-                    <label className="form-label form-label-compact" htmlFor="transfer-search-driver">Pesquisar motorista</label>
-                    <input
-                      id="transfer-search-driver"
-                      className="text-field"
-                      value={driverQuery}
-                      onChange={(event) => setDriverQuery(event.target.value)}
-                      placeholder="Nome atual ou destino"
-                    />
-                  </div>
-                </div>
-
                 <div className="form-stack">
-                  <label className="form-label form-label-compact" htmlFor="transfer-vehicle">Viatura</label>
-                  <select
-                    id="transfer-vehicle"
+                  <label className="form-label form-label-compact" htmlFor="transfer-vehicle-search">Viatura</label>
+                  <input
+                    id="transfer-vehicle-search"
                     className="text-field"
-                    value={form.vehicle_id}
-                    onChange={(event) => setForm((current) => ({ ...current, vehicle_id: event.target.value }))}
-                  >
-                    <option value="">Selecionar</option>
-                    {filteredVehicles.map((vehicle) => (
-                      <option key={vehicle.id} value={vehicle.id}>
-                        {vehicle.license_plate}{vehicle.driver_name ? ` - atual: ${vehicle.driver_name}` : ' - sem motorista'}
-                      </option>
-                    ))}
-                  </select>
+                    value={vehicleSearch}
+                    onChange={(event) => {
+                      setVehicleSearch(event.target.value);
+                      setForm((current) => ({ ...current, vehicle_id: '' }));
+                    }}
+                    placeholder="Escreve a matrícula ou o nome do motorista atual"
+                  />
+                  <div className="transfer-picker-list">
+                    {vehicleSuggestions.length > 0 ? vehicleSuggestions.map((vehicle) => (
+                      <button
+                        key={vehicle.id}
+                        type="button"
+                        className={`transfer-picker-option ${String(vehicle.id) === form.vehicle_id ? 'transfer-picker-option-active' : ''}`}
+                        onClick={() => selectVehicle(String(vehicle.id))}
+                      >
+                        <strong>{vehicle.license_plate}</strong>
+                        <span>{vehicle.driver_name ? `Atual: ${vehicle.driver_name}` : 'Sem motorista'}</span>
+                      </button>
+                    )) : <p className="dashboard-empty">Sem viaturas a corresponder à pesquisa.</p>}
+                  </div>
 
                   {selectedVehicle ? (
                     <div className="submission-meta">
@@ -286,22 +315,32 @@ const AdminTransferPage: React.FC = () => {
 
                   {requiresTargetDriver ? (
                     <>
-                      <label className="form-label form-label-compact" htmlFor="transfer-driver">
+                      <label className="form-label form-label-compact" htmlFor="transfer-driver-search">
                         {mode === 'passagem' ? 'Motorista destino' : 'Motorista da entrega'}
                       </label>
-                      <select
-                        id="transfer-driver"
+                      <input
+                        id="transfer-driver-search"
                         className="text-field"
-                        value={form.driver_id}
-                        onChange={(event) => setForm((current) => ({ ...current, driver_id: event.target.value }))}
-                      >
-                        <option value="">Selecionar</option>
-                        {filteredDrivers
-                          .filter((driver) => mode !== 'passagem' || String(driver.id) !== String(selectedVehicle?.driver_id ?? ''))
-                          .map((driver) => (
-                            <option key={driver.id} value={driver.id}>{driver.name}</option>
-                          ))}
-                      </select>
+                        value={targetDriverSearch}
+                        onChange={(event) => {
+                          setTargetDriverSearch(event.target.value);
+                          setForm((current) => ({ ...current, driver_id: '' }));
+                        }}
+                        placeholder="Escreve o nome do motorista destino"
+                      />
+                      <div className="transfer-picker-list">
+                        {driverSuggestions.length > 0 ? driverSuggestions.map((driver) => (
+                          <button
+                            key={driver.id}
+                            type="button"
+                            className={`transfer-picker-option ${String(driver.id) === form.driver_id ? 'transfer-picker-option-active' : ''}`}
+                            onClick={() => selectDriver(String(driver.id))}
+                          >
+                            <strong>{driver.name}</strong>
+                            <span>Selecionar motorista</span>
+                          </button>
+                        )) : <p className="dashboard-empty">Sem motoristas a corresponder à pesquisa.</p>}
+                      </div>
                     </>
                   ) : (
                     <div className="submission-meta">
@@ -333,7 +372,7 @@ const AdminTransferPage: React.FC = () => {
           ) : null}
         </div>
 
-        <IonModal isOpen={showInspectionChoice} onDidDismiss={() => setShowInspectionChoice(false)} initialBreakpoint={0.52} breakpoints={[0, 0.52, 0.78]}>
+        <IonModal isOpen={showInspectionChoice} onDidDismiss={() => setShowInspectionChoice(false)} initialBreakpoint={0.82} breakpoints={[0, 0.82, 1]}>
           <div className="finance-modal-shell">
             <div className="finance-modal-header">
               <div>

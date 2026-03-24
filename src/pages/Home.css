@@ -678,6 +678,42 @@
   margin-bottom: 2px;
 }
 
+.transfer-picker-list {
+  display: grid;
+  gap: 8px;
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.transfer-picker-option {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(184, 129, 103, 0.18);
+  background: #fff;
+  color: #2e1d18;
+  text-align: left;
+}
+
+.transfer-picker-option strong,
+.transfer-picker-option span {
+  color: inherit;
+}
+
+.transfer-picker-option span {
+  font-size: 0.92rem;
+  opacity: 0.82;
+}
+
+.transfer-picker-option-active {
+  border-color: #c55d3d;
+  background: #f5e6dc;
+  color: #8d3e25;
+}
+
 .driver-choice-card {
   display: flex;
   justify-content: space-between;
