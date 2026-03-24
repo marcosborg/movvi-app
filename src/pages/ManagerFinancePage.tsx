@@ -25,7 +25,6 @@ import type {
   FinancialMovementItem,
   MovementsResponse,
   ProfitLossResponse,
-  VehicleRevenueExportResponse,
   VehicleRevenueExportsStatusResponse,
   WeekSummary,
 } from './managerFinanceArea';
@@ -35,11 +34,8 @@ type FinanceView = 'profit-loss' | 'movements' | 'expenses';
 type ProfitLossModalKind = 'receivables' | 'payables' | null;
 type ExportModalState = {
   isOpen: boolean;
-  isSubmitting: boolean;
   isLoadingHistory: boolean;
   error: string | null;
-  success: string | null;
-  result: VehicleRevenueExportResponse | null;
   status: VehicleRevenueExportsStatusResponse | null;
 };
 type FinanceConnectionStatus = {
@@ -78,15 +74,10 @@ const ManagerFinancePage: React.FC = () => {
   const [selectedExportWeekId, setSelectedExportWeekId] = useState<number | null>(null);
   const [exportModal, setExportModal] = useState<ExportModalState>({
     isOpen: false,
-    isSubmitting: false,
     isLoadingHistory: false,
     error: null,
-    success: null,
-    result: null,
     status: null,
   });
-
-  const isAdmin = (user?.roles ?? []).includes('Admin');
 
   useEffect(() => {
     void loadData();
@@ -234,11 +225,8 @@ const ManagerFinancePage: React.FC = () => {
   function openExportModal() {
     setExportModal({
       isOpen: true,
-      isSubmitting: false,
       isLoadingHistory: false,
       error: null,
-      success: null,
-      result: null,
       status: null,
     });
   }
@@ -246,52 +234,10 @@ const ManagerFinancePage: React.FC = () => {
   function closeExportModal() {
     setExportModal({
       isOpen: false,
-      isSubmitting: false,
       isLoadingHistory: false,
       error: null,
-      success: null,
-      result: null,
       status: null,
     });
-  }
-
-  async function handleVehicleRevenueExport() {
-    if (!token || !selectedExportWeekId) {
-      return;
-    }
-
-    setExportModal((current) => ({
-      ...current,
-      isSubmitting: true,
-      error: null,
-      success: null,
-      result: null,
-    }));
-
-    try {
-      const response = await apiRequest<VehicleRevenueExportResponse>('/api/v1/conta-azul/manager/export-vehicle-revenues', {
-        method: 'POST',
-        token,
-        body: JSON.stringify({
-          tvde_week_id: selectedExportWeekId,
-        }),
-      });
-
-      setExportModal((current) => ({
-        ...current,
-        isSubmitting: false,
-        success: response.message,
-        result: response,
-      }));
-
-      await loadVehicleRevenueExportStatus(selectedExportWeekId);
-    } catch (submitError) {
-      setExportModal((current) => ({
-        ...current,
-        isSubmitting: false,
-        error: submitError instanceof Error ? submitError.message : 'Nao foi possivel lancar os recebimentos.',
-      }));
-    }
   }
 
   const activeCompany =
@@ -341,13 +287,11 @@ const ManagerFinancePage: React.FC = () => {
                   <span key={role} className="role-chip">{role}</span>
                 ))}
               </div>
-              {isAdmin ? (
-                <div className="dashboard-actions">
-                  <IonButton onClick={openExportModal}>
-                    Lancar recebimentos
-                  </IonButton>
-                </div>
-              ) : null}
+              <div className="dashboard-actions">
+                <IonButton onClick={openExportModal}>
+                  Recebimentos por matricula
+                </IonButton>
+              </div>
             </div>
           </section>
 
@@ -777,9 +721,9 @@ const ManagerFinancePage: React.FC = () => {
             <div className="finance-modal-header">
               <div>
                 <p className="hero-eyebrow">Conta Azul</p>
-                <h2>Lancar recebimentos</h2>
+                <h2>Recebimentos por matricula</h2>
                 <p className="finance-modal-copy">
-                  Exporta os valores positivos da rentabilidade por matricula para a Conta Azul como recebimentos.
+                  Consulta o que ja foi registado no Conta Azul por matricula e por semana.
                 </p>
               </div>
               <IonButton fill="clear" onClick={closeExportModal}>
@@ -815,19 +759,9 @@ const ManagerFinancePage: React.FC = () => {
                   <span>{selectedExportWeek.start_date} a {selectedExportWeek.end_date}</span>
                 </div>
               ) : null}
-
-              <div className="dashboard-actions">
-                <IonButton
-                  onClick={() => void handleVehicleRevenueExport()}
-                  disabled={isLoadingWeeks || exportModal.isSubmitting || !selectedExportWeekId}
-                >
-                  {exportModal.isSubmitting ? 'A lancar...' : 'Lancar na Conta Azul'}
-                </IonButton>
-              </div>
             </article>
 
             {exportModal.error ? <p className="status-error">{exportModal.error}</p> : null}
-            {exportModal.success ? <p className="status-success">{exportModal.success}</p> : null}
 
             {exportModal.isLoadingHistory ? (
               <div className="loading-state">
@@ -878,48 +812,6 @@ const ManagerFinancePage: React.FC = () => {
                     )) : <p className="dashboard-empty">Ainda nao existem lancamentos registados para esta semana.</p>}
                   </div>
                 </article>
-              </>
-            ) : null}
-
-            {exportModal.result ? (
-              <>
-                <div className="dashboard-metric-grid finance-modal-summary-grid">
-                  <article className="dashboard-card dashboard-metric-card">
-                    <p className="metric-label">Exportadas</p>
-                    <strong>{exportModal.result.data.exported}</strong>
-                    <span>Viaturas lancadas com sucesso</span>
-                  </article>
-                  <article className="dashboard-card dashboard-metric-card">
-                    <p className="metric-label">Ignoradas</p>
-                    <strong>{exportModal.result.data.skipped}</strong>
-                    <span>Ja exportadas anteriormente</span>
-                  </article>
-                </div>
-
-                <div className="receipt-list finance-modal-list">
-                  {exportModal.result.data.items.length ? exportModal.result.data.items.map((item) => (
-                    <article key={`${item.vehicle_item_id}-${item.status}`} className="receipt-item">
-                      <div>
-                        <strong>{item.license_plate}</strong>
-                        <span>{item.message || 'Recebimento preparado para a semana selecionada.'}</span>
-                      </div>
-                      <span className={`status-badge ${
-                        item.status === 'exported'
-                          ? 'status-available'
-                          : item.status === 'skipped'
-                            ? 'status-locked'
-                            : 'status-planned'
-                      }`}
-                      >
-                        {item.status === 'exported'
-                          ? item.amount ? formatMoney(item.amount) : 'Exportada'
-                          : item.status === 'skipped'
-                            ? 'Ignorada'
-                            : 'Falhou'}
-                      </span>
-                    </article>
-                  )) : <p className="dashboard-empty">Sem viaturas positivas para exportar nesta semana.</p>}
-                </div>
               </>
             ) : null}
 
