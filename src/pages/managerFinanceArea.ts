@@ -3,6 +3,15 @@ export type CompanySummary = {
   name: string;
 };
 
+export type WeekSummary = {
+  id: number;
+  number: number | null;
+  start_date: string;
+  end_date: string;
+  date_key: string;
+  label: string;
+};
+
 export type FinanceEnvelope<T> = {
   company: CompanySummary;
   data: T;
@@ -137,4 +146,71 @@ export type CompanyReportResponse = {
       total_car_hire: number;
     };
   };
+};
+
+export type VehicleRevenueExportResponse = {
+  message: string;
+  company: CompanySummary;
+  week: {
+    id: number;
+    number: number | null;
+    start_date: string;
+    end_date: string;
+  };
+  data: {
+    exported: number;
+    skipped: number;
+    items: Array<{
+      vehicle_item_id: number;
+      license_plate: string;
+      status: 'exported' | 'skipped' | 'error';
+      amount?: number;
+      message?: string;
+    }>;
+  };
+};
+
+export type VehicleRevenueExportsStatusResponse = {
+  company: CompanySummary;
+  selected_week: {
+    id: number;
+    number: number | null;
+    start_date: string;
+    end_date: string;
+    summary: {
+      total: number;
+      exported: number;
+      errors: number;
+      amount: number;
+      last_exported_at: string | null;
+    };
+    items: Array<{
+      id: number;
+      vehicle_item_id: number;
+      license_plate: string;
+      amount: number;
+      description: string | null;
+      status: 'exported' | 'error';
+      error_message: string | null;
+      conta_azul_event_id: string | null;
+      conta_azul_installment_id: string | null;
+      conta_azul_acquittance_id: string | null;
+      exported_at: string | null;
+    }>;
+  } | null;
+  recent_weeks: Array<{
+    week: {
+      id: number;
+      number: number | null;
+      start_date: string | null;
+      end_date: string | null;
+    };
+    summary: {
+      total: number;
+      exported: number;
+      errors: number;
+      amount: number;
+      last_exported_at: string | null;
+    };
+  }>;
 };

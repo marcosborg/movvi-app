@@ -1,10 +1,14 @@
 import {
   IonButton,
   IonContent,
+  IonItem,
+  IonLabel,
   IonModal,
   IonPage,
   IonRefresher,
   IonRefresherContent,
+  IonSelect,
+  IonSelectOption,
   IonSpinner,
 } from '@ionic/react';
 import type { RefresherEventDetail } from '@ionic/core';
@@ -16,11 +20,28 @@ import { useFinancePeriod } from '../components/FinancePeriodContext';
 import { HorizontalMetricChart } from '../components/InsightCharts';
 import { apiRequest } from '../lib/api';
 import { formatMoney } from './driverArea';
-import type { ExpensesResponse, FinancialMovementItem, MovementsResponse, ProfitLossResponse } from './managerFinanceArea';
+import type {
+  ExpensesResponse,
+  FinancialMovementItem,
+  MovementsResponse,
+  ProfitLossResponse,
+  VehicleRevenueExportResponse,
+  VehicleRevenueExportsStatusResponse,
+  WeekSummary,
+} from './managerFinanceArea';
 import './Home.css';
 
 type FinanceView = 'profit-loss' | 'movements' | 'expenses';
 type ProfitLossModalKind = 'receivables' | 'payables' | null;
+type ExportModalState = {
+  isOpen: boolean;
+  isSubmitting: boolean;
+  isLoadingHistory: boolean;
+  error: string | null;
+  success: string | null;
+  result: VehicleRevenueExportResponse | null;
+  status: VehicleRevenueExportsStatusResponse | null;
+};
 type FinanceConnectionStatus = {
   company: {
     id: number;
@@ -52,6 +73,20 @@ const ManagerFinancePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [profitLossModal, setProfitLossModal] = useState<ProfitLossModalKind>(null);
   const [connectionStatus, setConnectionStatus] = useState<FinanceConnectionStatus | null>(null);
+  const [availableWeeks, setAvailableWeeks] = useState<WeekSummary[]>([]);
+  const [isLoadingWeeks, setIsLoadingWeeks] = useState(false);
+  const [selectedExportWeekId, setSelectedExportWeekId] = useState<number | null>(null);
+  const [exportModal, setExportModal] = useState<ExportModalState>({
+    isOpen: false,
+    isSubmitting: false,
+    isLoadingHistory: false,
+    error: null,
+    success: null,
+    result: null,
+    status: null,
+  });
+
+  const isAdmin = (user?.roles ?? []).includes('Admin');
 
   useEffect(() => {
     void loadData();
@@ -60,6 +95,22 @@ const ManagerFinancePage: React.FC = () => {
   useEffect(() => {
     setProfitLossModal(null);
   }, [view, query]);
+
+  useEffect(() => {
+    if (!exportModal.isOpen || availableWeeks.length > 0) {
+      return;
+    }
+
+    void loadWeeks();
+  }, [exportModal.isOpen]);
+
+  useEffect(() => {
+    if (!exportModal.isOpen || !selectedExportWeekId) {
+      return;
+    }
+
+    void loadVehicleRevenueExportStatus(selectedExportWeekId);
+  }, [exportModal.isOpen, selectedExportWeekId]);
 
   async function loadData() {
     if (!token) {
@@ -115,9 +166,132 @@ const ManagerFinancePage: React.FC = () => {
     }
   }
 
+  async function loadWeeks() {
+    if (!token) {
+      return;
+    }
+
+    setIsLoadingWeeks(true);
+
+    try {
+      const response = await apiRequest<{ weeks: WeekSummary[] }>('/api/v1/weeks', {
+        method: 'GET',
+        token,
+      });
+
+      setAvailableWeeks(response.weeks);
+      setSelectedExportWeekId((current) => current ?? response.weeks[0]?.id ?? null);
+    } catch (loadWeeksError) {
+      setAvailableWeeks([]);
+      setExportModal((current) => ({
+        ...current,
+        error: loadWeeksError instanceof Error ? loadWeeksError.message : 'Nao foi possivel carregar as semanas.',
+      }));
+    } finally {
+      setIsLoadingWeeks(false);
+    }
+  }
+
   async function handleRefresh(event: CustomEvent<RefresherEventDetail>) {
     await loadData();
     event.detail.complete();
+  }
+
+  async function loadVehicleRevenueExportStatus(weekId: number) {
+    if (!token) {
+      return;
+    }
+
+    setExportModal((current) => ({
+      ...current,
+      isLoadingHistory: true,
+      error: null,
+    }));
+
+    try {
+      const response = await apiRequest<VehicleRevenueExportsStatusResponse>(
+        `/api/v1/conta-azul/manager/vehicle-revenue-exports?tvde_week_id=${weekId}`,
+        {
+          method: 'GET',
+          token,
+        },
+      );
+
+      setExportModal((current) => ({
+        ...current,
+        isLoadingHistory: false,
+        status: response,
+      }));
+    } catch (statusError) {
+      setExportModal((current) => ({
+        ...current,
+        isLoadingHistory: false,
+        error: statusError instanceof Error ? statusError.message : 'Nao foi possivel carregar o estado dos lancamentos.',
+      }));
+    }
+  }
+
+  function openExportModal() {
+    setExportModal({
+      isOpen: true,
+      isSubmitting: false,
+      isLoadingHistory: false,
+      error: null,
+      success: null,
+      result: null,
+      status: null,
+    });
+  }
+
+  function closeExportModal() {
+    setExportModal({
+      isOpen: false,
+      isSubmitting: false,
+      isLoadingHistory: false,
+      error: null,
+      success: null,
+      result: null,
+      status: null,
+    });
+  }
+
+  async function handleVehicleRevenueExport() {
+    if (!token || !selectedExportWeekId) {
+      return;
+    }
+
+    setExportModal((current) => ({
+      ...current,
+      isSubmitting: true,
+      error: null,
+      success: null,
+      result: null,
+    }));
+
+    try {
+      const response = await apiRequest<VehicleRevenueExportResponse>('/api/v1/conta-azul/manager/export-vehicle-revenues', {
+        method: 'POST',
+        token,
+        body: JSON.stringify({
+          tvde_week_id: selectedExportWeekId,
+        }),
+      });
+
+      setExportModal((current) => ({
+        ...current,
+        isSubmitting: false,
+        success: response.message,
+        result: response,
+      }));
+
+      await loadVehicleRevenueExportStatus(selectedExportWeekId);
+    } catch (submitError) {
+      setExportModal((current) => ({
+        ...current,
+        isSubmitting: false,
+        error: submitError instanceof Error ? submitError.message : 'Nao foi possivel lancar os recebimentos.',
+      }));
+    }
   }
 
   const activeCompany =
@@ -141,6 +315,8 @@ const ManagerFinancePage: React.FC = () => {
   const modalTotal = profitLossModal === 'receivables'
     ? profitLoss?.data.summary.revenue ?? 0
     : profitLoss?.data.summary.expenses ?? 0;
+  const selectedExportWeek = availableWeeks.find((week) => week.id === selectedExportWeekId) ?? null;
+  const exportStatus = exportModal.status?.selected_week;
 
   return (
     <IonPage>
@@ -165,6 +341,13 @@ const ManagerFinancePage: React.FC = () => {
                   <span key={role} className="role-chip">{role}</span>
                 ))}
               </div>
+              {isAdmin ? (
+                <div className="dashboard-actions">
+                  <IonButton onClick={openExportModal}>
+                    Lancar recebimentos
+                  </IonButton>
+                </div>
+              ) : null}
             </div>
           </section>
 
@@ -581,6 +764,192 @@ const ManagerFinancePage: React.FC = () => {
                 </article>
               )) : <p className="dashboard-empty">Sem movimentos disponiveis para este periodo.</p>}
             </div>
+          </div>
+        </IonModal>
+
+        <IonModal
+          isOpen={exportModal.isOpen}
+          onDidDismiss={closeExportModal}
+          initialBreakpoint={0.82}
+          breakpoints={[0, 0.82, 1]}
+        >
+          <div className="finance-modal-shell">
+            <div className="finance-modal-header">
+              <div>
+                <p className="hero-eyebrow">Conta Azul</p>
+                <h2>Lancar recebimentos</h2>
+                <p className="finance-modal-copy">
+                  Exporta os valores positivos da rentabilidade por matricula para a Conta Azul como recebimentos.
+                </p>
+              </div>
+              <IonButton fill="clear" onClick={closeExportModal}>
+                Fechar
+              </IonButton>
+            </div>
+
+            <article className="dashboard-card finance-export-card">
+              <div className="card-head">
+                <h3>Semana a exportar</h3>
+              </div>
+              <p className="finance-modal-copy">Escolhe a semana que queres lancar no sistema financeiro.</p>
+
+              <IonItem lines="none" className="driver-week-picker finance-export-picker">
+                <IonLabel>Semana</IonLabel>
+                <IonSelect
+                  interface="action-sheet"
+                  value={selectedExportWeekId ?? undefined}
+                  onIonChange={(event) => setSelectedExportWeekId(Number(event.detail.value))}
+                  disabled={isLoadingWeeks || availableWeeks.length === 0}
+                >
+                  {availableWeeks.map((week) => (
+                    <IonSelectOption key={week.id} value={week.id}>
+                      {week.label}
+                    </IonSelectOption>
+                  ))}
+                </IonSelect>
+              </IonItem>
+
+              {selectedExportWeek ? (
+                <div className="submission-meta finance-export-meta">
+                  <span>Semana {selectedExportWeek.number ?? '-'}</span>
+                  <span>{selectedExportWeek.start_date} a {selectedExportWeek.end_date}</span>
+                </div>
+              ) : null}
+
+              <div className="dashboard-actions">
+                <IonButton
+                  onClick={() => void handleVehicleRevenueExport()}
+                  disabled={isLoadingWeeks || exportModal.isSubmitting || !selectedExportWeekId}
+                >
+                  {exportModal.isSubmitting ? 'A lancar...' : 'Lancar na Conta Azul'}
+                </IonButton>
+              </div>
+            </article>
+
+            {exportModal.error ? <p className="status-error">{exportModal.error}</p> : null}
+            {exportModal.success ? <p className="status-success">{exportModal.success}</p> : null}
+
+            {exportModal.isLoadingHistory ? (
+              <div className="loading-state">
+                <IonSpinner name="crescent" />
+              </div>
+            ) : null}
+
+            {exportStatus ? (
+              <>
+                <div className="dashboard-metric-grid finance-modal-summary-grid">
+                  <article className="dashboard-card dashboard-metric-card">
+                    <p className="metric-label">Ja exportadas</p>
+                    <strong>{exportStatus.summary.exported}</strong>
+                    <span>{exportStatus.summary.total} viaturas com registo nesta semana</span>
+                  </article>
+                  <article className="dashboard-card dashboard-metric-card">
+                    <p className="metric-label">Com erro</p>
+                    <strong>{exportStatus.summary.errors}</strong>
+                    <span>Itens que exigem nova tentativa ou validacao</span>
+                  </article>
+                  <article className="dashboard-card dashboard-metric-card">
+                    <p className="metric-label">Montante</p>
+                    <strong>{formatMoney(exportStatus.summary.amount)}</strong>
+                    <span>{exportStatus.summary.last_exported_at ? `Ultimo envio ${exportStatus.summary.last_exported_at}` : 'Sem data de envio'}</span>
+                  </article>
+                </div>
+
+                <article className="dashboard-card finance-export-history-card">
+                  <div className="card-head">
+                    <h3>Estado da semana</h3>
+                  </div>
+                  <div className="receipt-list">
+                    {exportStatus.items.length ? exportStatus.items.map((item) => (
+                      <article key={`history-${item.id}`} className="receipt-item receipt-item-stacked">
+                        <div className="receipt-item-main">
+                          <strong>{item.license_plate}</strong>
+                          <span>{item.description || 'Receita por matricula exportada para o Conta Azul.'}</span>
+                          <span>{item.exported_at || 'Sem data de envio'}</span>
+                          {item.error_message ? <span>{item.error_message}</span> : null}
+                        </div>
+                        <div className="receipt-meta-col">
+                          <span className={`status-badge ${item.status === 'exported' ? 'status-available' : 'status-planned'}`}>
+                            {item.status === 'exported' ? 'Exportada' : 'Falhou'}
+                          </span>
+                          <span className="status-pill">{formatMoney(item.amount)}</span>
+                        </div>
+                      </article>
+                    )) : <p className="dashboard-empty">Ainda nao existem lancamentos registados para esta semana.</p>}
+                  </div>
+                </article>
+              </>
+            ) : null}
+
+            {exportModal.result ? (
+              <>
+                <div className="dashboard-metric-grid finance-modal-summary-grid">
+                  <article className="dashboard-card dashboard-metric-card">
+                    <p className="metric-label">Exportadas</p>
+                    <strong>{exportModal.result.data.exported}</strong>
+                    <span>Viaturas lancadas com sucesso</span>
+                  </article>
+                  <article className="dashboard-card dashboard-metric-card">
+                    <p className="metric-label">Ignoradas</p>
+                    <strong>{exportModal.result.data.skipped}</strong>
+                    <span>Ja exportadas anteriormente</span>
+                  </article>
+                </div>
+
+                <div className="receipt-list finance-modal-list">
+                  {exportModal.result.data.items.length ? exportModal.result.data.items.map((item) => (
+                    <article key={`${item.vehicle_item_id}-${item.status}`} className="receipt-item">
+                      <div>
+                        <strong>{item.license_plate}</strong>
+                        <span>{item.message || 'Recebimento preparado para a semana selecionada.'}</span>
+                      </div>
+                      <span className={`status-badge ${
+                        item.status === 'exported'
+                          ? 'status-available'
+                          : item.status === 'skipped'
+                            ? 'status-locked'
+                            : 'status-planned'
+                      }`}
+                      >
+                        {item.status === 'exported'
+                          ? item.amount ? formatMoney(item.amount) : 'Exportada'
+                          : item.status === 'skipped'
+                            ? 'Ignorada'
+                            : 'Falhou'}
+                      </span>
+                    </article>
+                  )) : <p className="dashboard-empty">Sem viaturas positivas para exportar nesta semana.</p>}
+                </div>
+              </>
+            ) : null}
+
+            {exportModal.status?.recent_weeks.length ? (
+              <article className="dashboard-card finance-export-history-card">
+                <div className="card-head">
+                  <h3>Historico recente</h3>
+                </div>
+                <div className="receipt-list">
+                  {exportModal.status.recent_weeks.map((item) => (
+                    <div key={`recent-${item.week.id}`} className="receipt-item">
+                      <div>
+                        <strong>Semana {item.week.number ?? item.week.id}</strong>
+                        <span>
+                          {item.week.start_date && item.week.end_date
+                            ? `${item.week.start_date} a ${item.week.end_date}`
+                            : 'Periodo nao identificado'}
+                        </span>
+                      </div>
+                      <div className="receipt-meta-col">
+                        <span className="status-pill">{item.summary.exported}/{item.summary.total} exportadas</span>
+                        <span className={`status-badge ${item.summary.errors > 0 ? 'status-planned' : 'status-available'}`}>
+                          {item.summary.errors > 0 ? `${item.summary.errors} com erro` : 'Sem erros'}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </article>
+            ) : null}
           </div>
         </IonModal>
       </IonContent>

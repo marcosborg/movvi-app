@@ -981,6 +981,22 @@
   padding-bottom: 20px;
 }
 
+.finance-export-card {
+  gap: 16px;
+}
+
+.finance-export-picker {
+  margin-top: 6px;
+}
+
+.finance-export-meta {
+  margin-top: 0;
+}
+
+.finance-export-history-card {
+  gap: 14px;
+}
+
 .status-error {
   margin: 0;
   color: #b42318;
