@@ -16,6 +16,27 @@ import { apiRequest } from '../lib/api';
 import { DriverDashboardResponse, formatMoney } from './driverArea';
 import './Home.css';
 
+function formatDateTime(value?: string | null) {
+  if (!value) {
+    return 'Sem data';
+  }
+
+  const normalized = value.includes('T') ? value : value.replace(' ', 'T');
+  const date = new Date(normalized);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat('pt-PT', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date);
+}
+
 const DriverOverviewPage: React.FC = () => {
   const { token, logout, user } = useAuth();
   const { selectedWeek } = useDriverWeek();
@@ -73,9 +94,6 @@ const DriverOverviewPage: React.FC = () => {
               <h1>{driverHub?.driver?.name || dashboard?.viewer.name || 'Area do motorista'}</h1>
               <p className="hero-copy">
                 {driverHub?.driver?.company?.name || 'Sem empresa associada'}
-              </p>
-              <p className="hero-copy hero-copy-muted">
-                Esta area replica o percurso principal do motorista no backoffice: resumo semanal, extrato, recibos e documentos.
               </p>
             </div>
             <div className="hero-side">
@@ -206,6 +224,51 @@ const DriverOverviewPage: React.FC = () => {
                             </div>
                           ))}
                         </div>
+                      </article>
+
+                      <article className="dashboard-card">
+                        <div className="card-head">
+                          <h3>Abastecimentos</h3>
+                          <span className="status-pill">{driverHub.combustion_transactions.length}</span>
+                        </div>
+                        {driverHub.combustion_transactions.length > 0 ? (
+                          <div className="receipt-list">
+                            {driverHub.combustion_transactions.map((transaction) => (
+                              <div key={transaction.id} className="receipt-item">
+                                <div>
+                                  <strong>{formatMoney(transaction.total)}</strong>
+                                  <span>
+                                    {formatDateTime(transaction.date)} · {transaction.amount.toFixed(2)} {transaction.unit}
+                                    {transaction.card ? ` · ${transaction.card}` : ''}
+                                  </span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="dashboard-empty">Sem abastecimentos para a semana filtrada.</p>
+                        )}
+                      </article>
+
+                      <article className="dashboard-card">
+                        <div className="card-head">
+                          <h3>Passagens Via Verde</h3>
+                          <span className="status-pill">{driverHub.car_track_details.length}</span>
+                        </div>
+                        {driverHub.car_track_details.length > 0 ? (
+                          <div className="receipt-list">
+                            {driverHub.car_track_details.map((item, index) => (
+                              <div key={`${item.date ?? 'track'}-${index}`} className="receipt-item">
+                                <div>
+                                  <strong>{formatMoney(item.value)}</strong>
+                                  <span>{formatDateTime(item.date)}</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="dashboard-empty">Sem passagens Via Verde para a semana filtrada.</p>
+                        )}
                       </article>
                     </div>
                   </section>

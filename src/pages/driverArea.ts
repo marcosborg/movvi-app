@@ -87,6 +87,18 @@ export type DriverDashboardResponse = {
       model: string | null;
     } | null;
     vehicle_profitability: unknown;
+    combustion_transactions: Array<{
+      id: number;
+      card: string | null;
+      amount: number;
+      unit: string;
+      total: number;
+      date: string | null;
+    }>;
+    car_track_details: Array<{
+      date: string | null;
+      value: number;
+    }>;
     recent_receipts: Array<{
       id: number;
       value: number;

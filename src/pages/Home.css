@@ -19,6 +19,9 @@
   --border-radius: 22px;
   --padding-start: 18px;
   --inner-padding-end: 18px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   margin: 0;
   border: 1px solid rgba(184, 129, 103, 0.1);
   box-shadow: 0 18px 42px rgba(69, 39, 24, 0.07);
@@ -176,6 +179,8 @@
 .dashboard-card {
   border-radius: 26px;
   padding: 22px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .dashboard-card h3 {
@@ -369,6 +374,9 @@
   background: #f4ece5;
   color: #6f5145;
   font-size: 0.85rem;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .receipt-link {
@@ -938,6 +946,8 @@
 
 .finance-modal-shell {
   height: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding: 22px 20px 32px;
@@ -989,6 +999,23 @@
   margin-top: 6px;
 }
 
+.finance-export-picker,
+.finance-export-card,
+.finance-export-history-card,
+.finance-modal-summary-grid {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.receipt-item-main,
+.receipt-item-main span,
+.receipt-meta-col,
+.receipt-meta-col span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .finance-export-meta {
   margin-top: 0;
 }
@@ -1014,8 +1041,17 @@
     padding-top: 76px;
   }
 
+  .finance-modal-shell {
+    padding-inline: 14px;
+  }
+
   .finance-period-range {
     grid-template-columns: 1fr;
+  }
+
+  .dashboard-metric-grid,
+  .finance-modal-summary-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .dashboard-section-heading,
