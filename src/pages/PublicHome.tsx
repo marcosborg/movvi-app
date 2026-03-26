@@ -72,7 +72,7 @@ const PublicHome: React.FC = () => {
           </div>
         </section>
 
-        <section className="public-section testimonial-strip">
+          <section className="public-section testimonial-strip">
           <div className="section-heading section-shell">
             <div className="section-heading-copy">
               <p className="section-tag">Confianca</p>

@@ -10,9 +10,9 @@ import {
   IonMenuToggle,
   IonNote,
 } from '@ionic/react';
-import { carSportOutline, compassOutline, logInOutline, newspaperOutline, sparklesOutline } from 'ionicons/icons';
+import { carSportOutline, logInOutline, logoWhatsapp, newspaperOutline, sparklesOutline } from 'ionicons/icons';
 import { useLocation } from 'react-router-dom';
-import { brandAssets } from '../lib/publicContent';
+import { brandAssets, supportContacts } from '../lib/publicContent';
 
 const menuItems = [
   { title: 'Home', url: '/tabs/home', icon: sparklesOutline },
@@ -58,13 +58,24 @@ const PublicMenu: React.FC = () => {
         </IonList>
 
         <IonList inset className="menu-section-list menu-shortcuts">
-          <IonListHeader>Atalhos</IonListHeader>
-          <IonMenuToggle autoHide={true}>
-            <IonItem routerLink="/login" detail={false} className="menu-link-item">
-              <IonIcon slot="start" icon={compassOutline} />
-              <IonLabel>Entrar na conta</IonLabel>
+          <IonListHeader>Apoio ao motorista</IonListHeader>
+          {supportContacts.map((contact) => (
+            <IonItem
+              key={contact.href}
+              href={contact.href}
+              target="_blank"
+              rel="noreferrer"
+              detail={false}
+              className="menu-link-item"
+            >
+              <IonIcon slot="start" icon={logoWhatsapp} />
+              <IonLabel>
+                <h3>{contact.name}</h3>
+                <p>{contact.role}</p>
+                <p>{contact.phone}</p>
+              </IonLabel>
             </IonItem>
-          </IonMenuToggle>
+          ))}
         </IonList>
       </IonContent>
     </IonMenu>

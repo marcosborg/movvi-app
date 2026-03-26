@@ -19,6 +19,27 @@ export const publicLinks = {
   ],
 };
 
+export const supportContacts = [
+  {
+    name: 'Richard',
+    role: 'Gestao de Frota & Manutencao',
+    phone: '926 008 575',
+    href: 'https://wa.me/351926008575',
+  },
+  {
+    name: 'Karla',
+    role: 'Apoio ao Sistema Movvi',
+    phone: '913 606 801',
+    href: 'https://wa.me/351913606801',
+  },
+  {
+    name: 'Adelmo',
+    role: 'Outros Assuntos',
+    phone: '913 606 800',
+    href: 'https://wa.me/351913606800',
+  },
+] as const;
+
 export const brandAssets = {
   logo: toAbsolute('/assets/website/assets/img/logo.png'),
 };
