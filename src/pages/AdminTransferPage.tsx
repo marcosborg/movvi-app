@@ -6,6 +6,7 @@ import {
   IonRefresher,
   IonRefresherContent,
   IonSpinner,
+  IonToggle,
 } from '@ionic/react';
 import type { RefresherEventDetail } from '@ionic/core';
 import { useEffect, useMemo, useState } from 'react';
@@ -54,6 +55,7 @@ const AdminTransferPage: React.FC = () => {
   const [vehicleSearch, setVehicleSearch] = useState('');
   const [targetDriverSearch, setTargetDriverSearch] = useState('');
   const [mode, setMode] = useState<TransferMode>('passagem');
+  const [showAllOptions, setShowAllOptions] = useState(false);
   const [showInspectionChoice, setShowInspectionChoice] = useState(false);
   const [form, setForm] = useState({
     vehicle_id: '',
@@ -62,7 +64,7 @@ const AdminTransferPage: React.FC = () => {
 
   useEffect(() => {
     void loadOptions();
-  }, [token]);
+  }, [token, showAllOptions]);
 
   async function loadOptions() {
     if (!token) {
@@ -74,7 +76,7 @@ const AdminTransferPage: React.FC = () => {
     setSuccess(null);
 
     try {
-      const response = await apiRequest<InspectionCreateOptionsResponse>('/api/v1/mobile/inspections/create-options', {
+      const response = await apiRequest<InspectionCreateOptionsResponse>(`/api/v1/mobile/inspections/create-options?show_all=${showAllOptions ? '1' : '0'}`, {
         method: 'GET',
         token,
       });
@@ -133,6 +135,14 @@ const AdminTransferPage: React.FC = () => {
   const requiresTargetDriver = mode !== 'recolha';
   const sourceDriverName = selectedVehicle?.driver_name || 'Sem motorista atribuido';
   const primaryActionLabel = mode === 'recolha' ? 'Iniciar recolha' : mode === 'passagem' ? 'Iniciar passagem' : 'Iniciar entrega';
+  const selectedVehicleWarning = selectedVehicle?.driver_id
+    ? `A viatura ${selectedVehicle.license_plate} ja esta atribuida a ${selectedVehicle.driver_name || 'outro motorista'}. Ao continuar, a utilizacao atual sera fechada.`
+    : null;
+  const selectedDriverWarning = requiresTargetDriver && selectedDriver?.current_vehicle_id
+    ? selectedDriver.current_vehicle_id === selectedVehicle?.id
+      ? `${selectedDriver.name} ja esta associado a esta viatura.`
+      : `${selectedDriver.name} ja tem a viatura ${selectedDriver.current_vehicle_license_plate || 'atual'} atribuida. Confirma a troca antes de continuar.`
+    : null;
 
   function buildVehicleLabel(vehicle: InspectionCreateOptionsResponse['vehicles'][number]) {
     return `${vehicle.license_plate}${vehicle.driver_name ? ` · atual: ${vehicle.driver_name}` : ' · sem motorista'}`;
@@ -281,6 +291,18 @@ const AdminTransferPage: React.FC = () => {
                 </div>
 
                 <div className="form-stack">
+                  <label className="transfer-filter-row" htmlFor="transfer-show-all">
+                    <div>
+                      <strong>Mostrar tudo</strong>
+                      <span>Mostra tambem viaturas ja atribuidas e motoristas que ja tem carro.</span>
+                    </div>
+                    <IonToggle
+                      id="transfer-show-all"
+                      checked={showAllOptions}
+                      onIonChange={(event) => setShowAllOptions(event.detail.checked)}
+                    />
+                  </label>
+
                   <label className="form-label form-label-compact" htmlFor="transfer-vehicle-search">Viatura</label>
                   <input
                     id="transfer-vehicle-search"
@@ -312,6 +334,7 @@ const AdminTransferPage: React.FC = () => {
                       <span>Matricula: {selectedVehicle.license_plate}</span>
                     </div>
                   ) : null}
+                  {selectedVehicleWarning ? <p className="status-warning">{selectedVehicleWarning}</p> : null}
 
                   {requiresTargetDriver ? (
                     <>
@@ -337,7 +360,7 @@ const AdminTransferPage: React.FC = () => {
                             onClick={() => selectDriver(String(driver.id))}
                           >
                             <strong>{driver.name}</strong>
-                            <span>Selecionar motorista</span>
+                            <span>{driver.current_vehicle_license_plate ? `Atual: ${driver.current_vehicle_license_plate}` : 'Selecionar motorista'}</span>
                           </button>
                         )) : <p className="dashboard-empty">Sem motoristas a corresponder à pesquisa.</p>}
                       </div>
@@ -347,6 +370,7 @@ const AdminTransferPage: React.FC = () => {
                       <span>Ao fechar a inspecao, a viatura fica sem motorista associado.</span>
                     </div>
                   )}
+                  {selectedDriverWarning ? <p className="status-warning">{selectedDriverWarning}</p> : null}
 
                   {selectedVehicle ? (
                     <article className="receipt-item action-item">

@@ -51,6 +51,8 @@ export type InspectionCreateOptionsResponse = {
   drivers: Array<{
     id: number;
     name: string;
+    current_vehicle_id: number | null;
+    current_vehicle_license_plate: string | null;
   }>;
 };
 

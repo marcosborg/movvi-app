@@ -295,6 +295,31 @@
   margin-top: 18px;
 }
 
+.transfer-filter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(184, 129, 103, 0.18);
+  background: #fff;
+  color: #2e1d18;
+}
+
+.transfer-filter-row strong,
+.transfer-filter-row span {
+  display: block;
+  color: inherit;
+}
+
+.transfer-filter-row span {
+  margin-top: 4px;
+  color: #6b554a;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
 .form-label {
   color: #975236;
   font-size: 0.76rem;
@@ -1034,6 +1059,12 @@
   margin: 0;
   color: #2f5d3f;
   padding: 16px 0;
+}
+
+.status-warning {
+  margin: 0;
+  color: #8d3e25;
+  padding: 4px 0 8px;
 }
 
 @media (max-width: 640px) {
