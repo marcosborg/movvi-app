@@ -285,6 +285,29 @@
   font-size: 0.92rem;
 }
 
+.guide-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.guide-point {
+  margin: 0;
+  padding-left: 18px;
+  position: relative;
+}
+
+.guide-point::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.68rem;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #c55f3c;
+}
+
 .receipt-item {
   display: flex;
   justify-content: space-between;

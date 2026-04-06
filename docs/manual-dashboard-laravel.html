@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <title>Manual do Dashboard Movvi</title>
+  <style>
+    @page { size: A4; margin: 18mm 16mm; }
+    :root {
+      --ink: #2c2624;
+      --muted: #6d5f58;
+      --accent: #a24f30;
+      --accent-soft: #f5e6de;
+      --panel: #fffaf7;
+      --line: #e5d7cd;
+      --bg: #f3ece6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.46;
+      font-size: 11.1pt;
+    }
+    .document { max-width: 800px; margin: 0 auto; }
+    .hero, .section, .note {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 10px 26px rgba(58, 34, 22, 0.06);
+    }
+    .hero { padding: 28px; margin-bottom: 18px; }
+    .section { padding: 20px 22px; margin-bottom: 14px; }
+    .note { padding: 14px 16px; margin-top: 12px; }
+    .kicker {
+      margin: 0 0 10px;
+      color: var(--accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 9pt;
+    }
+    h1 { margin: 0; font-size: 24pt; line-height: 1.05; }
+    h2 { margin: 0 0 10px; font-size: 16pt; }
+    h3 { margin: 14px 0 6px; font-size: 12.5pt; color: var(--accent); }
+    p { margin: 8px 0 0; }
+    ul, ol { margin: 10px 0 0 18px; padding: 0; }
+    li { margin: 6px 0; }
+    .meta {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .meta-card {
+      background: var(--accent-soft);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .meta-card strong { display: block; font-size: 13pt; }
+    .meta-card span { color: var(--muted); font-size: 9.5pt; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: #fff;
+    }
+    .card strong { display: block; margin-bottom: 4px; }
+    .page-break { break-before: page; }
+    .footer {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 9.5pt;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <main class="document">
+    <section class="hero">
+      <p class="kicker">Movvi · Backoffice</p>
+      <h1>Manual do Dashboard</h1>
+      <p>
+        Este manual descreve as principais áreas do dashboard Laravel da plataforma Movvi,
+        com foco no menu lateral, nos fluxos administrativos e nas operações do dia a dia.
+      </p>
+      <div class="meta">
+        <div class="meta-card">
+          <strong>Data</strong>
+          <span>06/04/2026</span>
+        </div>
+        <div class="meta-card">
+          <strong>Plataforma</strong>
+          <span>Dashboard / Admin</span>
+        </div>
+        <div class="meta-card">
+          <strong>Perfis</strong>
+          <span>Admin, Gestor, Operação</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>1. Objetivo do dashboard</h2>
+      <p>O dashboard Laravel é o centro de gestão administrativa da plataforma.</p>
+      <p>Serve para:</p>
+      <ul>
+        <li>gerir utilizadores, empresas, motoristas e viaturas</li>
+        <li>acompanhar recibos, despesas, ajustes e extratos</li>
+        <li>validar relatórios semanais e rentabilidade</li>
+        <li>administrar inspeções, formulários e comunicação interna</li>
+        <li>gerir conteúdo do site público quando aplicável</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>2. Estrutura do menu lateral</h2>
+      <p>O menu lateral do dashboard está organizado por áreas funcionais. As áreas visíveis podem variar consoante o perfil de permissões do utilizador.</p>
+      <div class="grid">
+        <div class="card">
+          <strong>Operação e TVDE</strong>
+          <p>Motoristas, recibos, documentos, atividades, semanas, ajustes, despesas e relatórios.</p>
+        </div>
+        <div class="card">
+          <strong>Viaturas</strong>
+          <p>Viaturas, eventos, despesas, rentabilidade, utilizações, inspeções e avaliações semanais.</p>
+        </div>
+        <div class="card">
+          <strong>Gestão e empresa</strong>
+          <p>Utilizadores, empresas, Conta Azul, saldos, contas correntes e pagamentos.</p>
+        </div>
+        <div class="card">
+          <strong>Outras áreas</strong>
+          <p>Formulários, mensagens, contratos, documentos da empresa e gestão de conteúdo do site.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>3. Dashboard inicial</h2>
+      <p>Ao entrar em <strong>Dashboard</strong>, o utilizador encontra a página inicial do backoffice.</p>
+      <p>Esta página serve como ponto de entrada para:</p>
+      <ul>
+        <li>consultar rapidamente o estado geral</li>
+        <li>aceder à empresa ativa em sessão</li>
+        <li>abrir as áreas operacionais mais usadas</li>
+      </ul>
+      <div class="note">
+        <strong>Importante:</strong> o sistema suporta seleção de empresa em sessão. Vários relatórios e listagens dependem da empresa ativa.
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>4. Gestão de utilizadores</h2>
+      <p>Na área <strong>Gestão de utilizadores</strong> encontram-se as configurações base de acesso.</p>
+      <h3>Subáreas principais</h3>
+      <ul>
+        <li><strong>Permissões</strong>: controlo de capacidades do sistema.</li>
+        <li><strong>Perfis / roles</strong>: agrupamento de permissões.</li>
+        <li><strong>Utilizadores</strong>: criação e manutenção de contas.</li>
+        <li><strong>Empresas</strong>: cadastro das entidades associadas.</li>
+        <li><strong>Conta Azul</strong>: integração financeira por empresa.</li>
+        <li><strong>Faturas da empresa</strong>: gestão documental/fiscal da empresa.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>5. Área TVDE</h2>
+      <p>A área <strong>TVDE</strong> concentra a operação corrente dos motoristas e dos ciclos semanais.</p>
+      <h3>Motoristas</h3>
+      <ul>
+        <li>criar e editar motoristas</li>
+        <li>consultar dados pessoais e operacionais</li>
+        <li>validar estado e associação à empresa</li>
+      </ul>
+      <h3>Configuração TVDE</h3>
+      <ul>
+        <li>cartões</li>
+        <li>elétricos</li>
+        <li>cartões de portagem</li>
+        <li>locais</li>
+        <li>estados</li>
+        <li>operadores TVDE</li>
+        <li>tipos de contrato, escalões e IVA contratual</li>
+      </ul>
+      <h3>Atividade</h3>
+      <ul>
+        <li>anos TVDE</li>
+        <li>meses TVDE</li>
+        <li>semanas TVDE</li>
+        <li>períodos do ano</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>6. Recibos, documentos e movimentos</h2>
+      <p>Dentro da operação TVDE, várias áreas servem para validar documentação financeira e operacional.</p>
+      <ul>
+        <li><strong>Documentos</strong>: ficheiros de motorista e documentação associada.</li>
+        <li><strong>Recibos</strong>: validação de recibos verdes e confronto com valores recebidos.</li>
+        <li><strong>Reembolsos / devoluções</strong>: controlo de valores devolvidos.</li>
+        <li><strong>Atividades TVDE</strong>: suporte ao apuramento semanal.</li>
+        <li><strong>Transações de combustão</strong> e <strong>transações elétricas</strong>.</li>
+        <li><strong>Carregamentos Tesla</strong>.</li>
+        <li><strong>Pagamentos de portagens</strong>.</li>
+      </ul>
+      <div class="note">
+        <strong>Nota:</strong> nos recibos existe validação do valor recebido e mecanismos de controlo de pagamento e verificação.
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>7. Ajustes e despesas semanais da viatura</h2>
+      <p>Estas áreas suportam o fecho financeiro semanal.</p>
+      <h3>Ajustes</h3>
+      <ul>
+        <li>registo de ajustes manuais</li>
+        <li>categorias próprias de negócio</li>
+        <li>caução recebida e devolvida</li>
+        <li>abatimento de aluguer</li>
+        <li>diferença de faturação mínima</li>
+      </ul>
+      <h3>Despesas semanais da viatura</h3>
+      <ul>
+        <li>custos semanais por viatura</li>
+        <li>depósitos / caução em contexto de despesa semanal</li>
+        <li>apoio ao cálculo do resultado por viatura e por semana</li>
+      </ul>
+    </section>
+
+    <section class="section page-break">
+      <h2>8. Extrato financeiro</h2>
+      <p>A área <strong>Extrato financeiro</strong> é uma das zonas centrais do backoffice.</p>
+      <h3>Para que serve</h3>
+      <ul>
+        <li>consultar o extrato por ano, mês, semana ou motorista</li>
+        <li>gerar PDF</li>
+        <li>ajustar saldos</li>
+        <li>enviar extrato por email ao motorista</li>
+      </ul>
+      <h3>O que se deve validar</h3>
+      <ul>
+        <li>aluguer</li>
+        <li>percentagem</li>
+        <li>IVA</li>
+        <li>ajustes operacionais</li>
+        <li>caução</li>
+        <li>saldo final</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>9. Relatórios da empresa</h2>
+      <p>A área <strong>Company Reports</strong> é a leitura semanal consolidada da operação.</p>
+      <h3>Inclui</h3>
+      <ul>
+        <li>líquido Uber e Bolt</li>
+        <li>alugueres recebidos</li>
+        <li>percentagens recebidas</li>
+        <li>ajustes operacionais</li>
+        <li>caução recebida e devolvida</li>
+        <li>quilómetros, EUR/km e totais por motorista</li>
+      </ul>
+      <h3>Duplo check</h3>
+      <ul>
+        <li>confronta o líquido Uber/Bolt com o valor efetivamente recebido</li>
+        <li>assinala <strong>OK</strong>, <strong>Divergente</strong> ou <strong>Falta validar</strong></li>
+      </ul>
+      <h3>Outras vistas relacionadas</h3>
+      <ul>
+        <li>histórico de company reports</li>
+        <li>relatório do motorista em todas as semanas</li>
+        <li>contas correntes</li>
+        <li>saldos dos motoristas</li>
+        <li>pagamentos a motoristas</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>10. Dados financeiros da empresa</h2>
+      <p>Na área financeira da empresa encontram-se módulos de suporte à gestão global.</p>
+      <ul>
+        <li><strong>Consultorias</strong></li>
+        <li><strong>Despesas da empresa</strong></li>
+        <li><strong>Parques da empresa</strong></li>
+        <li><strong>Contas correntes</strong></li>
+        <li><strong>Saldos de motoristas</strong></li>
+        <li><strong>Dados da empresa</strong></li>
+        <li><strong>Pagamentos a motoristas</strong></li>
+      </ul>
+      <p>Estas áreas são usadas para manter a estrutura financeira organizada e coerente com os fechos semanais.</p>
+    </section>
+
+    <section class="section">
+      <h2>11. Viaturas</h2>
+      <p>A área <strong>Viaturas</strong> concentra todo o ciclo de vida da frota.</p>
+      <h3>Configuração</h3>
+      <ul>
+        <li>marcas</li>
+        <li>modelos</li>
+        <li>tipos de evento da viatura</li>
+        <li>tempos de aviso de evento</li>
+      </ul>
+      <h3>Operação</h3>
+      <ul>
+        <li><strong>Eventos da viatura</strong></li>
+        <li><strong>Viaturas</strong></li>
+        <li><strong>Despesas da viatura</strong></li>
+        <li><strong>Rentabilidade da viatura</strong></li>
+        <li><strong>Utilização da viatura</strong></li>
+        <li><strong>Reembolsos de despesas</strong></li>
+        <li><strong>Receitas da viatura</strong></li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>12. Rentabilidade da viatura</h2>
+      <p>A área <strong>Rentabilidade da viatura</strong> apresenta o desempenho económico da frota.</p>
+      <h3>Objetivo</h3>
+      <ul>
+        <li>avaliar receita operacional por viatura</li>
+        <li>comparar custos e proveitos</li>
+        <li>analisar semanas e PDFs de suporte</li>
+      </ul>
+      <div class="note">
+        <strong>Regra importante:</strong> esta área deve refletir receita operacional e não deve tratar reforços, recibos ou transferências ao motorista como se fossem receita da viatura.
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>13. Utilização da viatura</h2>
+      <p>A área <strong>Utilização da viatura</strong> permite acompanhar que motorista esteve associado a que viatura e em que período.</p>
+      <p>É essencial para:</p>
+      <ul>
+        <li>histórico de passagens</li>
+        <li>rentabilidade por utilização real</li>
+        <li>filtragem correta por semana</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>14. Inspeções e avaliações semanais</h2>
+      <ul>
+        <li><strong>Inspeções</strong>: controlo do estado da viatura, com rotina completa ou simplificada.</li>
+        <li><strong>Avaliações semanais</strong>: formulário periódico com quilometragem, pneus, óleo, combustível, avisos no painel e problemas da viatura.</li>
+      </ul>
+      <p>No detalhe das avaliações semanais, o admin pode consultar também a foto do painel quando houver avisos registados.</p>
+    </section>
+
+    <section class="section page-break">
+      <h2>15. Formulários</h2>
+      <p>A área <strong>Formulários</strong> suporta a construção e recolha de dados de múltiplos formulários internos.</p>
+      <ul>
+        <li>nomes de formulário</li>
+        <li>campos do formulário</li>
+        <li>dados recolhidos</li>
+        <li>montagem de formulário</li>
+        <li>comunicação de formulários</li>
+        <li>registo de entrada de veículos</li>
+        <li>formulário de recrutamento</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>16. Contratos e responsabilidades</h2>
+      <p>Estas áreas suportam a relação documental com motoristas e outros intervenientes.</p>
+      <ul>
+        <li><strong>Termos / declarações de responsabilidade</strong></li>
+        <li><strong>Contratos</strong></li>
+        <li><strong>Administração de contratos</strong></li>
+      </ul>
+      <p>Podem incluir geração de PDF, consulta e assinatura quando o fluxo o prevê.</p>
+    </section>
+
+    <section class="section">
+      <h2>17. Mensagens e alertas</h2>
+      <p>No dashboard existem também áreas de comunicação interna:</p>
+      <ul>
+        <li><strong>Mensagens</strong> / messenger interno</li>
+        <li><strong>Alertas do utilizador</strong></li>
+        <li><strong>Newsletters</strong></li>
+        <li><strong>Documentos da empresa</strong></li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>18. Gestão do site público</h2>
+      <p>O mesmo backoffice pode incluir módulos de gestão do website público.</p>
+      <p>Consoante as permissões, podem existir áreas como:</p>
+      <ul>
+        <li>banners</li>
+        <li>informação da home</li>
+        <li>atividades</li>
+        <li>testemunhos</li>
+        <li>notícias</li>
+        <li>páginas CMS</li>
+        <li>stand</li>
+        <li>aluguer</li>
+        <li>courier</li>
+        <li>training</li>
+        <li>products</li>
+        <li>transfer tours</li>
+        <li>consulting</li>
+        <li>legais</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>19. Seleção de empresa e permissões</h2>
+      <p>O dashboard trabalha com dois conceitos críticos:</p>
+      <ul>
+        <li><strong>empresa ativa em sessão</strong></li>
+        <li><strong>permissões do utilizador</strong></li>
+      </ul>
+      <p>Nem todas as áreas aparecem para todos os utilizadores. Além disso, vários relatórios e listagens mudam consoante a empresa selecionada.</p>
+    </section>
+
+    <section class="section">
+      <h2>20. Boas práticas de utilização</h2>
+      <ul>
+        <li>confirmar sempre a empresa ativa antes de validar relatórios</li>
+        <li>confirmar a semana correta antes de atualizar extratos ou company reports</li>
+        <li>validar divergências financeiras assim que forem detetadas</li>
+        <li>usar PDFs e históricos para auditoria e conferência</li>
+        <li>não usar áreas de manutenção/configuração sem perceber o impacto operacional</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>21. Quando pedir apoio técnico</h2>
+      <ul>
+        <li>quando um menu ou área esperada não aparece</li>
+        <li>quando os valores de relatório não batem certo com o extrato</li>
+        <li>quando existe erro de permissões</li>
+        <li>quando uma empresa errada está a contaminar os resultados</li>
+        <li>quando um PDF, envio de email ou integração externa não conclui</li>
+      </ul>
+    </section>
+
+    <p class="footer">
+      Manual do Dashboard Movvi · Documento de apoio ao backoffice
+    </p>
+  </main>
+</body>
+</html>

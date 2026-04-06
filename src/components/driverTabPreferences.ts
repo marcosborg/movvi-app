@@ -8,6 +8,7 @@ import {
   documentTextOutline,
   documentsOutline,
   gridOutline,
+  helpCircleOutline,
   settingsOutline,
   swapHorizontalOutline,
 } from 'ionicons/icons';
@@ -98,6 +99,13 @@ export const DRIVER_TAB_DEFINITIONS: DriverTabDefinition[] = [
     label: 'Abas',
     href: '/dashboard/preferences',
     icon: settingsOutline,
+    visible: () => true,
+  },
+  {
+    key: 'guide',
+    label: 'Guia',
+    href: '/dashboard/guide',
+    icon: helpCircleOutline,
     visible: () => true,
   },
 ];

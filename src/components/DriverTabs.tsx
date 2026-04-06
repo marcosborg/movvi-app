@@ -14,6 +14,7 @@ import AdminTransferPage from '../pages/AdminTransferPage';
 import DriverDocumentsPage from '../pages/DriverDocumentsPage';
 import DriverInspectionDetailPage from '../pages/DriverInspectionDetailPage';
 import DriverInspectionsPage from '../pages/DriverInspectionsPage';
+import DriverGuidePage from '../pages/DriverGuidePage';
 import DriverOverviewPage from '../pages/DriverOverviewPage';
 import DriverReceiptsPage from '../pages/DriverReceiptsPage';
 import DriverStatementPage from '../pages/DriverStatementPage';
@@ -94,6 +95,9 @@ const DriverTabs: React.FC = () => {
         </Route>
         <Route exact path="/dashboard/preferences">
           <DriverTabPreferencesPage />
+        </Route>
+        <Route exact path="/dashboard/guide">
+          <DriverGuidePage />
         </Route>
         <Route exact path="/dashboard">
           <Redirect to={

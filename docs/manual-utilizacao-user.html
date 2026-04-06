@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <title>Manual Completo de Utilização Movvi</title>
+  <style>
+    @page { size: A4; margin: 18mm 16mm; }
+    :root {
+      --ink: #2f241f;
+      --muted: #6f5a50;
+      --accent: #b85b39;
+      --accent-soft: #f7e8df;
+      --panel: #fffaf6;
+      --line: #e4d6cb;
+      --bg: #f5eee8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.46;
+      font-size: 11.2pt;
+    }
+    .document { max-width: 790px; margin: 0 auto; }
+    .hero, .section, .note {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 10px 26px rgba(58, 34, 22, 0.06);
+    }
+    .hero { padding: 28px; margin-bottom: 18px; }
+    .section { padding: 20px 22px; margin-bottom: 14px; }
+    .note { padding: 14px 16px; margin-top: 12px; }
+    .kicker {
+      margin: 0 0 10px;
+      color: var(--accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 9pt;
+    }
+    h1 { margin: 0; font-size: 24pt; line-height: 1.05; }
+    h2 { margin: 0 0 10px; font-size: 16pt; }
+    h3 { margin: 14px 0 6px; font-size: 12.5pt; color: var(--accent); }
+    p { margin: 8px 0 0; }
+    ul, ol { margin: 10px 0 0 18px; padding: 0; }
+    li { margin: 6px 0; }
+    .meta {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .meta-card {
+      background: var(--accent-soft);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .meta-card strong { display: block; font-size: 13pt; }
+    .meta-card span { color: var(--muted); font-size: 9.5pt; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: #fff;
+    }
+    .card strong { display: block; margin-bottom: 4px; }
+    .small { color: var(--muted); font-size: 9.5pt; }
+    .page-break { break-before: page; }
+    .footer {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 9.5pt;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <main class="document">
+    <section class="hero">
+      <p class="kicker">Movvi</p>
+      <h1>Manual Completo de Utilização</h1>
+      <p>
+        Este documento reúne, área por área, as funcionalidades principais da app Movvi
+        para motorista, gestor e administração operacional. O objetivo é servir como
+        manual de consulta rápida para utilização diária.
+      </p>
+      <div class="meta">
+        <div class="meta-card">
+          <strong>Data</strong>
+          <span>06/04/2026</span>
+        </div>
+        <div class="meta-card">
+          <strong>Âmbito</strong>
+          <span>App / Dashboard / Operação</span>
+        </div>
+        <div class="meta-card">
+          <strong>Perfis</strong>
+          <span>Motorista, Gestor, Admin</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>1. Estrutura geral da app</h2>
+      <p>A app está dividida em duas zonas principais:</p>
+      <ul>
+        <li><strong>Área pública</strong>: navegação inicial, serviços, notícias e acesso à conta.</li>
+        <li><strong>Dashboard</strong>: zona reservada com resumo, extrato, recibos, inspeções, relatórios e restantes ferramentas operacionais.</li>
+      </ul>
+      <div class="grid">
+        <div class="card">
+          <strong>Área pública</strong>
+          <p>Serve para navegar, consultar informação geral e entrar na conta.</p>
+        </div>
+        <div class="card">
+          <strong>Dashboard</strong>
+          <p>Serve para consultar dados, submeter informação semanal e executar operações da frota.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>2. Entrar na conta</h2>
+      <ol>
+        <li>Abrir a app.</li>
+        <li>Escolher <strong>Entrar na conta</strong>.</li>
+        <li>Introduzir as credenciais fornecidas pela empresa.</li>
+        <li>Confirmar depois a semana ativa no topo do dashboard.</li>
+      </ol>
+      <div class="note">
+        <strong>Importante:</strong> sempre que o utilizador for consultar extratos, submeter recibos ou preencher a avaliação semanal, deve confirmar primeiro a semana ativa.
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>3. Resumo</h2>
+      <p>A área <strong>Resumo</strong> é o ecrã principal do dashboard do motorista.</p>
+      <h3>O que mostra</h3>
+      <ul>
+        <li>número e datas da semana</li>
+        <li>valor da semana</li>
+        <li>saldo atual</li>
+        <li>saldo final</li>
+        <li>estado semanal</li>
+        <li>quilómetros da semana</li>
+        <li>valor por km</li>
+      </ul>
+      <h3>Informação complementar</h3>
+      <ul>
+        <li>perfil do motorista</li>
+        <li>viatura atual</li>
+        <li>recibos recentes</li>
+        <li>abastecimentos</li>
+        <li>passagens Via Verde</li>
+        <li>resumo financeiro por categorias</li>
+      </ul>
+      <h3>Ações rápidas</h3>
+      <ul>
+        <li>abrir a conta</li>
+        <li>voltar à área pública</li>
+        <li>ordenar abas</li>
+        <li>abrir o guia</li>
+        <li>terminar sessão</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>4. Extrato</h2>
+      <p>Na área <strong>Extrato</strong> é possível consultar o detalhe financeiro semanal.</p>
+      <h3>Linhas financeiras principais</h3>
+      <ul>
+        <li>aluguer</li>
+        <li>percentagem</li>
+        <li>IVA</li>
+        <li>ajustes gerais</li>
+        <li>abatimento de aluguer</li>
+        <li>diferença de faturação mínima</li>
+        <li>caução recebida</li>
+        <li>caução devolvida</li>
+      </ul>
+      <h3>Como interpretar</h3>
+      <ul>
+        <li><strong>IVA</strong> e <strong>Percentagem</strong> aparecem separados.</li>
+        <li><strong>Abatimento de aluguer</strong> reduz o aluguer efetivo da semana.</li>
+        <li><strong>Diferença de faturação mínima</strong> entra como débito quando o mínimo não é atingido.</li>
+        <li><strong>Caução</strong> aparece em linha própria e não deve ser confundida com receita operacional.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>5. Recibos</h2>
+      <p>A área <strong>Recibos</strong> permite submeter três tipos principais de documentos.</p>
+      <div class="grid">
+        <div class="card">
+          <strong>Recibo verde</strong>
+          <p>Submissão do recibo principal da semana, associada ao saldo da semana selecionada.</p>
+        </div>
+        <div class="card">
+          <strong>Recibos de despesa</strong>
+          <p>Permite anexar vários ficheiros e indicar o somatório aprovado das despesas.</p>
+        </div>
+        <div class="card">
+          <strong>Devoluções</strong>
+          <p>Permite anexar ficheiro e valor para registar devoluções/reembolsos.</p>
+        </div>
+        <div class="card">
+          <strong>Estado</strong>
+          <p>Os registos podem ficar pendentes, validados ou pagos, consoante o fluxo interno.</p>
+        </div>
+      </div>
+      <h3>Boas práticas</h3>
+      <ul>
+        <li>anexar ficheiros legíveis</li>
+        <li>confirmar a semana antes de submeter</li>
+        <li>validar depois se o estado do recibo mudou</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>6. Documentos</h2>
+      <p>A área <strong>Documentos</strong> mostra os ficheiros pessoais e administrativos associados ao motorista.</p>
+      <p>Normalmente podem aparecer categorias como:</p>
+      <ul>
+        <li>documento de identificação</li>
+        <li>carta de condução</li>
+        <li>certificados</li>
+        <li>IBAN</li>
+        <li>comprovativo de morada</li>
+      </ul>
+      <p>O ecrã é de consulta, servindo para verificar o que já está disponível por categoria.</p>
+    </section>
+
+    <section class="section page-break">
+      <h2>7. Inspeções</h2>
+      <p>A área <strong>Inspeções</strong> serve para registar o estado da viatura em operações de entrega, recolha ou controlo.</p>
+      <h3>Modos disponíveis</h3>
+      <ul>
+        <li><strong>Completa</strong>: inclui documentação, acessórios, fotos e danos.</li>
+        <li><strong>Simplificada</strong>: mantém só o essencial para operação rápida.</li>
+      </ul>
+      <h3>Fluxo simplificado</h3>
+      <ul>
+        <li>identificação da viatura</li>
+        <li>identificação do motorista</li>
+        <li>estado operacional</li>
+        <li>observações</li>
+        <li>assinaturas</li>
+        <li>fecho</li>
+      </ul>
+      <h3>Quando usar</h3>
+      <ul>
+        <li>mudança rápida de condutor</li>
+        <li>controlo operacional sem necessidade de inspeção completa</li>
+        <li>situações de rotina com menor detalhe documental</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>8. Avaliação semanal da viatura</h2>
+      <p>A área <strong>Semanal</strong> é o formulário periódico do motorista para a viatura usada na semana.</p>
+      <h3>Campos principais</h3>
+      <ul>
+        <li>viatura utilizada</li>
+        <li>quilometragem final</li>
+        <li>combustível / energia</li>
+        <li>estado dos pneus dianteiros</li>
+        <li>estado dos pneus traseiros</li>
+        <li>nível do óleo</li>
+      </ul>
+      <h3>Painel</h3>
+      <ul>
+        <li>assinalar se existem avisos no painel</li>
+        <li>descrever os avisos</li>
+        <li>anexar a foto do painel</li>
+      </ul>
+      <h3>Problemas na viatura</h3>
+      <ul>
+        <li>assinalar se existe algum problema</li>
+        <li>descrever o problema em observações</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>9. Passagens</h2>
+      <p>A área <strong>Passagens</strong> é usada para transferências entre motoristas e viaturas.</p>
+      <h3>O que faz</h3>
+      <ul>
+        <li>fecha utilizações anteriores quando necessário</li>
+        <li>associa uma viatura a outro motorista</li>
+        <li>permite pesquisar viaturas e motoristas livres</li>
+      </ul>
+      <h3>Opção Mostrar tudo</h3>
+      <ul>
+        <li>quando desligada, mostra apenas disponíveis</li>
+        <li>quando ligada, inclui também ocupados</li>
+      </ul>
+      <h3>Avisos</h3>
+      <ul>
+        <li>aviso se a viatura já estiver atribuída</li>
+        <li>aviso se o motorista já tiver viatura</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>10. Relatórios</h2>
+      <p>A área <strong>Relatórios</strong> apresenta a leitura semanal da operação para gestor/admin.</p>
+      <h3>Inclui</h3>
+      <ul>
+        <li>líquido Uber e Bolt</li>
+        <li>quilómetros e EUR/km</li>
+        <li>alugueres recebidos</li>
+        <li>percentagens recebidas</li>
+        <li>ajustes operacionais</li>
+        <li>totais de caução recebida e devolvida</li>
+      </ul>
+      <h3>Duplo check</h3>
+      <ul>
+        <li>compara o líquido Uber/Bolt com o valor efetivamente recebido</li>
+        <li>identifica <strong>OK</strong>, <strong>Divergente</strong> e <strong>Falta validar</strong></li>
+      </ul>
+      <h3>Filtros e leitura</h3>
+      <ul>
+        <li>filtros por semana</li>
+        <li>filtros por motorista/viatura</li>
+        <li>ordenação por faturação e outros indicadores</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>11. Financeiro</h2>
+      <p>A área <strong>Financeiro</strong> é orientada para gestor/admin e agrega leitura financeira da operação.</p>
+      <p>Em termos práticos, permite consultar:</p>
+      <ul>
+        <li>movimentos</li>
+        <li>recebimentos</li>
+        <li>pagamentos</li>
+        <li>contas e saldos</li>
+        <li>rentabilidade e leitura consolidada</li>
+      </ul>
+      <div class="note">
+        <strong>Nota operacional:</strong> a rentabilidade da viatura foi ajustada para não misturar recibos, reforços ou transferências ao motorista como se fossem receita operacional.
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>12. Personalização das abas</h2>
+      <p>Na área <strong>Abas</strong> o utilizador pode reorganizar os atalhos do dashboard.</p>
+      <ol>
+        <li>Entrar em <strong>Abas</strong>.</li>
+        <li>Usar <strong>Subir</strong> e <strong>Descer</strong> para alterar a ordem.</li>
+        <li>A nova ordem fica guardada neste dispositivo.</li>
+        <li>Se necessário, usar <strong>Repor ordem base</strong>.</li>
+      </ol>
+    </section>
+
+    <section class="section">
+      <h2>13. Guia</h2>
+      <p>A área <strong>Guia</strong> é um apoio interno da app para consulta rápida.</p>
+      <p>Serve para rever:</p>
+      <ul>
+        <li>arranque rápido</li>
+        <li>recibos</li>
+        <li>extrato</li>
+        <li>inspeções</li>
+        <li>avaliação semanal</li>
+        <li>relatórios</li>
+        <li>personalização das abas</li>
+      </ul>
+    </section>
+
+    <section class="section page-break">
+      <h2>14. Conta e sessão</h2>
+      <p>Na zona de conta o utilizador pode:</p>
+      <ul>
+        <li>confirmar se a sessão está ativa</li>
+        <li>abrir diretamente o dashboard</li>
+        <li>terminar sessão</li>
+      </ul>
+      <p>Se não existir autenticação válida, o utilizador deverá voltar a iniciar sessão.</p>
+    </section>
+
+    <section class="section">
+      <h2>15. Boas práticas de utilização</h2>
+      <ul>
+        <li>confirmar sempre a semana ativa antes de submeter informação</li>
+        <li>anexar ficheiros e fotografias legíveis</li>
+        <li>preencher observações de forma objetiva</li>
+        <li>consultar o extrato regularmente</li>
+        <li>usar a avaliação semanal todas as semanas</li>
+        <li>validar divergências financeiras assim que forem detetadas</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>16. Quando pedir apoio</h2>
+      <ul>
+        <li>quando a viatura ou o motorista não aparecem onde deveriam</li>
+        <li>quando os valores do extrato não batem certo</li>
+        <li>quando um recibo não fica associado à semana correta</li>
+        <li>quando a avaliação semanal ou inspeção não deixa concluir</li>
+        <li>quando houver divergência entre valor recebido e Uber/Bolt</li>
+      </ul>
+    </section>
+
+    <p class="footer">
+      Manual Completo de Utilização Movvi · Documento de apoio ao utilizador
+    </p>
+  </main>
+</body>
+</html>
