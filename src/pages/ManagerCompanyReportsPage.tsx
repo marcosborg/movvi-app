@@ -385,7 +385,7 @@ const ManagerCompanyReportsPage: React.FC = () => {
                         <div className="report-summary-grid">
                           <span>Total: {formatMoney(driver.total)}</span>
                           <span>Gorjetas: {formatMoney(driver.tips_total)}</span>
-                          <span>Taxa: {formatMoney(driver.vat_value)}</span>
+                          <span>IVA: {formatMoney(driver.vat_value)}</span>
                           <span>Abastecimento: {formatMoney(driver.fuel)}</span>
                           <span>Via Verde: {formatMoney(driver.via_verde)}</span>
                           <span>Ajustes: {formatMoney(driver.adjustments)}</span>

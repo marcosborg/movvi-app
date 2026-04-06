@@ -67,7 +67,8 @@ const DriverStatementPage: React.FC = () => {
   const carHireBase = getAccountValue(accountSummary, 'car_hire_base', carHire);
   const carTrack = getAccountValue(accountSummary, 'car_track');
   const fuelTransactions = getAccountValue(accountSummary, 'fuel_transactions');
-  const vatValue = getAccountValue(accountSummary, 'vat_value');
+  const ivaValue = getAccountValue(accountSummary, 'iva_value', getAccountValue(accountSummary, 'vat_value'));
+  const percentValue = getAccountValue(accountSummary, 'percent_value');
   const weeklyKm = driverHub?.statement_metrics?.weekly_km ?? getAccountValue(accountSummary, 'weekly_km');
   const earningsPerKm = driverHub?.statement_metrics?.earnings_per_km ?? getAccountValue(accountSummary, 'earnings_per_km');
 
@@ -118,7 +119,8 @@ const DriverStatementPage: React.FC = () => {
                     <p>Total da semana: {formatMoney(driverHub.statement_metrics?.total)}</p>
                     <p>KM da semana: {formatKm(weeklyKm)}</p>
                     <p>Valor por km: {formatMoney(earningsPerKm)}/km</p>
-                    <p>Taxa: {formatMoney(vatValue)}</p>
+                    <p>IVA: {formatMoney(ivaValue)}</p>
+                    <p>Percentagem: {formatMoney(percentValue)}</p>
                   </article>
                 </div>
               </section>
@@ -140,7 +142,8 @@ const DriverStatementPage: React.FC = () => {
                     {carHireBase > 0 && rentDiscount > 0 ? <p>Aluguer base: {formatMoney(carHireBase)}</p> : null}
                     <p>Via Verde: {formatMoney(carTrack)}</p>
                     <p>Abastecimentos: {formatMoney(fuelTransactions)}</p>
-                    <p>Taxa: {formatMoney(vatValue)}</p>
+                    <p>IVA: {formatMoney(ivaValue)}</p>
+                    <p>Percentagem: {formatMoney(percentValue)}</p>
                   </article>
 
                   <article className="dashboard-card">
