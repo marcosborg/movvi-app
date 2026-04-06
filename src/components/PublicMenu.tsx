@@ -18,7 +18,7 @@ const menuItems = [
   { title: 'Home', url: '/tabs/home', icon: sparklesOutline },
   { title: 'Servicos', url: '/tabs/services', icon: carSportOutline },
   { title: 'Noticias', url: '/tabs/stories', icon: newspaperOutline },
-  { title: 'Area Reservada', url: '/tabs/account', icon: logInOutline },
+  { title: 'Entrar na conta', url: '/tabs/account', icon: logInOutline },
 ];
 
 const PublicMenu: React.FC = () => {
@@ -38,7 +38,7 @@ const PublicMenu: React.FC = () => {
         </div>
 
         <div className="menu-intro">
-          <p>Explore a area publica com a mesma leitura da home e entre na conta apenas quando fizer sentido.</p>
+          <p>Explore a area publica com a mesma leitura da home e entre na conta apenas quando precisar de aceder a dados reservados.</p>
         </div>
 
         <IonList inset className="menu-section-list">

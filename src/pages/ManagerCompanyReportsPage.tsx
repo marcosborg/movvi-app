@@ -13,7 +13,7 @@ import DriverWeekPicker from '../components/DriverWeekPicker';
 import { useDriverWeek } from '../components/DriverWeekContext';
 import { HorizontalMetricChart } from '../components/InsightCharts';
 import { apiRequest } from '../lib/api';
-import { formatMoney } from './driverArea';
+import { formatKm, formatMoney } from './driverArea';
 import type { CompanyReportResponse } from './managerFinanceArea';
 import './Home.css';
 
@@ -136,11 +136,11 @@ const ManagerCompanyReportsPage: React.FC = () => {
                   </article>
                   <article className="dashboard-card dashboard-metric-card">
                     <p className="metric-label">Quilometros</p>
-                    <strong>{response.data.totals.total_weekly_km.toFixed(1)} km</strong>
+                    <strong>{formatKm(response.data.totals.total_weekly_km)}</strong>
                     <span>Distancia atribuida a viaturas e motoristas</span>
                   </article>
                   <article className="dashboard-card dashboard-metric-card">
-                    <p className="metric-label">€/km</p>
+                    <p className="metric-label">EUR/km</p>
                     <strong>{formatMoney(response.data.totals.total_earnings_per_km)}/km</strong>
                     <span>Media consolidada do relatorio</span>
                   </article>
@@ -189,7 +189,7 @@ const ManagerCompanyReportsPage: React.FC = () => {
                       .map((driver) => ({
                         label: driver.name,
                         value: driver.weekly_km,
-                        formattedValue: `${driver.weekly_km.toFixed(1)} km`,
+                        formattedValue: formatKm(driver.weekly_km),
                         helper: driver.license_plate || 'Sem viatura atribuida',
                         tone: 'positive',
                       }))}
@@ -205,7 +205,7 @@ const ManagerCompanyReportsPage: React.FC = () => {
                         label: driver.name,
                         value: driver.earnings_per_km,
                         formattedValue: `${formatMoney(driver.earnings_per_km)}/km`,
-                        helper: `${driver.weekly_km.toFixed(1)} km`,
+                        helper: formatKm(driver.weekly_km),
                         tone: 'warm',
                       }))}
                   />
@@ -238,14 +238,14 @@ const ManagerCompanyReportsPage: React.FC = () => {
 
                   <article className="dashboard-card report-highlight-card">
                     <div className="card-head">
-                      <h3>Melhor €/km</h3>
-                      <span className="status-pill">Eficiência</span>
+                      <h3>Melhor EUR/km</h3>
+                      <span className="status-pill">Eficiencia</span>
                     </div>
                     {topEfficiencyDriver ? (
                       <>
                         <strong className="report-highlight-value">{topEfficiencyDriver.name}</strong>
                         <p>{formatMoney(topEfficiencyDriver.earnings_per_km)}/km</p>
-                        <span className="report-highlight-meta">{topEfficiencyDriver.weekly_km.toFixed(1)} km atribuídos</span>
+                        <span className="report-highlight-meta">{formatKm(topEfficiencyDriver.weekly_km)} atribuidos</span>
                       </>
                     ) : (
                       <p className="dashboard-empty">Sem dados disponiveis.</p>
@@ -260,7 +260,7 @@ const ManagerCompanyReportsPage: React.FC = () => {
                     {topDistanceDriver ? (
                       <>
                         <strong className="report-highlight-value">{topDistanceDriver.name}</strong>
-                        <p>{topDistanceDriver.weekly_km.toFixed(1)} km na semana</p>
+                        <p>{formatKm(topDistanceDriver.weekly_km)} na semana</p>
                         <span className="report-highlight-meta">{formatMoney(topDistanceDriver.total)} totais</span>
                       </>
                     ) : (
@@ -283,7 +283,7 @@ const ManagerCompanyReportsPage: React.FC = () => {
                           <span className="report-rank-number">{index + 1}</span>
                           <div>
                             <strong>{driver.name}</strong>
-                            <span>{driver.license_plate || 'Sem viatura atribuida'} · {driver.weekly_km.toFixed(1)} km</span>
+                            <span>{driver.license_plate || 'Sem viatura atribuida'} - {formatKm(driver.weekly_km)}</span>
                           </div>
                         </div>
                         <div className="receipt-meta-col">
@@ -321,7 +321,7 @@ const ManagerCompanyReportsPage: React.FC = () => {
                         <div className="report-chip-row">
                           <span className="status-badge">Uber {formatMoney(driver.uber_net)}</span>
                           <span className="status-badge">Bolt {formatMoney(driver.bolt_net)}</span>
-                          <span className="status-badge">{driver.weekly_km.toFixed(1)} km</span>
+                          <span className="status-badge">{formatKm(driver.weekly_km)}</span>
                           <span className="status-badge">{formatMoney(driver.earnings_per_km)}/km</span>
                         </div>
 

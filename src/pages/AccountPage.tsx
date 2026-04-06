@@ -15,15 +15,15 @@ const AccountPage: React.FC = () => {
 
   return (
     <IonPage>
-      <PublicPageHeader title="Conta" />
+      <PublicPageHeader title="Entrar na conta" />
       <IonContent fullscreen className="public-page">
         <div className="public-shell">
           <section className="public-section surface-panel reserved-panel">
             <div className="reserved-brand">
               <img src={brandAssets.logo} alt="Movvi" />
             </div>
-            <p className="section-tag">Area reservada</p>
-            <h1 className="page-title">{isAuthenticated ? 'Acesso pronto' : 'Acesso reservado'}</h1>
+            <p className="section-tag">Conta</p>
+            <h1 className="page-title">{isAuthenticated ? 'Acesso pronto' : 'Entrar na conta'}</h1>
             <p>
               {isAuthenticated
                 ? 'A sua sessao esta ativa. Pode entrar diretamente no dashboard.'
@@ -31,7 +31,7 @@ const AccountPage: React.FC = () => {
             </p>
             <div className="account-actions">
               <IonButton routerLink={isAuthenticated ? '/dashboard' : '/login'}>
-                {isAuthenticated ? 'Abrir dashboard' : 'Iniciar sessao'}
+                {isAuthenticated ? 'Abrir dashboard' : 'Entrar na conta'}
               </IonButton>
               {isAuthenticated ? (
                 <IonButton fill="outline" onClick={logout}>

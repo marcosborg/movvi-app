@@ -129,9 +129,6 @@ const AdminTransferPage: React.FC = () => {
     });
   }, [options?.drivers, targetDriverSearch, mode, selectedVehicle?.driver_id]);
 
-  const vehicleSuggestions = filteredVehicles.slice(0, 8);
-  const driverSuggestions = filteredDrivers.slice(0, 8);
-
   const requiresTargetDriver = mode !== 'recolha';
   const sourceDriverName = selectedVehicle?.driver_name || 'Sem motorista atribuido';
   const primaryActionLabel = mode === 'recolha' ? 'Iniciar recolha' : mode === 'passagem' ? 'Iniciar passagem' : 'Iniciar entrega';
@@ -315,7 +312,7 @@ const AdminTransferPage: React.FC = () => {
                     placeholder="Escreve a matrícula ou o nome do motorista atual"
                   />
                   <div className="transfer-picker-list">
-                    {vehicleSuggestions.length > 0 ? vehicleSuggestions.map((vehicle) => (
+                    {filteredVehicles.length > 0 ? filteredVehicles.map((vehicle) => (
                       <button
                         key={vehicle.id}
                         type="button"
@@ -352,7 +349,7 @@ const AdminTransferPage: React.FC = () => {
                         placeholder="Escreve o nome do motorista destino"
                       />
                       <div className="transfer-picker-list">
-                        {driverSuggestions.length > 0 ? driverSuggestions.map((driver) => (
+                        {filteredDrivers.length > 0 ? filteredDrivers.map((driver) => (
                           <button
                             key={driver.id}
                             type="button"

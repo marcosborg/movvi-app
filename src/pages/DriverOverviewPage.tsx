@@ -13,7 +13,7 @@ import DriverWeekPicker from '../components/DriverWeekPicker';
 import { useDriverWeek } from '../components/DriverWeekContext';
 import DriverPageHeader from '../components/DriverPageHeader';
 import { apiRequest } from '../lib/api';
-import { DriverDashboardResponse, formatMoney } from './driverArea';
+import { DriverDashboardResponse, formatKm, formatMoney, formatNumber } from './driverArea';
 import './Home.css';
 
 function formatDateTime(value?: string | null) {
@@ -159,7 +159,7 @@ const DriverOverviewPage: React.FC = () => {
                       </article>
                       <article className="dashboard-card dashboard-metric-card">
                         <p className="metric-label">KM da semana</p>
-                        <strong>{(driverHub.statement_metrics?.weekly_km ?? 0).toFixed(1)} km</strong>
+                        <strong>{formatKm(driverHub.statement_metrics?.weekly_km ?? 0)}</strong>
                         <span>Quilometros atribuidos a esta semana</span>
                       </article>
                       <article className="dashboard-card dashboard-metric-card">
@@ -238,7 +238,7 @@ const DriverOverviewPage: React.FC = () => {
                                 <div>
                                   <strong>{formatMoney(transaction.total)}</strong>
                                   <span>
-                                    {formatDateTime(transaction.date)} · {transaction.amount.toFixed(2)} {transaction.unit}
+                                    {formatDateTime(transaction.date)} · {formatNumber(transaction.amount, 2)} {transaction.unit}
                                     {transaction.card ? ` · ${transaction.card}` : ''}
                                   </span>
                                 </div>

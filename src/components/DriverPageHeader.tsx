@@ -17,7 +17,7 @@ type DriverPageHeaderProps = {
   subtitle?: string;
 };
 
-const DriverPageHeader: React.FC<DriverPageHeaderProps> = ({ title, subtitle = 'Area reservada do motorista' }) => (
+const DriverPageHeader: React.FC<DriverPageHeaderProps> = ({ title, subtitle = 'Conta do motorista' }) => (
   <IonHeader translucent>
     <IonToolbar className="public-toolbar driver-toolbar">
       <IonButtons slot="start">
@@ -35,7 +35,7 @@ const DriverPageHeader: React.FC<DriverPageHeaderProps> = ({ title, subtitle = '
         </div>
       </IonTitle>
       <IonButtons slot="end">
-        <IonButton className="public-header-action public-header-lock" routerLink="/tabs/account" aria-label="Area reservada">
+        <IonButton className="public-header-action public-header-lock" routerLink="/tabs/account" aria-label="Entrar na conta">
           <IonIcon icon={lockClosedOutline} />
         </IonButton>
       </IonButtons>

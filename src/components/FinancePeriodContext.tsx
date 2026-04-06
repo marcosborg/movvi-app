@@ -15,7 +15,17 @@ type FinancePeriodContextValue = {
 const FinancePeriodContext = createContext<FinancePeriodContextValue | undefined>(undefined);
 
 function toDateInputValue(date: Date) {
-  return date.toISOString().slice(0, 10);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
+function parseDateInputValue(value: string) {
+  const [year, month, day] = value.split('-').map(Number);
+
+  return new Date(year, (month || 1) - 1, day || 1);
 }
 
 function buildPresetRange(preset: FinancePeriodPreset) {
@@ -49,8 +59,8 @@ function buildPresetRange(preset: FinancePeriodPreset) {
 }
 
 function formatLabel(startDate: string, endDate: string) {
-  const start = new Date(startDate);
-  const end = new Date(endDate);
+  const start = parseDateInputValue(startDate);
+  const end = parseDateInputValue(endDate);
 
   const formatter = new Intl.DateTimeFormat('pt-PT', {
     day: '2-digit',

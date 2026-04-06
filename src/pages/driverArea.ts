@@ -217,6 +217,17 @@ export const euro = new Intl.NumberFormat('pt-PT', {
   currency: 'EUR',
 });
 
+export function formatNumber(value?: number | null, fractionDigits = 1) {
+  return new Intl.NumberFormat('pt-PT', {
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+  }).format(value ?? 0);
+}
+
+export function formatKm(value?: number | null, fractionDigits = 1) {
+  return `${formatNumber(value, fractionDigits)} km`;
+}
+
 export function formatMoney(value?: number | null) {
   return euro.format(value ?? 0);
 }

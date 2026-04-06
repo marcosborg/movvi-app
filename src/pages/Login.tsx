@@ -88,7 +88,7 @@ const Login: React.FC = () => {
               <div className="login-brand">
                 <img src={brandAssets.logo} alt="Movvi" />
               </div>
-              <IonCardSubtitle>Area reservada</IonCardSubtitle>
+              <IonCardSubtitle>Entrar na conta</IonCardSubtitle>
               <IonCardTitle>{showRecovery ? 'Recuperacao' : 'Entrar'}</IonCardTitle>
             </IonCardHeader>
             <IonCardContent>
@@ -180,7 +180,7 @@ const Login: React.FC = () => {
 
                 {!showRecovery ? (
                   <IonButton type="submit" expand="block" disabled={isSubmitting}>
-                    {isSubmitting ? 'A entrar...' : 'Iniciar sessao'}
+                    {isSubmitting ? 'A entrar...' : 'Entrar'}
                   </IonButton>
                 ) : null}
               </form>

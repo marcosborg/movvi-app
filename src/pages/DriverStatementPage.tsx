@@ -12,7 +12,7 @@ import DriverWeekPicker from '../components/DriverWeekPicker';
 import { useDriverWeek } from '../components/DriverWeekContext';
 import DriverPageHeader from '../components/DriverPageHeader';
 import { apiRequest } from '../lib/api';
-import { DriverDashboardResponse, formatMoney, getAccountValue } from './driverArea';
+import { DriverDashboardResponse, formatKm, formatMoney, getAccountValue } from './driverArea';
 import './Home.css';
 
 const DriverStatementPage: React.FC = () => {
@@ -110,7 +110,7 @@ const DriverStatementPage: React.FC = () => {
                     <p>Ganhos brutos: {formatMoney(totalGross)}</p>
                     <p>Ganhos liquidos: {formatMoney(totalNet)}</p>
                     <p>Total da semana: {formatMoney(driverHub.statement_metrics?.total)}</p>
-                    <p>KM da semana: {weeklyKm.toFixed(1)} km</p>
+                    <p>KM da semana: {formatKm(weeklyKm)}</p>
                     <p>Valor por km: {formatMoney(earningsPerKm)}/km</p>
                     <p>Taxa: {formatMoney(vatValue)}</p>
                   </article>

@@ -63,7 +63,7 @@ export const heroSlides = [
     title: 'Movvi em movimento',
     subtitle: 'Uma experiencia publica pensada para descobrir, comparar e reservar.',
     image: toAbsolute('/storage/291/69b5c205436dc_Banner-3.jpg'),
-    cta: 'Area Reservada',
+    cta: 'Entrar na conta',
     href: '/tabs/account',
   },
 ];

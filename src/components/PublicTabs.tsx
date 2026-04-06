@@ -48,7 +48,7 @@ const PublicTabs: React.FC = () => (
       </IonTabButton>
       <IonTabButton tab="account" href="/tabs/account">
         <IonIcon icon={logInOutline} />
-        <IonLabel>Conta</IonLabel>
+        <IonLabel>Entrar</IonLabel>
       </IonTabButton>
     </IonTabBar>
   </IonTabs>
