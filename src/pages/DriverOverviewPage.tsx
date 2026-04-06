@@ -13,7 +13,7 @@ import DriverWeekPicker from '../components/DriverWeekPicker';
 import { useDriverWeek } from '../components/DriverWeekContext';
 import DriverPageHeader from '../components/DriverPageHeader';
 import { apiRequest } from '../lib/api';
-import { DriverDashboardResponse, formatKm, formatMoney, formatNumber } from './driverArea';
+import { DriverDashboardResponse, formatKm, formatMoney, formatNumber, getAccountValue } from './driverArea';
 import './Home.css';
 
 function formatDateTime(value?: string | null) {
@@ -77,6 +77,12 @@ const DriverOverviewPage: React.FC = () => {
 
   const driverHub = dashboard?.driver_hub;
   const activeRoles = dashboard?.viewer.roles ?? user?.roles ?? [];
+  const accountSummary = driverHub?.account_summary;
+  const generalAdjustments = getAccountValue(accountSummary, 'general_adjustments', getAccountValue(accountSummary, 'adjustments'));
+  const rentDiscount = getAccountValue(accountSummary, 'abatimento_aluguer');
+  const minimumBillingDifference = getAccountValue(accountSummary, 'diferenca_faturacao_minima');
+  const cautionReceived = getAccountValue(accountSummary, 'caucao_recebida');
+  const cautionReturned = getAccountValue(accountSummary, 'caucao_devolvida');
 
   return (
     <IonPage>
@@ -156,6 +162,11 @@ const DriverOverviewPage: React.FC = () => {
                         <p className="metric-label">Saldo final</p>
                         <strong>{formatMoney(driverHub.balance?.final)}</strong>
                         <span>Com IVA e retencao aplicados</span>
+                      </article>
+                      <article className="dashboard-card dashboard-metric-card">
+                        <p className="metric-label">Estado semanal</p>
+                        <strong>{driverHub.balance?.manual_status_label || 'Sem estado'}</strong>
+                        <span>Definido manualmente pelo admin</span>
                       </article>
                       <article className="dashboard-card dashboard-metric-card">
                         <p className="metric-label">KM da semana</p>
@@ -269,6 +280,18 @@ const DriverOverviewPage: React.FC = () => {
                         ) : (
                           <p className="dashboard-empty">Sem passagens Via Verde para a semana filtrada.</p>
                         )}
+                      </article>
+
+                      <article className="dashboard-card">
+                        <div className="card-head">
+                          <h3>Resumo financeiro</h3>
+                          <span className="status-pill">Categorias</span>
+                        </div>
+                        <p>Ajustes gerais: {formatMoney(generalAdjustments)}</p>
+                        <p>Abatimento de aluguer: {formatMoney(rentDiscount)}</p>
+                        <p>Fat. minima: {formatMoney(minimumBillingDifference)}</p>
+                        <p>Caucao recebida: {formatMoney(cautionReceived)}</p>
+                        <p>Caucao devolvida: {formatMoney(cautionReturned)}</p>
                       </article>
                     </div>
                   </section>

@@ -148,6 +148,62 @@ const ManagerCompanyReportsPage: React.FC = () => {
               </section>
 
               <section className="dashboard-section">
+                <div className="dashboard-metric-grid">
+                  <article className="dashboard-card dashboard-metric-card">
+                    <p className="metric-label">Alugueres</p>
+                    <strong>{formatMoney(response.data.totals.total_car_hire)}</strong>
+                    <span>Total de aluguer efetivo recebido</span>
+                  </article>
+                  <article className="dashboard-card dashboard-metric-card">
+                    <p className="metric-label">Percentagens</p>
+                    <strong>{formatMoney(response.data.totals.total_percent_value)}</strong>
+                    <span>Total de percentagem cobrada</span>
+                  </article>
+                  <article className="dashboard-card dashboard-metric-card">
+                    <p className="metric-label">Ajustes operacionais</p>
+                    <strong>{formatMoney(response.data.totals.total_adjustments)}</strong>
+                    <span>Ajustes gerais e fat. minima</span>
+                  </article>
+                  <article className="dashboard-card dashboard-metric-card">
+                    <p className="metric-label">Receita operacional</p>
+                    <strong>{formatMoney(
+                      response.data.totals.total_car_hire
+                      + response.data.totals.total_percent_value
+                      + response.data.totals.total_adjustments
+                    )}</strong>
+                    <span>Leitura de socios por tipo de recebimento</span>
+                  </article>
+                </div>
+              </section>
+
+              <section className="dashboard-section">
+                <div className="dashboard-metric-grid">
+                  <article className="dashboard-card dashboard-metric-card">
+                    <p className="metric-label">Ajustes gerais</p>
+                    <strong>{formatMoney(response.data.totals.total_general_adjustments ?? 0)}</strong>
+                    <span>Acertos manuais e gerais</span>
+                  </article>
+                  <article className="dashboard-card dashboard-metric-card">
+                    <p className="metric-label">Fat. minima</p>
+                    <strong>{formatMoney(response.data.totals.total_minimum_billing_difference ?? 0)}</strong>
+                    <span>Debito por minimo nao atingido</span>
+                  </article>
+                  <article className="dashboard-card dashboard-metric-card">
+                    <p className="metric-label">Abatimento aluguer</p>
+                    <strong>{formatMoney(response.data.totals.total_rent_discounts ?? 0)}</strong>
+                    <span>Reducao aplicada ao aluguer</span>
+                  </article>
+                  <article className="dashboard-card dashboard-metric-card">
+                    <p className="metric-label">Caucoes</p>
+                    <strong>{formatMoney((response.data.totals.total_caution_received ?? 0) + (response.data.totals.total_caution_returned ?? 0))}</strong>
+                    <span>
+                      Recebida {formatMoney(response.data.totals.total_caution_received ?? 0)} · Devolvida {formatMoney(response.data.totals.total_caution_returned ?? 0)}
+                    </span>
+                  </article>
+                </div>
+              </section>
+
+              <section className="dashboard-section">
                 <div className="dashboard-card-grid">
                   <HorizontalMetricChart
                     title="Operadores"
@@ -319,6 +375,7 @@ const ManagerCompanyReportsPage: React.FC = () => {
                         </div>
 
                         <div className="report-chip-row">
+                          <span className="status-badge">{driver.manual_status_label || 'Sem estado'}</span>
                           <span className="status-badge">Uber {formatMoney(driver.uber_net)}</span>
                           <span className="status-badge">Bolt {formatMoney(driver.bolt_net)}</span>
                           <span className="status-badge">{formatKm(driver.weekly_km)}</span>
@@ -332,8 +389,13 @@ const ManagerCompanyReportsPage: React.FC = () => {
                           <span>Abastecimento: {formatMoney(driver.fuel)}</span>
                           <span>Via Verde: {formatMoney(driver.via_verde)}</span>
                           <span>Ajustes: {formatMoney(driver.adjustments)}</span>
+                          <span>Ajustes gerais: {formatMoney(driver.general_adjustments ?? driver.adjustments)}</span>
+                          <span>Fat. minima: {formatMoney(driver.diferenca_faturacao_minima ?? 0)}</span>
                           <span>Percentagem: {formatMoney(driver.percent_value)}</span>
                           <span>Aluguer: {formatMoney(driver.car_hire)}</span>
+                          <span>Abatimento aluguer: {formatMoney(driver.abatimento_aluguer ?? 0)}</span>
+                          <span>Caucao recebida: {formatMoney(driver.caucao_recebida ?? 0)}</span>
+                          <span>Caucao devolvida: {formatMoney(driver.caucao_devolvida ?? 0)}</span>
                           <span>Ultimo saldo: {formatMoney(driver.last_balance)}</span>
                           <span>Novo saldo: {formatMoney(driver.new_balance)}</span>
                         </div>

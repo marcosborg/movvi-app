@@ -58,7 +58,13 @@ const DriverStatementPage: React.FC = () => {
   const totalGross = getAccountValue(accountSummary, 'total_gross');
   const totalNet = getAccountValue(accountSummary, 'total_net');
   const adjustments = getAccountValue(accountSummary, 'adjustments');
+  const generalAdjustments = getAccountValue(accountSummary, 'general_adjustments', adjustments);
+  const rentDiscount = getAccountValue(accountSummary, 'abatimento_aluguer');
+  const minimumBillingDifference = getAccountValue(accountSummary, 'diferenca_faturacao_minima');
+  const cautionReceived = getAccountValue(accountSummary, 'caucao_recebida');
+  const cautionReturned = getAccountValue(accountSummary, 'caucao_devolvida');
   const carHire = getAccountValue(accountSummary, 'car_hire');
+  const carHireBase = getAccountValue(accountSummary, 'car_hire_base', carHire);
   const carTrack = getAccountValue(accountSummary, 'car_track');
   const fuelTransactions = getAccountValue(accountSummary, 'fuel_transactions');
   const vatValue = getAccountValue(accountSummary, 'vat_value');
@@ -130,6 +136,8 @@ const DriverStatementPage: React.FC = () => {
                       <h3>Debitos</h3>
                     </div>
                     <p>Aluguer: {formatMoney(carHire)}</p>
+                    {rentDiscount > 0 ? <p>Abatimento de aluguer: {formatMoney(rentDiscount)}</p> : null}
+                    {carHireBase > 0 && rentDiscount > 0 ? <p>Aluguer base: {formatMoney(carHireBase)}</p> : null}
                     <p>Via Verde: {formatMoney(carTrack)}</p>
                     <p>Abastecimentos: {formatMoney(fuelTransactions)}</p>
                     <p>Taxa: {formatMoney(vatValue)}</p>
@@ -140,9 +148,22 @@ const DriverStatementPage: React.FC = () => {
                       <h3>Acertos e saldo</h3>
                     </div>
                     <p>Acertos: {formatMoney(adjustments)}</p>
+                    <p>Ajustes gerais: {formatMoney(generalAdjustments)}</p>
+                    {minimumBillingDifference !== 0 ? (
+                      <p>Diferenca de faturacao minima: {formatMoney(minimumBillingDifference)}</p>
+                    ) : null}
                     <p>Saldo transitado: {formatMoney(driverHub.balance?.last_balance)}</p>
                     <p>Novo saldo: {formatMoney(driverHub.balance?.new_balance)}</p>
                     <p>Saldo final: {formatMoney(driverHub.balance?.final)}</p>
+                  </article>
+
+                  <article className="dashboard-card">
+                    <div className="card-head">
+                      <h3>Movimentos informativos</h3>
+                    </div>
+                    <p>Caucao recebida: {formatMoney(cautionReceived)}</p>
+                    <p>Caucao devolvida: {formatMoney(cautionReturned)}</p>
+                    <p>Gorjetas: {formatMoney(getAccountValue(accountSummary, 'tips_total'))}</p>
                   </article>
                 </div>
               </section>

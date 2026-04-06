@@ -123,12 +123,19 @@ export type CompanyReportResponse = {
       vat_value: number;
       fuel: number;
       adjustments: number;
+      general_adjustments?: number;
+      abatimento_aluguer?: number;
+      diferenca_faturacao_minima?: number;
+      caucao_recebida?: number;
+      caucao_devolvida?: number;
       via_verde: number;
       percent_value: number;
       car_hire: number;
       total: number;
       last_balance: number;
       new_balance: number;
+      manual_status?: string | null;
+      manual_status_label?: string | null;
       validated: boolean;
     }>;
     totals: {
@@ -141,6 +148,11 @@ export type CompanyReportResponse = {
       total_iva_value: number;
       total_fuel_transactions: number;
       total_adjustments: number;
+      total_general_adjustments?: number;
+      total_rent_discounts?: number;
+      total_minimum_billing_difference?: number;
+      total_caution_received?: number;
+      total_caution_returned?: number;
       total_car_track: number;
       total_percent_value: number;
       total_car_hire: number;

@@ -72,7 +72,7 @@ export type DriverDashboardResponse = {
       weekly_km: number;
       earnings_per_km: number;
     } | null;
-    account_summary: Record<string, unknown> | null;
+    account_summary: DriverAccountSummary | null;
     balance: {
       final: number;
       value: number;
@@ -80,6 +80,8 @@ export type DriverDashboardResponse = {
       new_balance: number;
       vat: number;
       rf: number;
+      manual_status: string | null;
+      manual_status_label: string | null;
     } | null;
     vehicle: {
       id: number;
@@ -116,6 +118,38 @@ export type DriverDashboardResponse = {
       status: string;
     }>;
   };
+};
+
+export type DriverAccountSummary = {
+  total_gross?: number;
+  total_net?: number;
+  adjustments?: number;
+  general_adjustments?: number;
+  abatimento_aluguer?: number;
+  diferenca_faturacao_minima?: number;
+  caucao_recebida?: number;
+  caucao_devolvida?: number;
+  car_hire?: number;
+  car_hire_base?: number;
+  car_track?: number;
+  fuel_transactions?: number;
+  vat_value?: number;
+  weekly_km?: number;
+  earnings_per_km?: number;
+  tips_total?: number;
+  iva_value?: number;
+  percent_value?: number;
+  driver_total?: number;
+  total?: number;
+  uber?: {
+    uber_gross?: number;
+    uber_net?: number;
+  };
+  bolt?: {
+    bolt_gross?: number;
+    bolt_net?: number;
+  };
+  [key: string]: unknown;
 };
 
 export type DriverWeekSummary = {
@@ -232,7 +266,7 @@ export function formatMoney(value?: number | null) {
   return euro.format(value ?? 0);
 }
 
-export function getAccountValue(accountSummary: Record<string, unknown> | null | undefined, path: string, fallback = 0) {
+export function getAccountValue(accountSummary: DriverAccountSummary | null | undefined, path: string, fallback = 0) {
   if (!accountSummary) {
     return fallback;
   }
