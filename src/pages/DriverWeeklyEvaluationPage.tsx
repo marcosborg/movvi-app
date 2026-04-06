@@ -23,6 +23,8 @@ type EvaluationFormState = {
   front_tire_status: string;
   rear_tire_status: string;
   oil_level: string;
+  has_panel_warning: boolean;
+  panel_warning_notes: string;
   has_vehicle_issue: boolean;
   issue_notes: string;
 };
@@ -34,6 +36,8 @@ const emptyForm: EvaluationFormState = {
   front_tire_status: '',
   rear_tire_status: '',
   oil_level: '',
+  has_panel_warning: false,
+  panel_warning_notes: '',
   has_vehicle_issue: false,
   issue_notes: '',
 };
@@ -47,6 +51,7 @@ const DriverWeeklyEvaluationPage: React.FC = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [panelPhoto, setPanelPhoto] = useState<File | null>(null);
 
   useEffect(() => {
     void loadEvaluation();
@@ -87,9 +92,12 @@ const DriverWeeklyEvaluationPage: React.FC = () => {
         front_tire_status: response.evaluation?.front_tire_status || '',
         rear_tire_status: response.evaluation?.rear_tire_status || '',
         oil_level: response.evaluation?.oil_level || '',
+        has_panel_warning: response.evaluation?.has_panel_warning || false,
+        panel_warning_notes: response.evaluation?.panel_warning_notes || '',
         has_vehicle_issue: response.evaluation?.has_vehicle_issue || false,
         issue_notes: response.evaluation?.issue_notes || '',
       });
+      setPanelPhoto(null);
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : 'Nao foi possivel carregar a avaliacao semanal.');
       setData(null);
@@ -120,20 +128,27 @@ const DriverWeeklyEvaluationPage: React.FC = () => {
     setSuccess(null);
 
     try {
+      const body = new FormData();
+      body.append('date', selectedWeek);
+      body.append('vehicle_id', String(Number(form.vehicle_id)));
+      body.append('final_mileage', String(Number(form.final_mileage)));
+      body.append('fuel_level', form.fuel_level);
+      body.append('front_tire_status', form.front_tire_status);
+      body.append('rear_tire_status', form.rear_tire_status);
+      body.append('oil_level', form.oil_level);
+      body.append('has_panel_warning', form.has_panel_warning ? '1' : '0');
+      body.append('panel_warning_notes', form.has_panel_warning ? form.panel_warning_notes : '');
+      body.append('has_vehicle_issue', form.has_vehicle_issue ? '1' : '0');
+      body.append('issue_notes', form.has_vehicle_issue ? form.issue_notes : '');
+
+      if (form.has_panel_warning && panelPhoto) {
+        body.append('panel_photo', panelPhoto);
+      }
+
       const response = await apiRequest<DriverReceiptMutationResponse>('/api/v1/mobile/driver/weekly-evaluation', {
         method: 'POST',
         token,
-        body: JSON.stringify({
-          date: selectedWeek,
-          vehicle_id: Number(form.vehicle_id),
-          final_mileage: Number(form.final_mileage),
-          fuel_level: form.fuel_level,
-          front_tire_status: form.front_tire_status,
-          rear_tire_status: form.rear_tire_status,
-          oil_level: form.oil_level,
-          has_vehicle_issue: form.has_vehicle_issue,
-          issue_notes: form.has_vehicle_issue ? form.issue_notes : '',
-        }),
+        body,
       });
 
       setSuccess(response.message);
@@ -149,7 +164,7 @@ const DriverWeeklyEvaluationPage: React.FC = () => {
 
   return (
     <IonPage>
-      <DriverPageHeader title="Semanal" subtitle="Avaliação semanal da viatura" />
+      <DriverPageHeader title="Semanal" subtitle="Avaliacao semanal da viatura" />
       <IonContent fullscreen className="home-page">
         <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
           <IonRefresherContent />
@@ -160,13 +175,13 @@ const DriverWeeklyEvaluationPage: React.FC = () => {
 
           <section className="hero-panel">
             <div className="hero-copy-block">
-              <p className="hero-eyebrow">Avaliação semanal</p>
+              <p className="hero-eyebrow">Avaliacao semanal</p>
               <h1>{data?.driver?.name || 'Motorista'}</h1>
               <p className="hero-copy">
-                Regista quilometragem final, combustível, pneus, óleo e eventuais problemas da viatura.
+                Regista quilometragem final, combustivel, pneus, oleo, painel e eventuais problemas da viatura.
               </p>
               <p className="hero-copy hero-copy-muted">
-                A submissão fica associada à semana ativa e pode ser atualizada para a mesma viatura.
+                A submissao fica associada a semana ativa e pode ser atualizada para a mesma viatura.
               </p>
             </div>
             <div className="hero-side">
@@ -193,7 +208,7 @@ const DriverWeeklyEvaluationPage: React.FC = () => {
                   <article className="dashboard-card dashboard-metric-card">
                     <p className="metric-label">Semana ativa</p>
                     <strong>{data.week.start_date} a {data.week.end_date}</strong>
-                    <span>O formulário fica guardado nesta janela temporal.</span>
+                    <span>O formulario fica guardado nesta janela temporal.</span>
                   </article>
                   <article className="dashboard-card dashboard-metric-card">
                     <p className="metric-label">Estado</p>
@@ -208,7 +223,7 @@ const DriverWeeklyEvaluationPage: React.FC = () => {
                   <div className="card-head">
                     <div>
                       <h3>Checklist da semana</h3>
-                      <p>Escolhe a viatura e preenche os campos obrigatórios.</p>
+                      <p>Escolhe a viatura e preenche os campos obrigatorios.</p>
                     </div>
                   </div>
 
@@ -240,7 +255,7 @@ const DriverWeeklyEvaluationPage: React.FC = () => {
                         onChange={(event) => setForm((current) => ({ ...current, final_mileage: event.target.value }))}
                       />
 
-                      <label className="form-label" htmlFor="weekly-eval-fuel">Combustível / energia</label>
+                      <label className="form-label" htmlFor="weekly-eval-fuel">Combustivel / energia</label>
                       <select
                         id="weekly-eval-fuel"
                         className="text-field"
@@ -279,7 +294,7 @@ const DriverWeeklyEvaluationPage: React.FC = () => {
                         ))}
                       </select>
 
-                      <label className="form-label" htmlFor="weekly-eval-oil">Nível do óleo</label>
+                      <label className="form-label" htmlFor="weekly-eval-oil">Nivel do oleo</label>
                       <select
                         id="weekly-eval-oil"
                         className="text-field"
@@ -295,6 +310,52 @@ const DriverWeeklyEvaluationPage: React.FC = () => {
                       <label className="inspection-checkbox">
                         <input
                           type="checkbox"
+                          checked={form.has_panel_warning}
+                          onChange={(event) => {
+                            const checked = event.target.checked;
+                            setForm((current) => ({
+                              ...current,
+                              has_panel_warning: checked,
+                              panel_warning_notes: checked ? current.panel_warning_notes : '',
+                            }));
+                            if (!checked) {
+                              setPanelPhoto(null);
+                            }
+                          }}
+                        />
+                        <span>Existem avisos no painel</span>
+                      </label>
+
+                      {form.has_panel_warning ? (
+                        <>
+                          <label className="form-label" htmlFor="weekly-eval-panel-notes">Descreve os avisos no painel</label>
+                          <textarea
+                            id="weekly-eval-panel-notes"
+                            className="text-field text-area-field"
+                            value={form.panel_warning_notes}
+                            onChange={(event) => setForm((current) => ({ ...current, panel_warning_notes: event.target.value }))}
+                          />
+
+                          <label className="form-label" htmlFor="weekly-eval-panel-photo">Foto do painel</label>
+                          <input
+                            id="weekly-eval-panel-photo"
+                            className="text-field"
+                            type="file"
+                            accept="image/*"
+                            onChange={(event) => setPanelPhoto(event.target.files?.[0] ?? null)}
+                          />
+                          {panelPhoto ? <p className="helper-text">{panelPhoto.name}</p> : null}
+                          {!panelPhoto && data.evaluation?.panel_photo ? (
+                            <p className="helper-text">
+                              Foto atual: <a href={data.evaluation.panel_photo.url} target="_blank" rel="noreferrer">{data.evaluation.panel_photo.name}</a>
+                            </p>
+                          ) : null}
+                        </>
+                      ) : null}
+
+                      <label className="inspection-checkbox">
+                        <input
+                          type="checkbox"
                           checked={form.has_vehicle_issue}
                           onChange={(event) => setForm((current) => ({
                             ...current,
@@ -302,7 +363,7 @@ const DriverWeeklyEvaluationPage: React.FC = () => {
                             issue_notes: event.target.checked ? current.issue_notes : '',
                           }))}
                         />
-                        <span>Existe algum problema no veículo</span>
+                        <span>Existe algum problema no veiculo</span>
                       </label>
 
                       {form.has_vehicle_issue ? (
@@ -328,15 +389,16 @@ const DriverWeeklyEvaluationPage: React.FC = () => {
                             || !form.front_tire_status
                             || !form.rear_tire_status
                             || !form.oil_level
+                            || (form.has_panel_warning && !panelPhoto && !data.evaluation?.panel_photo)
                             || (form.has_vehicle_issue && form.issue_notes.trim() === '')
                           }
                         >
-                          {isSaving ? 'A guardar...' : (data.evaluation ? 'Atualizar avaliação' : 'Submeter avaliação')}
+                          {isSaving ? 'A guardar...' : (data.evaluation ? 'Atualizar avaliacao' : 'Submeter avaliacao')}
                         </IonButton>
                       </div>
                     </div>
                   ) : (
-                    <p className="dashboard-empty">Não foi encontrada nenhuma viatura associada a este motorista na semana escolhida.</p>
+                    <p className="dashboard-empty">Nao foi encontrada nenhuma viatura associada a este motorista na semana escolhida.</p>
                   )}
                 </article>
               </section>

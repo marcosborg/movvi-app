@@ -240,6 +240,9 @@ export type DriverWeeklyEvaluationResponse = {
     front_tire_status: string | null;
     rear_tire_status: string | null;
     oil_level: string | null;
+    has_panel_warning: boolean;
+    panel_warning_notes: string | null;
+    panel_photo: { name: string; url: string } | null;
     has_vehicle_issue: boolean;
     issue_notes: string | null;
     submitted_at: string | null;
