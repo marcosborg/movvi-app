@@ -36,7 +36,15 @@ const DriverWeekPicker: React.FC = () => {
 
       setWeeks(response.weeks);
 
-      if (!selectedWeek && response.weeks.length > 0) {
+      if (response.weeks.length === 0) {
+        return;
+      }
+
+      const hasSelectedWeek = selectedWeek
+        ? response.weeks.some((week) => week.date_key === selectedWeek)
+        : false;
+
+      if (!hasSelectedWeek) {
         setSelectedWeek(response.weeks[0].date_key);
       }
     } catch {

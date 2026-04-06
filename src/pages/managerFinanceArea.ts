@@ -136,6 +136,14 @@ export type CompanyReportResponse = {
       new_balance: number;
       manual_status?: string | null;
       manual_status_label?: string | null;
+      receipt_check?: {
+        status?: 'match' | 'mismatch' | 'missing' | null;
+        platform_net_total: number;
+        received_in_account: number | null;
+        difference: number | null;
+        receipt_id?: number | null;
+        amount_transferred?: number | null;
+      };
       validated: boolean;
     }>;
     totals: {
@@ -156,6 +164,10 @@ export type CompanyReportResponse = {
       total_car_track: number;
       total_percent_value: number;
       total_car_hire: number;
+      receipt_check_match_count?: number;
+      receipt_check_mismatch_count?: number;
+      receipt_check_missing_count?: number;
+      receipt_check_difference_total?: number;
     };
   };
 };

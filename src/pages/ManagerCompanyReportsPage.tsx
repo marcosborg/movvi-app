@@ -125,14 +125,39 @@ const ManagerCompanyReportsPage: React.FC = () => {
               <section className="dashboard-section">
                 <div className="dashboard-metric-grid">
                   <article className="dashboard-card dashboard-metric-card">
+                    <p className="metric-label">Duplo check OK</p>
+                    <strong>{response.data.totals.receipt_check_match_count ?? 0}</strong>
+                    <span>Motoristas sem diferenca entre Uber/Bolt e recebido</span>
+                  </article>
+                  <article className="dashboard-card dashboard-metric-card">
+                    <p className="metric-label">Duplo check divergente</p>
+                    <strong>{response.data.totals.receipt_check_mismatch_count ?? 0}</strong>
+                    <span>Recibos validados com diferenca face ao liquido</span>
+                  </article>
+                  <article className="dashboard-card dashboard-metric-card">
+                    <p className="metric-label">Sem recibo validado</p>
+                    <strong>{response.data.totals.receipt_check_missing_count ?? 0}</strong>
+                    <span>Falta confronto com valor recebido em conta</span>
+                  </article>
+                  <article className="dashboard-card dashboard-metric-card">
                     <p className="metric-label">Liquido Uber</p>
                     <strong>{formatMoney(response.data.totals.net_uber)}</strong>
                     <span>Total semanal do operador Uber</span>
                   </article>
+                </div>
+              </section>
+
+              <section className="dashboard-section">
+                <div className="dashboard-metric-grid">
                   <article className="dashboard-card dashboard-metric-card">
                     <p className="metric-label">Liquido Bolt</p>
                     <strong>{formatMoney(response.data.totals.net_bolt)}</strong>
                     <span>Total semanal do operador Bolt</span>
+                  </article>
+                  <article className="dashboard-card dashboard-metric-card">
+                    <p className="metric-label">Diferenca agregada</p>
+                    <strong>{formatMoney(response.data.totals.receipt_check_difference_total ?? 0)}</strong>
+                    <span>Soma das diferencas entre liquido e recebido</span>
                   </article>
                   <article className="dashboard-card dashboard-metric-card">
                     <p className="metric-label">Quilometros</p>
@@ -378,6 +403,19 @@ const ManagerCompanyReportsPage: React.FC = () => {
                           <span className="status-badge">{driver.manual_status_label || 'Sem estado'}</span>
                           <span className="status-badge">Uber {formatMoney(driver.uber_net)}</span>
                           <span className="status-badge">Bolt {formatMoney(driver.bolt_net)}</span>
+                          <span className={`status-badge ${
+                            driver.receipt_check?.status === 'match'
+                              ? 'status-available'
+                              : driver.receipt_check?.status === 'mismatch'
+                                ? 'status-planned'
+                                : ''
+                          }`}>
+                            {driver.receipt_check?.status === 'match'
+                              ? 'Duplo check OK'
+                              : driver.receipt_check?.status === 'mismatch'
+                                ? 'Duplo check divergente'
+                                : 'Sem recibo validado'}
+                          </span>
                           <span className="status-badge">{formatKm(driver.weekly_km)}</span>
                           <span className="status-badge">{formatMoney(driver.earnings_per_km)}/km</span>
                         </div>
@@ -396,6 +434,8 @@ const ManagerCompanyReportsPage: React.FC = () => {
                           <span>Abatimento aluguer: {formatMoney(driver.abatimento_aluguer ?? 0)}</span>
                           <span>Caucao recebida: {formatMoney(driver.caucao_recebida ?? 0)}</span>
                           <span>Caucao devolvida: {formatMoney(driver.caucao_devolvida ?? 0)}</span>
+                          <span>Recebido em conta: {driver.receipt_check?.received_in_account != null ? formatMoney(driver.receipt_check.received_in_account) : 'Sem recibo validado'}</span>
+                          <span>Dif. conta: {driver.receipt_check?.difference != null ? formatMoney(driver.receipt_check.difference) : '-'}</span>
                           <span>Ultimo saldo: {formatMoney(driver.last_balance)}</span>
                           <span>Novo saldo: {formatMoney(driver.new_balance)}</span>
                         </div>
