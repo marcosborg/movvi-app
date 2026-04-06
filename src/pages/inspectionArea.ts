@@ -42,6 +42,10 @@ export type InspectionCreateOptionsResponse = {
     key: string;
     label: string;
   }>;
+  routine_presets: Array<{
+    key: string;
+    label: string;
+  }>;
   vehicles: Array<{
     id: number;
     license_plate: string;
@@ -82,6 +86,8 @@ export type InspectionShowResponse = {
       name: string | null;
     };
     report_pdf_url: string | null;
+    enabled_steps?: number[];
+    routine_preset?: string;
     transfer_context?: {
       mode: string;
       mode_label: string;
@@ -181,4 +187,10 @@ export function getStepEntries(steps: Record<string, string>) {
   return Object.entries(steps)
     .map(([key, label]) => ({ key: Number(key), label }))
     .sort((a, b) => a.key - b.key);
+}
+
+export function getEnabledStepEntries(steps: Record<string, string>, enabledSteps?: number[]) {
+  const allowed = new Set(enabledSteps && enabledSteps.length ? enabledSteps : Object.keys(steps).map((key) => Number(key)));
+
+  return getStepEntries(steps).filter((step) => allowed.has(step.key));
 }

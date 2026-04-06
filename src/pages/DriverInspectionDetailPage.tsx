@@ -17,7 +17,7 @@ import { apiRequest } from '../lib/api';
 import {
   accessoryLabels,
   documentLabels,
-  getStepEntries,
+  getEnabledStepEntries,
   InspectionMutationResponse,
   InspectionShowResponse,
   operationalLabels,
@@ -95,7 +95,7 @@ const DriverInspectionDetailPage: React.FC = () => {
 
   const currentStep = data?.inspection.current_step ?? 1;
   const isManager = Boolean(data?.meta.is_admin);
-  const stepEntries = data ? getStepEntries(data.steps) : [];
+  const stepEntries = data ? getEnabledStepEntries(data.steps, data.inspection.enabled_steps) : [];
   const damageParts = useMemo(() => {
     const location = damageForm.location;
     if (!location || !data) {
@@ -634,13 +634,13 @@ const DriverInspectionDetailPage: React.FC = () => {
                     {data.inspection.vehicle.brand || ''} {data.inspection.vehicle.model || ''} · {data.inspection.driver.name || 'Sem driver'}
                   </p>
                   <p className="hero-copy hero-copy-muted">
-                    Estado atual: {data.inspection.status_label}. Etapa {currentStep} de {stepEntries.length}.
+                    Estado atual: {data.inspection.status_label}. Etapa {Math.max(1, stepEntries.findIndex((step) => step.key === currentStep) + 1)} de {stepEntries.length}.
                   </p>
                 </div>
                 <div className="hero-side">
                   <div className="role-chip-row">
                     <span className="role-chip">{data.inspection.status_label}</span>
-                    <span className="role-chip">Etapa {currentStep}</span>
+                    <span className="role-chip">Etapa {Math.max(1, stepEntries.findIndex((step) => step.key === currentStep) + 1)}</span>
                   </div>
                   {data.inspection.report_pdf_url ? (
                     <a className="receipt-link" href={data.inspection.report_pdf_url} target="_blank" rel="noreferrer">

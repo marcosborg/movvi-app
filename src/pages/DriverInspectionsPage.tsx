@@ -32,6 +32,7 @@ const DriverInspectionsPage: React.FC = () => {
   const [driverQuery, setDriverQuery] = useState('');
   const [createForm, setCreateForm] = useState({
     type: 'handover',
+    routine_preset: 'full',
     vehicle_id: '',
     driver_id: '',
   });
@@ -90,6 +91,7 @@ const DriverInspectionsPage: React.FC = () => {
 
       setCreateForm((current) => ({
         type: createOptions.types.find((type) => type.key === current.type)?.key || createOptions.types[0]?.key || 'handover',
+        routine_preset: createOptions.routine_presets.find((preset) => preset.key === current.routine_preset)?.key || createOptions.routine_presets[0]?.key || 'full',
         vehicle_id: current.vehicle_id || firstVehicleId,
         driver_id: current.driver_id || (defaultDriverId === 'null' ? '' : defaultDriverId),
       }));
@@ -119,6 +121,7 @@ const DriverInspectionsPage: React.FC = () => {
         token,
         body: JSON.stringify({
           type: createForm.type,
+          routine_preset: createForm.routine_preset,
           vehicle_id: Number(createForm.vehicle_id),
           driver_id: createForm.driver_id ? Number(createForm.driver_id) : null,
         }),
@@ -271,6 +274,18 @@ const DriverInspectionsPage: React.FC = () => {
                     >
                       {(options?.types ?? []).map((type) => (
                         <option key={type.key} value={type.key}>{type.label}</option>
+                      ))}
+                    </select>
+
+                    <label className="form-label" htmlFor="inspection-routine">Modo</label>
+                    <select
+                      id="inspection-routine"
+                      className="text-field"
+                      value={createForm.routine_preset}
+                      onChange={(event) => setCreateForm((current) => ({ ...current, routine_preset: event.target.value }))}
+                    >
+                      {(options?.routine_presets ?? []).map((preset) => (
+                        <option key={preset.key} value={preset.key}>{preset.label}</option>
                       ))}
                     </select>
 
