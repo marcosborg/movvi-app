@@ -111,6 +111,9 @@ const DriverOverviewPage: React.FC = () => {
                 ))}
               </div>
               <div className="dashboard-actions">
+                <IonButton fill="outline" routerLink="/dashboard/preferences">
+                  Ordenar abas
+                </IonButton>
                 <IonButton fill="outline" routerLink="/tabs/account">
                   Conta
                 </IonButton>

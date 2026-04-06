@@ -8,16 +8,6 @@ import {
 } from '@ionic/react';
 import { useAuth } from '../auth/AuthContext';
 import { Redirect, Route } from 'react-router-dom';
-import {
-  analyticsOutline,
-  barChartOutline,
-  carSportOutline,
-  clipboardOutline,
-  documentTextOutline,
-  documentsOutline,
-  gridOutline,
-  swapHorizontalOutline,
-} from 'ionicons/icons';
 import { FinancePeriodProvider } from './FinancePeriodContext';
 import { DriverWeekProvider } from './DriverWeekContext';
 import AdminTransferPage from '../pages/AdminTransferPage';
@@ -27,9 +17,12 @@ import DriverInspectionsPage from '../pages/DriverInspectionsPage';
 import DriverOverviewPage from '../pages/DriverOverviewPage';
 import DriverReceiptsPage from '../pages/DriverReceiptsPage';
 import DriverStatementPage from '../pages/DriverStatementPage';
+import DriverTabPreferencesPage from '../pages/DriverTabPreferencesPage';
 import DriverWeeklyEvaluationPage from '../pages/DriverWeeklyEvaluationPage';
 import ManagerCompanyReportsPage from '../pages/ManagerCompanyReportsPage';
 import ManagerFinancePage from '../pages/ManagerFinancePage';
+import { getVisibleDriverTabs, readDriverTabOrder, sortDriverTabsByPreference } from './driverTabPreferences';
+import { useEffect, useMemo, useState } from 'react';
 
 const DriverTabs: React.FC = () => {
   const { user, driver } = useAuth();
@@ -38,6 +31,22 @@ const DriverTabs: React.FC = () => {
   const canViewFinance = isAdmin || isGestor;
   const hasDriverProfile = Boolean(driver);
   const adminOperationsOnlyMode = isAdmin && !hasDriverProfile;
+  const [preferredOrder, setPreferredOrder] = useState<string[]>(() => readDriverTabOrder());
+
+  useEffect(() => {
+    const syncOrder = () => setPreferredOrder(readDriverTabOrder());
+    window.addEventListener('movvi:driver-tab-order-changed', syncOrder);
+    return () => window.removeEventListener('movvi:driver-tab-order-changed', syncOrder);
+  }, []);
+
+  const visibleTabs = useMemo(() => {
+    return sortDriverTabsByPreference(getVisibleDriverTabs({
+      isAdmin,
+      isGestor,
+      canViewFinance,
+      hasDriverProfile,
+    }), preferredOrder);
+  }, [canViewFinance, hasDriverProfile, isAdmin, isGestor, preferredOrder]);
 
   return (
     <DriverWeekProvider>
@@ -83,6 +92,9 @@ const DriverTabs: React.FC = () => {
         <Route exact path="/dashboard/weekly-evaluation">
           <DriverWeeklyEvaluationPage />
         </Route>
+        <Route exact path="/dashboard/preferences">
+          <DriverTabPreferencesPage />
+        </Route>
         <Route exact path="/dashboard">
           <Redirect to={
              hasDriverProfile
@@ -97,60 +109,12 @@ const DriverTabs: React.FC = () => {
       </IonRouterOutlet>
 
       <IonTabBar slot="bottom" className="driver-tabbar">
-        {canViewFinance ? (
-          <IonTabButton tab="finance" href="/dashboard/finance">
-            <IonIcon icon={barChartOutline} />
-            <IonLabel>Financeiro</IonLabel>
+        {visibleTabs.map((tab) => (
+          <IonTabButton key={tab.key} tab={tab.key} href={tab.href}>
+            <IonIcon icon={tab.icon} />
+            <IonLabel>{tab.label}</IonLabel>
           </IonTabButton>
-        ) : null}
-        {canViewFinance ? (
-          <IonTabButton tab="company-reports" href="/dashboard/company-reports">
-            <IonIcon icon={clipboardOutline} />
-            <IonLabel>Relatorios</IonLabel>
-          </IonTabButton>
-        ) : null}
-        {hasDriverProfile ? (
-          <IonTabButton tab="overview" href="/dashboard/overview">
-            <IonIcon icon={gridOutline} />
-            <IonLabel>Resumo</IonLabel>
-          </IonTabButton>
-        ) : null}
-        {hasDriverProfile ? (
-          <IonTabButton tab="statement" href="/dashboard/statement">
-            <IonIcon icon={analyticsOutline} />
-            <IonLabel>Extrato</IonLabel>
-          </IonTabButton>
-        ) : null}
-        {hasDriverProfile ? (
-          <IonTabButton tab="receipts" href="/dashboard/receipts">
-            <IonIcon icon={documentTextOutline} />
-            <IonLabel>Recibos</IonLabel>
-          </IonTabButton>
-        ) : null}
-        {isAdmin ? (
-          <IonTabButton tab="inspections" href="/dashboard/inspections">
-            <IonIcon icon={carSportOutline} />
-            <IonLabel>Inspecoes</IonLabel>
-          </IonTabButton>
-        ) : null}
-        {isAdmin ? (
-          <IonTabButton tab="transfers" href="/dashboard/transfers">
-            <IonIcon icon={swapHorizontalOutline} />
-            <IonLabel>Passagens</IonLabel>
-          </IonTabButton>
-        ) : null}
-        {hasDriverProfile ? (
-          <IonTabButton tab="weekly-evaluation" href="/dashboard/weekly-evaluation">
-            <IonIcon icon={clipboardOutline} />
-            <IonLabel>Semanal</IonLabel>
-          </IonTabButton>
-        ) : null}
-        {hasDriverProfile ? (
-          <IonTabButton tab="documents" href="/dashboard/documents">
-            <IonIcon icon={documentsOutline} />
-            <IonLabel>Documentos</IonLabel>
-          </IonTabButton>
-        ) : null}
+        ))}
       </IonTabBar>
       </IonTabs>
       </FinancePeriodProvider>
