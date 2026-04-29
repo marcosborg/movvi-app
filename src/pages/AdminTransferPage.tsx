@@ -55,7 +55,7 @@ const AdminTransferPage: React.FC = () => {
   const [vehicleSearch, setVehicleSearch] = useState('');
   const [targetDriverSearch, setTargetDriverSearch] = useState('');
   const [mode, setMode] = useState<TransferMode>('passagem');
-  const [showAllOptions, setShowAllOptions] = useState(false);
+  const [showAllOptions, setShowAllOptions] = useState(true);
   const [showInspectionChoice, setShowInspectionChoice] = useState(false);
   const [form, setForm] = useState({
     vehicle_id: '',
