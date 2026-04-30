@@ -34,6 +34,7 @@ export const PUBLIC_SITE_URL =
   import.meta.env.VITE_PUBLIC_SITE_URL?.replace(/\/$/, '') || PRODUCTION_SITE_URL;
 
 const API_ACTIVITY_EVENT = 'movvi:api-activity';
+const API_REQUEST_TIMEOUT_MS = 20000;
 let activeApiRequests = 0;
 
 function notifyApiActivity() {
@@ -99,8 +100,18 @@ type ApiRequestOptions = RequestInit & {
 };
 
 export async function apiRequest<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
-  const { token, headers, ...rest } = options;
+  const { token, headers, signal, ...rest } = options;
   const isFormData = typeof FormData !== 'undefined' && rest.body instanceof FormData;
+  const controller = new AbortController();
+  const timeout = globalThis.setTimeout(() => controller.abort(), API_REQUEST_TIMEOUT_MS);
+
+  if (signal) {
+    if (signal.aborted) {
+      controller.abort();
+    } else {
+      signal.addEventListener('abort', () => controller.abort(), { once: true });
+    }
+  }
 
   let response: Response;
   beginApiActivity();
@@ -114,14 +125,19 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...headers,
       },
+      signal: controller.signal,
     });
   } catch (error) {
     endApiActivity();
     throw new ApiError(
-      `Nao foi possivel ligar a API em ${API_BASE_URL}. Verifica o host configurado para este dispositivo.`,
+      error instanceof Error && error.name === 'AbortError'
+        ? `A API em ${API_BASE_URL} demorou demasiado a responder. Verifica se o backend local esta ativo.`
+        : `Nao foi possivel ligar a API em ${API_BASE_URL}. Verifica o host configurado para este dispositivo.`,
       0,
       error,
     );
+  } finally {
+    globalThis.clearTimeout(timeout);
   }
 
   try {
