@@ -19,6 +19,7 @@
   --border-radius: 22px;
   --padding-start: 18px;
   --inner-padding-end: 18px;
+  --min-height: 46px;
   width: 100%;
   max-width: 100%;
   min-width: 0;
@@ -33,6 +34,20 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.driver-week-picker ion-select {
+  --color: #2e1d18;
+  --placeholder-color: #6f5146;
+  width: 100%;
+  color: #2e1d18;
+  font-weight: 700;
+}
+
+.driver-week-picker ion-select::part(text),
+.driver-week-picker ion-select::part(icon) {
+  color: #2e1d18;
+  opacity: 1;
 }
 
 .hero-panel,

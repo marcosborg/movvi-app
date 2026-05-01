@@ -58,8 +58,8 @@ const DriverWeekPicker: React.FC = () => {
 
   return (
     <IonItem lines="none" className="driver-week-picker">
-      <IonLabel>Semana</IonLabel>
       <IonSelect
+        aria-label="Semana"
         interface="action-sheet"
         value={selectedWeek ?? weeks[0]?.date_key}
         onIonChange={(event) => setSelectedWeek(event.detail.value ?? null)}
