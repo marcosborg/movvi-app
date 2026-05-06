@@ -218,6 +218,14 @@ export type DriverDocumentsResponse = {
   }>;
 };
 
+export type CompanyDocumentsResponse = {
+  documents: Array<{
+    id: number;
+    name: string | null;
+    files: Array<{ name: string; url: string }>;
+  }>;
+};
+
 export type DriverWeeklyEvaluationResponse = {
   driver: DriverDashboardResponse['driver_hub']['driver'];
   week: DriverDashboardResponse['week'];

@@ -297,6 +297,7 @@ const DriverReceiptsPage: React.FC = () => {
                         galleryLabel="Galeria / ficheiros"
                         onFilesSelected={(files) => setReimbursementFile(files?.[0] ?? null)}
                       />
+                      <p className="reimbursement-warning">AQUI NAO DEVE COLOCAR RECIBOS VERDES.</p>
                       {reimbursementFile ? <p className="file-chip">{reimbursementFile.name}</p> : null}
                       <IonButton
                         expand="block"

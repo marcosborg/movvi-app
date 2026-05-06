@@ -157,6 +157,25 @@
   gap: 14px;
 }
 
+.document-tabs {
+  width: 100%;
+  padding: 4px;
+  border-radius: 18px;
+  background: #f4ece5;
+  border: 1px solid rgba(184, 129, 103, 0.12);
+}
+
+.document-tabs ion-segment-button {
+  --border-radius: 14px;
+  --color: #6f5145;
+  --color-checked: #2e1d18;
+  --indicator-color: #fffaf6;
+  min-height: 42px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .dashboard-section-heading {
   display: flex;
   justify-content: space-between;
@@ -473,6 +492,17 @@
   color: #8d3e25;
   font-weight: 700;
   text-decoration: none;
+}
+
+.reimbursement-warning {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 2px solid #d97706;
+  background: #fff3d8;
+  color: #7a3b00;
+  font-weight: 800;
+  line-height: 1.35;
 }
 
 .dashboard-warning {
