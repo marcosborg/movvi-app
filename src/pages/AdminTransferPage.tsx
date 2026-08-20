@@ -240,7 +240,7 @@ const AdminTransferPage: React.FC = () => {
             </div>
             <div className="hero-side">
               <div className="role-chip-row">
-                <span className="role-chip">{user?.name || 'Admin'}</span>
+                <span className="role-chip">{user?.name || 'Administrador'}</span>
                 <span className="role-chip">{transferModeOptions.find((option) => option.key === mode)?.label || 'Operacao'}</span>
               </div>
             </div>
@@ -411,7 +411,7 @@ const AdminTransferPage: React.FC = () => {
             <div className="dashboard-card-grid">
               <article className="dashboard-card">
                 <h3>Com inspeção</h3>
-                <p>Abre o wizard de inspeção e a alteração da utilização só fica concluída no fecho.</p>
+                <p>Abre o assistente de inspeção, e a alteração do uso só é concluída ao finalizar.</p>
                 <div className="dashboard-actions dashboard-actions-top">
                   <IonButton onClick={() => void executeTransfer(true)} disabled={isCreating}>
                     {isCreating ? 'A iniciar...' : 'Sim, abrir inspeção'}

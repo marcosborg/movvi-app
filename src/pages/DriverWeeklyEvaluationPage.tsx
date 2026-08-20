@@ -222,7 +222,7 @@ const DriverWeeklyEvaluationPage: React.FC = () => {
                 <article className="dashboard-card">
                   <div className="card-head">
                     <div>
-                      <h3>Checklist da semana</h3>
+                      <h3>Lista de verificação da semana</h3>
                       <p>Escolhe a viatura e preenche os campos obrigatorios.</p>
                     </div>
                   </div>

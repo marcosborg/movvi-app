@@ -96,7 +96,7 @@ const DriverOverviewPage: React.FC = () => {
           <DriverWeekPicker />
           <section className="hero-panel">
             <div className="hero-copy-block">
-              <p className="hero-eyebrow">Driver</p>
+              <p className="hero-eyebrow">Motorista</p>
               <h1>{driverHub?.driver?.name || dashboard?.viewer.name || 'Area do motorista'}</h1>
               <p className="hero-copy">
                 {driverHub?.driver?.company?.name || 'Sem empresa associada'}
@@ -172,7 +172,7 @@ const DriverOverviewPage: React.FC = () => {
                       <article className="dashboard-card dashboard-metric-card">
                         <p className="metric-label">Estado semanal</p>
                         <strong>{driverHub.balance?.manual_status_label || 'Sem estado'}</strong>
-                        <span>Definido manualmente pelo admin</span>
+                        <span>Definido manualmente pelo administrador</span>
                       </article>
                       <article className="dashboard-card dashboard-metric-card">
                         <p className="metric-label">KM da semana</p>

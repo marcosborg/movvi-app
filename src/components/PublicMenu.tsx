@@ -15,7 +15,7 @@ import { useLocation } from 'react-router-dom';
 import { brandAssets, supportContacts } from '../lib/publicContent';
 
 const menuItems = [
-  { title: 'Home', url: '/tabs/home', icon: sparklesOutline },
+  { title: 'Início', url: '/tabs/home', icon: sparklesOutline },
   { title: 'Servicos', url: '/tabs/services', icon: carSportOutline },
   { title: 'Noticias', url: '/tabs/stories', icon: newspaperOutline },
   { title: 'Entrar na conta', url: '/tabs/account', icon: logInOutline },
@@ -38,7 +38,7 @@ const PublicMenu: React.FC = () => {
         </div>
 
         <div className="menu-intro">
-          <p>Explore a area publica com a mesma leitura da home e entre na conta apenas quando precisar de aceder a dados reservados.</p>
+          <p>Explore a área pública com a mesma visão da página inicial e entre na conta apenas quando precisar acessar dados reservados.</p>
         </div>
 
         <IonList inset className="menu-section-list">

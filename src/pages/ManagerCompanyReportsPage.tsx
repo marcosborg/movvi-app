@@ -76,7 +76,7 @@ const ManagerCompanyReportsPage: React.FC = () => {
 
   return (
     <IonPage>
-      <DriverPageHeader title="Relatorios" subtitle="Company reports semanal" />
+      <DriverPageHeader title="Relatórios" subtitle="Relatório semanal da empresa" />
       <IonContent fullscreen className="home-page">
         <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
           <IonRefresherContent />
@@ -87,7 +87,7 @@ const ManagerCompanyReportsPage: React.FC = () => {
 
           <section className="hero-panel report-hero-panel">
             <div className="hero-copy-block">
-              <p className="hero-eyebrow">Company Reports</p>
+              <p className="hero-eyebrow">Relatórios da empresa</p>
               <h1>{response?.company.name || 'Relatorio semanal'}</h1>
               <p className="hero-copy">
                 Uma leitura executiva da operacao semanal, com foco em liquidos por operador, quilometros, eficiencia e saldos por motorista.
@@ -125,12 +125,12 @@ const ManagerCompanyReportsPage: React.FC = () => {
               <section className="dashboard-section">
                 <div className="dashboard-metric-grid">
                   <article className="dashboard-card dashboard-metric-card">
-                    <p className="metric-label">Duplo check OK</p>
+                    <p className="metric-label">Dupla verificação correta</p>
                     <strong>{response.data.totals.receipt_check_match_count ?? 0}</strong>
                     <span>Motoristas sem diferenca entre Uber/Bolt e recebido</span>
                   </article>
                   <article className="dashboard-card dashboard-metric-card">
-                    <p className="metric-label">Duplo check divergente</p>
+                    <p className="metric-label">Dupla verificação divergente</p>
                     <strong>{response.data.totals.receipt_check_mismatch_count ?? 0}</strong>
                     <span>Recibos validados com diferenca face ao liquido</span>
                   </article>
@@ -251,7 +251,7 @@ const ManagerCompanyReportsPage: React.FC = () => {
                     ]}
                   />
                   <HorizontalMetricChart
-                    title="Top faturacao"
+                    title="Maior faturamento"
                     emptyText="Sem motoristas disponiveis."
                     items={rankedDrivers.slice(0, 6).map((driver) => ({
                       label: driver.name,
@@ -262,7 +262,7 @@ const ManagerCompanyReportsPage: React.FC = () => {
                     }))}
                   />
                   <HorizontalMetricChart
-                    title="Top quilometros"
+                    title="Maior quilometragem"
                     emptyText="Sem quilometros atribuidos."
                     items={[...rankedDrivers]
                       .sort((left, right) => right.weekly_km - left.weekly_km)
@@ -276,7 +276,7 @@ const ManagerCompanyReportsPage: React.FC = () => {
                       }))}
                   />
                   <HorizontalMetricChart
-                    title="Top eur/km"
+                    title="Maior valor por km"
                     emptyText="Sem dados de eficiencia."
                     items={[...rankedDrivers]
                       .filter((driver) => driver.earnings_per_km > 0)
@@ -304,7 +304,7 @@ const ManagerCompanyReportsPage: React.FC = () => {
                   <article className="dashboard-card report-highlight-card">
                     <div className="card-head">
                       <h3>Maior faturacao</h3>
-                      <span className="status-pill">Top 1</span>
+                      <span className="status-pill">1º lugar</span>
                     </div>
                     {topRevenueDriver ? (
                       <>
@@ -355,7 +355,7 @@ const ManagerCompanyReportsPage: React.FC = () => {
                 <div className="dashboard-card report-rank-card">
                   <div className="card-head">
                     <h3>Ranking rapido</h3>
-                    <span className="status-pill">Top 5</span>
+                    <span className="status-pill">5 melhores</span>
                   </div>
                   <div className="receipt-list">
                     {rankedDrivers.slice(0, 5).map((driver, index) => (

@@ -65,7 +65,7 @@ const Login: React.FC = () => {
       setRecoveryError(
         recoveryRequestError instanceof Error
           ? recoveryRequestError.message
-          : 'Nao foi possivel pedir a recuperacao da password.',
+          : 'Não foi possível solicitar a recuperação da senha.',
       );
     } finally {
       setIsRecovering(false);
@@ -106,7 +106,7 @@ const Login: React.FC = () => {
 
                 {!showRecovery ? (
                   <IonItem>
-                    <IonLabel position="stacked">Password</IonLabel>
+                    <IonLabel position="stacked">Senha</IonLabel>
                     <IonInput
                       type={showPassword ? 'text' : 'password'}
                       value={password}
@@ -119,7 +119,7 @@ const Login: React.FC = () => {
                       fill="clear"
                       slot="end"
                       className="login-password-toggle"
-                      aria-label={showPassword ? 'Esconder password' : 'Mostrar password'}
+                      aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
                       onClick={() => setShowPassword((current) => !current)}
                     >
                       <IonIcon icon={showPassword ? eyeOffOutline : eyeOutline} />
@@ -145,7 +145,7 @@ const Login: React.FC = () => {
                       setShowPassword(false);
                     }}
                   >
-                    {showRecovery ? 'Voltar para login' : 'Esqueceu-se da password?'}
+                    {showRecovery ? 'Voltar para entrar' : 'Esqueceu a senha?'}
                   </IonButton>
 
                   {showRecovery ? (

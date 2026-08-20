@@ -237,6 +237,20 @@
   align-items: start;
 }
 
+.finance-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.finance-pagination span {
+  color: #6b554c;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
 .dashboard-metric-card {
   display: grid;
   gap: 6px;

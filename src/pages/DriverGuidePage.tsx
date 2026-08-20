@@ -10,7 +10,7 @@ const driverGuideSections = [
   {
     title: 'Arranque rapido',
     points: [
-      'Entrar na conta e confirmar a semana ativa no topo do dashboard.',
+      'Entrar na conta e confirmar a semana ativa no topo do painel.',
       'Consultar o Resumo para ver saldo, estado semanal e viatura atribuida.',
       'Ir a Extrato para validar valores da semana e categorias financeiras.',
     ],
@@ -40,17 +40,17 @@ const driverGuideSections = [
     ],
   },
   {
-    title: 'Operacao de gestor/admin',
+    title: 'Operação de gestor/administrador',
     points: [
       'Em Relatorios, usar os filtros por semana, viatura e motorista para validar fechos.',
-      'No company report, verificar o duplo check entre valor recebido e Uber/Bolt.',
+      'No relatório da empresa, verificar a dupla conferência entre o valor recebido e Uber/Bolt.',
       'Em Passagens, usar Mostrar tudo apenas quando precisares de pesquisar ocupados.',
     ],
   },
   {
     title: 'Personalizacao',
     points: [
-      'Em Abas, ordenar os atalhos do dashboard conforme uso mais frequente.',
+      'Em Abas, ordenar os atalhos do painel conforme o uso mais frequente.',
       'A ordem fica guardada neste dispositivo.',
       'Se for preciso, usar Repor ordem base para voltar ao layout original.',
     ],

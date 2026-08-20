@@ -18,7 +18,7 @@ const StoriesPage: React.FC = () => (
           <p className="section-tag">Noticias</p>
           <h1 className="page-title">Noticias e prova social</h1>
           <p>
-            Noticias e testemunhos organizados com a mesma leitura da home, para reforcar contexto, credibilidade e continuidade visual.
+            Notícias e depoimentos organizados com a mesma linguagem da página inicial, reforçando contexto, credibilidade e continuidade visual.
           </p>
         </section>
 

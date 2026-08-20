@@ -65,6 +65,7 @@ const ManagerFinancePage: React.FC = () => {
   const [profitLoss, setProfitLoss] = useState<ProfitLossResponse | null>(null);
   const [movements, setMovements] = useState<MovementsResponse | null>(null);
   const [expenses, setExpenses] = useState<ExpensesResponse | null>(null);
+  const [isExpensesPageLoading, setIsExpensesPageLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [profitLossModal, setProfitLossModal] = useState<ProfitLossModalKind>(null);
@@ -144,7 +145,7 @@ const ManagerFinancePage: React.FC = () => {
         });
         setMovements(payload);
       } else {
-        const payload = await apiRequest<ExpensesResponse>(`/api/v1/conta-azul/manager/expenses?${query}`, {
+        const payload = await apiRequest<ExpensesResponse>(`/api/v1/conta-azul/manager/expenses?${query}&page=1&per_page=20`, {
           method: 'GET',
           token,
         });
@@ -154,6 +155,27 @@ const ManagerFinancePage: React.FC = () => {
       setError(loadError instanceof Error ? loadError.message : 'Nao foi possivel carregar a area financeira.');
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function loadExpensesPage(page: number) {
+    if (!token || page < 1) {
+      return;
+    }
+
+    setIsExpensesPageLoading(true);
+    setError(null);
+
+    try {
+      const payload = await apiRequest<ExpensesResponse>(
+        `/api/v1/conta-azul/manager/expenses?${query}&page=${page}&per_page=20`,
+        { method: 'GET', token },
+      );
+      setExpenses(payload);
+    } catch (loadError) {
+      setError(loadError instanceof Error ? loadError.message : 'Nao foi possivel carregar a pagina de despesas.');
+    } finally {
+      setIsExpensesPageLoading(false);
     }
   }
 
@@ -278,7 +300,7 @@ const ManagerFinancePage: React.FC = () => {
               <p className="hero-eyebrow">Conta Azul</p>
               <h1>{activeCompany}</h1>
               <p className="hero-copy">
-                Leitura financeira consolidada para Admin e Gestor, com navegacao interna por DRE, movimentos e despesas.
+                Visão financeira consolidada para Administrador e Gestor, com navegação interna por DRE, movimentos e despesas.
               </p>
             </div>
             <div className="hero-side">
@@ -464,7 +486,7 @@ const ManagerFinancePage: React.FC = () => {
                     <span>Pagamentos do periodo</span>
                   </article>
                   <article className="dashboard-card dashboard-metric-card">
-                    <p className="metric-label">Cashflow</p>
+                    <p className="metric-label">Fluxo de caixa</p>
                     <strong>{formatMoney(movements.data.summary.net_cashflow)}</strong>
                     <span>{movements.data.summary.movements_count} movimentos agregados</span>
                   </article>
@@ -643,7 +665,7 @@ const ManagerFinancePage: React.FC = () => {
                       <h3>Ultimas despesas</h3>
                     </div>
                     <div className="receipt-list">
-                      {expenses.data.items.length ? expenses.data.items.slice(0, 12).map((item) => (
+                      {expenses.data.items.length ? expenses.data.items.map((item) => (
                         <div key={`${item.id}-${item.date}`} className="receipt-item">
                           <div>
                             <strong>{item.description}</strong>
@@ -652,6 +674,27 @@ const ManagerFinancePage: React.FC = () => {
                           <span className="status-badge status-planned">{formatMoney(item.amount)}</span>
                         </div>
                       )) : <p className="dashboard-empty">Sem despesas disponiveis.</p>}
+                    </div>
+                    <div className="finance-pagination">
+                      <IonButton
+                        fill="outline"
+                        size="small"
+                        disabled={isExpensesPageLoading || expenses.data.pagination.current_page <= 1}
+                        onClick={() => void loadExpensesPage(expenses.data.pagination.current_page - 1)}
+                      >
+                        Anterior
+                      </IonButton>
+                      <span>
+                        Pagina {expenses.data.pagination.current_page} de {expenses.data.pagination.last_page}
+                      </span>
+                      <IonButton
+                        fill="outline"
+                        size="small"
+                        disabled={isExpensesPageLoading || expenses.data.pagination.current_page >= expenses.data.pagination.last_page}
+                        onClick={() => void loadExpensesPage(expenses.data.pagination.current_page + 1)}
+                      >
+                        Seguinte
+                      </IonButton>
                     </div>
                   </article>
                 </div>

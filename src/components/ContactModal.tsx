@@ -66,7 +66,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onDismiss }) => {
           <div>
             <p className="section-tag">Contacto</p>
             <h2>Falar com a equipa</h2>
-            <IonNote>Resposta orientada para aluguer, stand, tours ou pedidos gerais.</IonNote>
+            <IonNote>Atendimento para aluguel, concessionária, passeios ou solicitações gerais.</IonNote>
           </div>
           <IonButton fill="clear" onClick={closeModal}>
             Fechar

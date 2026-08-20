@@ -18,7 +18,7 @@ const ServicesPage: React.FC = () => (
           <p className="section-tag">Servicos</p>
           <h1 className="page-title">Servicos Movvi</h1>
           <p>
-            Uma leitura clara dos servicos principais, com o mesmo ritmo visual da home e acesso direto ao site publico quando precisar de detalhe.
+            Uma visão clara dos serviços principais, com o mesmo ritmo visual da página inicial e acesso direto ao site público quando precisar de detalhes.
           </p>
         </section>
 

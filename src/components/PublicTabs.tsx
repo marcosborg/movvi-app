@@ -36,7 +36,7 @@ const PublicTabs: React.FC = () => (
     <IonTabBar slot="bottom" className="public-tabbar">
       <IonTabButton tab="home" href="/tabs/home">
         <IonIcon icon={homeOutline} />
-        <IonLabel>Home</IonLabel>
+        <IonLabel>Início</IonLabel>
       </IonTabButton>
       <IonTabButton tab="services" href="/tabs/services">
         <IonIcon icon={carSportOutline} />

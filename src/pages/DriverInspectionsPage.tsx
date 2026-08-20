@@ -184,7 +184,7 @@ const DriverInspectionsPage: React.FC = () => {
           <div className="home-shell home-shell-with-tabs">
             <article className="dashboard-card dashboard-warning">
               <h3>Acesso reservado</h3>
-              <p>Na app Movvi, as inspeções ficam disponíveis apenas para utilizadores com role Admin.</p>
+              <p>Na Movvi, as inspeções ficam disponíveis apenas para usuários com perfil de Administrador.</p>
             </article>
           </div>
         </IonContent>
@@ -212,7 +212,7 @@ const DriverInspectionsPage: React.FC = () => {
             <div className="hero-side">
               <div className="role-chip-row">
                 <span className="role-chip">{user?.name || 'Admin'}</span>
-                <span className="role-chip">Admin</span>
+                <span className="role-chip">Administrador</span>
               </div>
             </div>
           </section>
@@ -231,7 +231,7 @@ const DriverInspectionsPage: React.FC = () => {
                 <div className="dashboard-section-heading">
                   <div>
                     <p className="hero-eyebrow">Nova inspeção</p>
-                    <h2>Abrir wizard</h2>
+                    <h2>Abrir assistente</h2>
                   </div>
                 </div>
 
@@ -250,13 +250,13 @@ const DriverInspectionsPage: React.FC = () => {
                           />
                         </div>
                         <div>
-                          <label className="form-label" htmlFor="inspection-search-driver">Pesquisar driver</label>
+                          <label className="form-label" htmlFor="inspection-search-driver">Pesquisar motorista</label>
                           <input
                             id="inspection-search-driver"
                             className="text-field"
                             value={driverQuery}
                             onChange={(event) => setDriverQuery(event.target.value)}
-                            placeholder="Nome do driver"
+                            placeholder="Nome do motorista"
                           />
                         </div>
                       </div>
@@ -304,14 +304,14 @@ const DriverInspectionsPage: React.FC = () => {
                       ))}
                     </select>
 
-                    <label className="form-label" htmlFor="inspection-driver">Driver</label>
+                    <label className="form-label" htmlFor="inspection-driver">Motorista</label>
                     <select
                       id="inspection-driver"
                       className="text-field"
                       value={createForm.driver_id}
                       onChange={(event) => setCreateForm((current) => ({ ...current, driver_id: event.target.value }))}
                     >
-                      <option value="">Sem driver</option>
+                      <option value="">Sem motorista</option>
                       {filteredDrivers.map((driver) => (
                         <option key={driver.id} value={driver.id}>{driver.name}</option>
                       ))}
@@ -382,7 +382,7 @@ const DriverInspectionsPage: React.FC = () => {
                   ) : (
                     <article className="dashboard-card">
                       <h3>Sem inspeções</h3>
-                      <p>A primeira inspeção criada pelo Admin vai aparecer aqui.</p>
+                      <p>A primeira inspeção criada pelo administrador aparecerá aqui.</p>
                     </article>
                   )}
                 </div>

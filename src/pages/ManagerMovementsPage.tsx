@@ -109,7 +109,7 @@ const ManagerMovementsPage: React.FC = () => {
                     <span>Pagamentos do periodo</span>
                   </article>
                   <article className="dashboard-card dashboard-metric-card">
-                    <p className="metric-label">Cashflow</p>
+                    <p className="metric-label">Fluxo de caixa</p>
                     <strong>{formatMoney(response.data.summary.net_cashflow)}</strong>
                     <span>{response.data.summary.movements_count} movimentos agregados</span>
                   </article>

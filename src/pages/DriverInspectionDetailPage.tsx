@@ -597,7 +597,7 @@ const DriverInspectionDetailPage: React.FC = () => {
 
   return (
     <IonPage>
-      <DriverPageHeader title="Inspecao" subtitle="Workflow de inspeção da viatura" />
+      <DriverPageHeader title="Inspeção" subtitle="Fluxo de inspeção do veículo" />
       <IonContent fullscreen className="home-page">
         <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
           <IonRefresherContent />

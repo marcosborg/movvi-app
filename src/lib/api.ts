@@ -1,11 +1,11 @@
 import { Capacitor } from '@capacitor/core';
 
 const PRODUCTION_SITE_URL = 'https://movvi.com.pt';
-const LOCAL_API_URL = 'http://127.0.0.1:8000';
-const LOCAL_ANDROID_EMULATOR_API_URL = 'http://10.0.2.2:8000';
+const LOCAL_API_URL = 'http://localhost:8001';
 
 const runtimeHost = typeof window !== 'undefined' ? window.location.hostname : '';
 const isLocalRuntime = runtimeHost === 'localhost' || runtimeHost === '127.0.0.1';
+const isLocalWebRuntime = import.meta.env.DEV || isLocalRuntime;
 const runtimePlatform = Capacitor.getPlatform();
 const isNativePlatform = runtimePlatform === 'android' || runtimePlatform === 'ios';
 
@@ -28,7 +28,7 @@ export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '') ||
   (isNativePlatform
     ? resolveNativeApiBaseUrl()
-    : (isLocalRuntime ? LOCAL_API_URL : PRODUCTION_SITE_URL));
+    : (isLocalWebRuntime ? LOCAL_API_URL : PRODUCTION_SITE_URL));
 
 export const PUBLIC_SITE_URL =
   import.meta.env.VITE_PUBLIC_SITE_URL?.replace(/\/$/, '') || PRODUCTION_SITE_URL;

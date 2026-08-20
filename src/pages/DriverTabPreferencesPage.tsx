@@ -52,7 +52,7 @@ const DriverTabPreferencesPage: React.FC = () => {
 
   return (
     <IonPage>
-      <DriverPageHeader title="Abas" subtitle="Ordenacao personalizada do dashboard" />
+      <DriverPageHeader title="Abas" subtitle="Ordenação personalizada do painel" />
       <IonContent fullscreen className="home-page">
         <div className="home-shell home-shell-with-tabs">
           <section className="hero-panel">
@@ -60,7 +60,7 @@ const DriverTabPreferencesPage: React.FC = () => {
               <p className="hero-eyebrow">Preferencias</p>
               <h1>Organizar abas</h1>
               <p className="hero-copy">
-                Define a ordem das abas visiveis no dashboard. A configuracao fica guardada neste dispositivo.
+                Defina a ordem das abas visíveis no painel. A configuração ficará salva neste dispositivo.
               </p>
             </div>
             <div className="hero-side">
