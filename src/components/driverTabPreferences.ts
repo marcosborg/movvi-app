@@ -17,6 +17,7 @@ export type DriverTabPreferenceContext = {
   isAdmin: boolean;
   isGestor: boolean;
   canViewFinance: boolean;
+  canViewCompanyReports: boolean;
   hasDriverProfile: boolean;
 };
 
@@ -43,7 +44,7 @@ export const DRIVER_TAB_DEFINITIONS: DriverTabDefinition[] = [
     label: 'Relatorios',
     href: '/dashboard/company-reports',
     icon: clipboardOutline,
-    visible: (context) => context.canViewFinance,
+    visible: (context) => context.canViewCompanyReports,
   },
   {
     key: 'overview',
@@ -78,7 +79,7 @@ export const DRIVER_TAB_DEFINITIONS: DriverTabDefinition[] = [
     label: 'Passagens',
     href: '/dashboard/transfers',
     icon: swapHorizontalOutline,
-    visible: (context) => context.isAdmin,
+    visible: (context) => context.isAdmin || context.isGestor,
   },
   {
     key: 'weekly-evaluation',

@@ -47,6 +47,7 @@ const transferModeOptions: Array<{
 const AdminTransferPage: React.FC = () => {
   const history = useHistory();
   const { token, user } = useAuth();
+  const canManageInspections = Boolean(user?.roles.includes('Admin'));
   const [options, setOptions] = useState<InspectionCreateOptionsResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
@@ -212,12 +213,18 @@ const AdminTransferPage: React.FC = () => {
     }
   }
 
-  function handleCreateTransfer() {
+  async function handleCreateTransfer() {
     if (!form.vehicle_id || (requiresTargetDriver && !form.driver_id)) {
       return;
     }
 
     setSuccess(null);
+
+    if (!canManageInspections) {
+      await executeTransfer(false);
+      return;
+    }
+
     setShowInspectionChoice(true);
   }
 

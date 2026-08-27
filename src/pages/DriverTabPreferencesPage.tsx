@@ -21,13 +21,14 @@ const DriverTabPreferencesPage: React.FC = () => {
   const context = {
     isAdmin: Boolean(user?.roles.includes('Admin')),
     isGestor: Boolean(user?.roles.includes('Gestor')),
-    canViewFinance: Boolean(user?.roles.includes('Admin') || user?.roles.includes('Gestor')),
+    canViewFinance: Boolean(user?.roles.includes('Admin')),
+    canViewCompanyReports: Boolean(user?.roles.includes('Admin') || user?.roles.includes('Gestor')),
     hasDriverProfile: Boolean(driver),
   };
 
   const visibleTabs = useMemo(() => {
     return sortDriverTabsByPreference(getVisibleDriverTabs(context), preferredOrder);
-  }, [context.canViewFinance, context.hasDriverProfile, context.isAdmin, context.isGestor, preferredOrder]);
+  }, [context.canViewCompanyReports, context.canViewFinance, context.hasDriverProfile, context.isAdmin, context.isGestor, preferredOrder]);
 
   function persist(nextOrder: string[]) {
     setPreferredOrder(nextOrder);

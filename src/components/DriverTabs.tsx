@@ -29,7 +29,8 @@ const DriverTabs: React.FC = () => {
   const { user, driver } = useAuth();
   const isAdmin = Boolean(user?.roles.includes('Admin'));
   const isGestor = Boolean(user?.roles.includes('Gestor'));
-  const canViewFinance = isAdmin || isGestor;
+  const canViewFinance = isAdmin;
+  const canViewCompanyReports = isAdmin || isGestor;
   const hasDriverProfile = Boolean(driver);
   const adminOperationsOnlyMode = isAdmin && !hasDriverProfile;
   const [preferredOrder, setPreferredOrder] = useState<string[]>(() => readDriverTabOrder());
@@ -45,9 +46,10 @@ const DriverTabs: React.FC = () => {
       isAdmin,
       isGestor,
       canViewFinance,
+      canViewCompanyReports,
       hasDriverProfile,
     }), preferredOrder);
-  }, [canViewFinance, hasDriverProfile, isAdmin, isGestor, preferredOrder]);
+  }, [canViewCompanyReports, canViewFinance, hasDriverProfile, isAdmin, isGestor, preferredOrder]);
 
   return (
     <DriverWeekProvider>
@@ -55,7 +57,7 @@ const DriverTabs: React.FC = () => {
       <IonTabs>
       <IonRouterOutlet id="driver-tabs-content">
         <Route exact path="/dashboard/finance">
-          <ManagerFinancePage />
+          {canViewFinance ? <ManagerFinancePage /> : <Redirect to="/dashboard" />}
         </Route>
         <Route exact path="/dashboard/finance/profit-loss">
           <Redirect to="/dashboard/finance" />
@@ -67,7 +69,7 @@ const DriverTabs: React.FC = () => {
           <Redirect to="/dashboard/finance" />
         </Route>
         <Route exact path="/dashboard/company-reports">
-          <ManagerCompanyReportsPage />
+          {canViewCompanyReports ? <ManagerCompanyReportsPage /> : <Redirect to="/dashboard" />}
         </Route>
         <Route exact path="/dashboard/overview">
           <DriverOverviewPage />
@@ -85,7 +87,7 @@ const DriverTabs: React.FC = () => {
           <DriverInspectionsPage />
         </Route>
         <Route exact path="/dashboard/transfers">
-          <AdminTransferPage />
+          {isAdmin || isGestor ? <AdminTransferPage /> : <Redirect to="/dashboard" />}
         </Route>
         <Route exact path="/dashboard/documents">
           <DriverDocumentsPage />
@@ -105,6 +107,8 @@ const DriverTabs: React.FC = () => {
               ? '/dashboard/overview'
               : canViewFinance
                 ? '/dashboard/finance'
+                : canViewCompanyReports
+                  ? '/dashboard/company-reports'
                 : adminOperationsOnlyMode
                   ? '/dashboard/inspections'
                   : '/dashboard/overview'
