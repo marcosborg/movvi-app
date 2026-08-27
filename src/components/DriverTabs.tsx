@@ -30,7 +30,7 @@ const DriverTabs: React.FC = () => {
   const isAdmin = Boolean(user?.roles.includes('Admin'));
   const isGestor = Boolean(user?.roles.includes('Gestor'));
   const canViewFinance = isAdmin;
-  const canViewCompanyReports = isAdmin || isGestor;
+  const canViewCompanyReports = isAdmin;
   const hasDriverProfile = Boolean(driver);
   const adminOperationsOnlyMode = isAdmin && !hasDriverProfile;
   const [preferredOrder, setPreferredOrder] = useState<string[]>(() => readDriverTabOrder());
@@ -107,8 +107,8 @@ const DriverTabs: React.FC = () => {
               ? '/dashboard/overview'
               : canViewFinance
                 ? '/dashboard/finance'
-                : canViewCompanyReports
-                  ? '/dashboard/company-reports'
+                : isGestor
+                  ? '/dashboard/inspections'
                 : adminOperationsOnlyMode
                   ? '/dashboard/inspections'
                   : '/dashboard/overview'

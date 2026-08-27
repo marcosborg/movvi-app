@@ -22,7 +22,7 @@ const DriverTabPreferencesPage: React.FC = () => {
     isAdmin: Boolean(user?.roles.includes('Admin')),
     isGestor: Boolean(user?.roles.includes('Gestor')),
     canViewFinance: Boolean(user?.roles.includes('Admin')),
-    canViewCompanyReports: Boolean(user?.roles.includes('Admin') || user?.roles.includes('Gestor')),
+    canViewCompanyReports: Boolean(user?.roles.includes('Admin')),
     hasDriverProfile: Boolean(driver),
   };
 
