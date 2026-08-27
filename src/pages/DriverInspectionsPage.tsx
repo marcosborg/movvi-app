@@ -38,6 +38,7 @@ const DriverInspectionsPage: React.FC = () => {
   });
 
   const isAdmin = Boolean(user?.roles.includes('Admin'));
+  const isGestor = Boolean(user?.roles.includes('Gestor'));
   const filteredVehicles = useMemo(() => {
     const plateNeedle = plateQuery.trim().toLowerCase();
     const driverNeedle = driverQuery.trim().toLowerCase();
@@ -176,7 +177,7 @@ const DriverInspectionsPage: React.FC = () => {
     }
   }
 
-  if (!isAdmin) {
+  if (!isAdmin && !isGestor) {
     return (
       <IonPage>
         <DriverPageHeader title="Inspecoes" subtitle="Acesso reservado a administradores" />
@@ -194,7 +195,7 @@ const DriverInspectionsPage: React.FC = () => {
 
   return (
     <IonPage>
-      <DriverPageHeader title="Inspecoes" subtitle="Inspeções geridas pelo administrador" />
+      <DriverPageHeader title="Inspecoes" subtitle={isAdmin ? 'Inspeções geridas pelo administrador' : 'Consulta de inspeções'} />
       <IonContent fullscreen className="home-page">
         <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
           <IonRefresherContent />
@@ -206,13 +207,15 @@ const DriverInspectionsPage: React.FC = () => {
               <p className="hero-eyebrow">Inspecoes</p>
               <h1>Gestao central da frota</h1>
               <p className="hero-copy">
-                Nesta app, as inspeções são sempre iniciadas pelo Admin. Escolhe o tipo, a viatura e o driver antes de abrir o wizard.
+                {isAdmin
+                  ? 'Nesta app, as inspeções são sempre iniciadas pelo Admin. Escolhe o tipo, a viatura e o driver antes de abrir o wizard.'
+                  : 'Consulta o estado e o histórico das inspeções da frota.'}
               </p>
             </div>
             <div className="hero-side">
               <div className="role-chip-row">
                 <span className="role-chip">{user?.name || 'Admin'}</span>
-                <span className="role-chip">Administrador</span>
+                <span className="role-chip">{isAdmin ? 'Administrador' : 'Gestor'}</span>
               </div>
             </div>
           </section>
@@ -227,7 +230,7 @@ const DriverInspectionsPage: React.FC = () => {
 
           {!isLoading && !error ? (
             <>
-              <section className="dashboard-section">
+              {isAdmin ? <section className="dashboard-section">
                 <div className="dashboard-section-heading">
                   <div>
                     <p className="hero-eyebrow">Nova inspeção</p>
@@ -322,7 +325,7 @@ const DriverInspectionsPage: React.FC = () => {
                     </IonButton>
                   </div>
                 </article>
-              </section>
+              </section> : null}
 
               <section className="dashboard-section">
                 <div className="dashboard-section-heading">
@@ -364,9 +367,9 @@ const DriverInspectionsPage: React.FC = () => {
                             fill="outline"
                             onClick={() => history.push(`/dashboard/inspections/${inspection.id}`)}
                           >
-                            Abrir fluxo
+                            {isAdmin ? 'Abrir fluxo' : 'Consultar'}
                           </IonButton>
-                          {!inspection.locked_at ? (
+                          {isAdmin && !inspection.locked_at ? (
                             <IonButton
                               color="danger"
                               fill="clear"

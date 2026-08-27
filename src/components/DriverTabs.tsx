@@ -81,10 +81,10 @@ const DriverTabs: React.FC = () => {
           <DriverReceiptsPage />
         </Route>
         <Route exact path="/dashboard/inspections/:id">
-          <DriverInspectionDetailPage />
+          {isAdmin || isGestor ? <DriverInspectionDetailPage /> : <Redirect to="/dashboard" />}
         </Route>
         <Route exact path="/dashboard/inspections">
-          <DriverInspectionsPage />
+          {isAdmin || isGestor ? <DriverInspectionsPage /> : <Redirect to="/dashboard" />}
         </Route>
         <Route exact path="/dashboard/transfers">
           {isAdmin || isGestor ? <AdminTransferPage /> : <Redirect to="/dashboard" />}

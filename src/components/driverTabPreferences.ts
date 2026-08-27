@@ -72,7 +72,7 @@ export const DRIVER_TAB_DEFINITIONS: DriverTabDefinition[] = [
     label: 'Inspecoes',
     href: '/dashboard/inspections',
     icon: carSportOutline,
-    visible: (context) => context.isAdmin,
+    visible: (context) => context.isAdmin || context.isGestor,
   },
   {
     key: 'transfers',

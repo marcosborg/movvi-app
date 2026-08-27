@@ -145,6 +145,7 @@ export type InspectionShowResponse = {
   };
   meta: {
     is_admin: boolean;
+    can_edit?: boolean;
   };
 };
 

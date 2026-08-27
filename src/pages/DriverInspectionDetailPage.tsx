@@ -33,7 +33,8 @@ type ChecklistState = Record<string, Record<string, string | number | boolean | 
 const DriverInspectionDetailPage: React.FC = () => {
   const { id } = useParams<RouteParams>();
   const history = useHistory();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
+  const canEditInspection = Boolean(user?.roles.includes('Admin'));
   const [data, setData] = useState<InspectionShowResponse | null>(null);
   const [checklist, setChecklist] = useState<ChecklistState>({});
   const [extraObservations, setExtraObservations] = useState('');
@@ -608,7 +609,7 @@ const DriverInspectionDetailPage: React.FC = () => {
             <IonButton fill="outline" onClick={() => history.push('/dashboard/inspections')}>
               Voltar a lista
             </IonButton>
-            {currentStep > 1 && currentStep < 12 ? (
+            {canEditInspection && currentStep > 1 && currentStep < 12 ? (
               <IonButton fill="outline" onClick={() => void handleBackStep()} disabled={isSaving}>
                 Voltar etapa
               </IonButton>
@@ -623,6 +624,9 @@ const DriverInspectionDetailPage: React.FC = () => {
 
           {error ? <p className="status-error">{error}</p> : null}
           {success ? <p className="status-success">{success}</p> : null}
+          {!canEditInspection && !isLoading && data ? (
+            <p className="status-warning">Consulta em modo de leitura. Apenas administradores podem alterar a inspeção.</p>
+          ) : null}
 
           {!isLoading && data ? (
             <>
@@ -680,7 +684,7 @@ const DriverInspectionDetailPage: React.FC = () => {
                     <span className="status-pill">{data.inspection.status_label}</span>
                   </div>
                   {renderStepBody()}
-                  <div className="dashboard-actions dashboard-actions-top">
+                  {canEditInspection ? <div className="dashboard-actions dashboard-actions-top">
                     {currentStep < 12 ? (
                       <>
                         <IonButton fill="outline" onClick={() => void submitStep('save')} disabled={isSaving}>
@@ -695,7 +699,7 @@ const DriverInspectionDetailPage: React.FC = () => {
                         {data.inspection.status === 'closed' ? 'Inspecao fechada' : 'Fechar e gerar PDF'}
                       </IonButton>
                     )}
-                  </div>
+                  </div> : null}
                 </article>
               </section>
             </>
