@@ -47,7 +47,7 @@ const transferModeOptions: Array<{
 const AdminTransferPage: React.FC = () => {
   const history = useHistory();
   const { token, user } = useAuth();
-  const canManageInspections = Boolean(user?.roles.includes('Admin'));
+  const canManageInspections = Boolean(user?.roles.includes('Admin') || user?.roles.includes('Gestor'));
   const [options, setOptions] = useState<InspectionCreateOptionsResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);

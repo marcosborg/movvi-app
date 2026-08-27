@@ -39,6 +39,7 @@ const DriverInspectionsPage: React.FC = () => {
 
   const isAdmin = Boolean(user?.roles.includes('Admin'));
   const isGestor = Boolean(user?.roles.includes('Gestor'));
+  const canManageInspections = isAdmin || isGestor;
   const filteredVehicles = useMemo(() => {
     const plateNeedle = plateQuery.trim().toLowerCase();
     const driverNeedle = driverQuery.trim().toLowerCase();
@@ -177,7 +178,7 @@ const DriverInspectionsPage: React.FC = () => {
     }
   }
 
-  if (!isAdmin && !isGestor) {
+  if (!canManageInspections) {
     return (
       <IonPage>
         <DriverPageHeader title="Inspecoes" subtitle="Acesso reservado a administradores" />
@@ -195,7 +196,7 @@ const DriverInspectionsPage: React.FC = () => {
 
   return (
     <IonPage>
-      <DriverPageHeader title="Inspecoes" subtitle={isAdmin ? 'Inspeções geridas pelo administrador' : 'Consulta de inspeções'} />
+      <DriverPageHeader title="Inspecoes" subtitle="Gestão operacional de inspeções" />
       <IonContent fullscreen className="home-page">
         <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
           <IonRefresherContent />
@@ -207,9 +208,7 @@ const DriverInspectionsPage: React.FC = () => {
               <p className="hero-eyebrow">Inspecoes</p>
               <h1>Gestao central da frota</h1>
               <p className="hero-copy">
-                {isAdmin
-                  ? 'Nesta app, as inspeções são sempre iniciadas pelo Admin. Escolhe o tipo, a viatura e o driver antes de abrir o wizard.'
-                  : 'Consulta o estado e o histórico das inspeções da frota.'}
+                As inspeções são geridas pela equipa operacional. Escolhe o tipo, a viatura e o driver antes de abrir o assistente.
               </p>
             </div>
             <div className="hero-side">
@@ -230,7 +229,7 @@ const DriverInspectionsPage: React.FC = () => {
 
           {!isLoading && !error ? (
             <>
-              {isAdmin ? <section className="dashboard-section">
+              {canManageInspections ? <section className="dashboard-section">
                 <div className="dashboard-section-heading">
                   <div>
                     <p className="hero-eyebrow">Nova inspeção</p>
@@ -367,9 +366,9 @@ const DriverInspectionsPage: React.FC = () => {
                             fill="outline"
                             onClick={() => history.push(`/dashboard/inspections/${inspection.id}`)}
                           >
-                            {isAdmin ? 'Abrir fluxo' : 'Consultar'}
+                            Abrir fluxo
                           </IonButton>
-                          {isAdmin && !inspection.locked_at ? (
+                          {canManageInspections && !inspection.locked_at ? (
                             <IonButton
                               color="danger"
                               fill="clear"

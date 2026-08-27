@@ -34,7 +34,7 @@ const DriverInspectionDetailPage: React.FC = () => {
   const { id } = useParams<RouteParams>();
   const history = useHistory();
   const { token, user } = useAuth();
-  const canEditInspection = Boolean(user?.roles.includes('Admin'));
+  const canEditInspection = Boolean(user?.roles.includes('Admin') || user?.roles.includes('Gestor'));
   const [data, setData] = useState<InspectionShowResponse | null>(null);
   const [checklist, setChecklist] = useState<ChecklistState>({});
   const [extraObservations, setExtraObservations] = useState('');
