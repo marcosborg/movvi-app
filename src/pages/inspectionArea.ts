@@ -58,6 +58,15 @@ export type InspectionCreateOptionsResponse = {
     current_vehicle_id: number | null;
     current_vehicle_license_plate: string | null;
   }>;
+  recent_movements: Array<{
+    id: number;
+    vehicle_license_plate: string | null;
+    driver_name: string | null;
+    start_date: string | null;
+    end_date: string | null;
+    status: 'active' | 'ended';
+    status_label: string;
+  }>;
 };
 
 export type InspectionShowResponse = {

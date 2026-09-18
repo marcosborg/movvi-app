@@ -41,7 +41,7 @@ const Login: React.FC = () => {
 
     try {
       await login(email, password);
-      history.replace('/dashboard');
+      history.replace('/dashboard/transfers');
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : 'Nao foi possivel iniciar sessao.');
     } finally {

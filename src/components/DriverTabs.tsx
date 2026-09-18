@@ -103,15 +103,13 @@ const DriverTabs: React.FC = () => {
         </Route>
         <Route exact path="/dashboard">
           <Redirect to={
-             hasDriverProfile
+             isAdmin || isGestor
+              ? '/dashboard/transfers'
+              : hasDriverProfile
               ? '/dashboard/overview'
-              : canViewFinance
-                ? '/dashboard/finance'
-                : isGestor
-                  ? '/dashboard/inspections'
-                : adminOperationsOnlyMode
-                  ? '/dashboard/inspections'
-                  : '/dashboard/overview'
+              : adminOperationsOnlyMode
+                ? '/dashboard/transfers'
+                : '/dashboard/overview'
           } />
         </Route>
       </IonRouterOutlet>

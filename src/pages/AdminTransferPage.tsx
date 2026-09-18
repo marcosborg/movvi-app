@@ -146,6 +146,20 @@ const AdminTransferPage: React.FC = () => {
     return `${vehicle.license_plate}${vehicle.driver_name ? ` · atual: ${vehicle.driver_name}` : ' · sem motorista'}`;
   }
 
+  function formatMovementDate(value: string | null) {
+    if (!value) {
+      return 'Sem data';
+    }
+
+    return new Intl.DateTimeFormat('pt-PT', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(new Date(value.replace(' ', 'T')));
+  }
+
   function selectVehicle(vehicleId: string) {
     const vehicle = options?.vehicles.find((item) => String(item.id) === vehicleId);
     setForm((current) => ({ ...current, vehicle_id: vehicleId }));
@@ -394,6 +408,27 @@ const AdminTransferPage: React.FC = () => {
                   <IonButton onClick={() => void handleCreateTransfer()} disabled={!form.vehicle_id || (requiresTargetDriver && !form.driver_id) || isCreating}>
                     {isCreating ? 'A iniciar...' : primaryActionLabel}
                   </IonButton>
+                </div>
+              </article>
+
+              <article className="dashboard-card">
+                <div className="card-head">
+                  <div>
+                    <h3>10 últimos movimentos</h3>
+                    <p>Utilizações de viatura registadas mais recentemente.</p>
+                  </div>
+                </div>
+                <div className="receipt-list">
+                  {(options?.recent_movements ?? []).length > 0 ? options?.recent_movements.map((movement) => (
+                    <article className="receipt-item" key={movement.id}>
+                      <div>
+                        <strong>{movement.vehicle_license_plate || 'Sem matrícula'} · {movement.driver_name || 'Sem motorista'}</strong>
+                        <span>Início: {formatMovementDate(movement.start_date)}</span>
+                        {movement.status === 'ended' ? <span>Fim: {formatMovementDate(movement.end_date)}</span> : null}
+                      </div>
+                      <span className="role-chip">{movement.status_label}</span>
+                    </article>
+                  )) : <p className="dashboard-empty">Ainda não existem movimentos registados.</p>}
                 </div>
               </article>
             </section>
