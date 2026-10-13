@@ -20,6 +20,7 @@ import DriverReceiptsPage from '../pages/DriverReceiptsPage';
 import DriverStatementPage from '../pages/DriverStatementPage';
 import DriverTabPreferencesPage from '../pages/DriverTabPreferencesPage';
 import DriverWeeklyEvaluationPage from '../pages/DriverWeeklyEvaluationPage';
+import DriverVehicleQrPage from '../pages/DriverVehicleQrPage';
 import ManagerCompanyReportsPage from '../pages/ManagerCompanyReportsPage';
 import ManagerFinancePage from '../pages/ManagerFinancePage';
 import { getVisibleDriverTabs, readDriverTabOrder, sortDriverTabsByPreference } from './driverTabPreferences';
@@ -94,6 +95,9 @@ const DriverTabs: React.FC = () => {
         </Route>
         <Route exact path="/dashboard/weekly-evaluation">
           <DriverWeeklyEvaluationPage />
+        </Route>
+        <Route exact path="/dashboard/vehicle-qr">
+          {hasDriverProfile ? <DriverVehicleQrPage /> : <Redirect to="/dashboard" />}
         </Route>
         <Route exact path="/dashboard/preferences">
           <DriverTabPreferencesPage />

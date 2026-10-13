@@ -38,6 +38,17 @@ export type InspectionListResponse = {
 };
 
 export type InspectionCreateOptionsResponse = {
+  assignment_health: {
+    counts: {
+      unassigned_vehicles: number;
+      vehicles_with_multiple_drivers: number;
+      drivers_with_multiple_vehicles: number;
+    };
+    unassigned_vehicles: Array<{ vehicle_id: number; license_plate: string }>;
+    vehicles_with_multiple_drivers: Array<{ vehicle_id: number; license_plate: string; drivers: string[] }>;
+    drivers_with_multiple_vehicles: Array<{ driver_id: number; driver_name: string; vehicles: string[] }>;
+  };
+  usage_states: Array<{ key: 'usage' | 'maintenance' | 'accident' | 'unassigned' | 'personal'; label: string }>;
   types: Array<{
     key: string;
     label: string;

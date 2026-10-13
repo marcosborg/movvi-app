@@ -56,6 +56,7 @@ const AdminTransferPage: React.FC = () => {
   const [vehicleSearch, setVehicleSearch] = useState('');
   const [targetDriverSearch, setTargetDriverSearch] = useState('');
   const [mode, setMode] = useState<TransferMode>('passagem');
+  const [operationalState, setOperationalState] = useState('');
   const [showAllOptions, setShowAllOptions] = useState(true);
   const [showInspectionChoice, setShowInspectionChoice] = useState(false);
   const [form, setForm] = useState({
@@ -242,6 +243,30 @@ const AdminTransferPage: React.FC = () => {
     setShowInspectionChoice(true);
   }
 
+  async function applyOperationalState() {
+    if (!token || !form.vehicle_id || !operationalState) return;
+    setIsCreating(true);
+    setError(null);
+    try {
+      const response = await apiRequest<InspectionMutationResponse>('/api/v1/mobile/inspections/usage-states', {
+        method: 'POST',
+        token,
+        body: JSON.stringify({
+          vehicle_id: Number(form.vehicle_id),
+          state: operationalState,
+          driver_id: operationalState === 'usage' && form.driver_id ? Number(form.driver_id) : null,
+        }),
+      });
+      setSuccess(response.message || 'Estado atualizado com sucesso.');
+      setOperationalState('');
+      await loadOptions();
+    } catch (stateError) {
+      setError(stateError instanceof Error ? stateError.message : 'Não foi possível atualizar o estado.');
+    } finally {
+      setIsCreating(false);
+    }
+  }
+
   return (
     <IonPage>
       <DriverPageHeader title="Passagens" subtitle="Entrega, recolha e troca de utilizacao" />
@@ -278,6 +303,20 @@ const AdminTransferPage: React.FC = () => {
 
           {!isLoading ? (
             <section className="dashboard-section">
+              <article className="dashboard-card">
+                <div className="card-head"><div><h3>Estado das atribuições</h3><p>Anomalias atuais que precisam de atenção.</p></div></div>
+                <div className="submission-meta">
+                  <span>Sem motorista: {options?.assignment_health.counts.unassigned_vehicles ?? 0}</span>
+                  <span>Viaturas com vários motoristas: {options?.assignment_health.counts.vehicles_with_multiple_drivers ?? 0}</span>
+                  <span>Motoristas com várias viaturas: {options?.assignment_health.counts.drivers_with_multiple_vehicles ?? 0}</span>
+                </div>
+                {(options?.assignment_health.vehicles_with_multiple_drivers ?? []).map((item) => (
+                  <p className="status-warning" key={`vehicle-${item.vehicle_id}`}>{item.license_plate}: {item.drivers.join(', ')}</p>
+                ))}
+                {(options?.assignment_health.drivers_with_multiple_vehicles ?? []).map((item) => (
+                  <p className="status-warning" key={`driver-${item.driver_id}`}>{item.driver_name}: {item.vehicles.join(', ')}</p>
+                ))}
+              </article>
               <article className="dashboard-card transfer-mode-panel">
                 <div className="card-head">
                   <div>
@@ -407,6 +446,19 @@ const AdminTransferPage: React.FC = () => {
 
                   <IonButton onClick={() => void handleCreateTransfer()} disabled={!form.vehicle_id || (requiresTargetDriver && !form.driver_id) || isCreating}>
                     {isCreating ? 'A iniciar...' : primaryActionLabel}
+                  </IonButton>
+                </div>
+              </article>
+
+              <article className="dashboard-card">
+                <div className="card-head"><div><h3>Estado operacional</h3><p>Marca a viatura como manutenção, sinistrada, sem utilização, uso pessoal ou utilização normal.</p></div></div>
+                <div className="form-stack">
+                  <select className="text-field" value={operationalState} onChange={(event) => setOperationalState(event.target.value)}>
+                    <option value="">Selecionar estado</option>
+                    {(options?.usage_states ?? []).map((state) => <option key={state.key} value={state.key}>{state.label}</option>)}
+                  </select>
+                  <IonButton fill="outline" onClick={() => void applyOperationalState()} disabled={!form.vehicle_id || !operationalState || (operationalState === 'usage' && !form.driver_id) || isCreating}>
+                    Atualizar estado da viatura selecionada
                   </IonButton>
                 </div>
               </article>

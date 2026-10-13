@@ -23,7 +23,6 @@ function resolveNativeApiBaseUrl() {
 
   return PRODUCTION_SITE_URL;
 }
-
 export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '') ||
   (isNativePlatform
@@ -97,13 +96,14 @@ export class ApiError extends Error {
 
 type ApiRequestOptions = RequestInit & {
   token?: string | null;
+  timeoutMs?: number;
 };
 
 export async function apiRequest<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
-  const { token, headers, signal, ...rest } = options;
+  const { token, headers, signal, timeoutMs = API_REQUEST_TIMEOUT_MS, ...rest } = options;
   const isFormData = typeof FormData !== 'undefined' && rest.body instanceof FormData;
   const controller = new AbortController();
-  const timeout = globalThis.setTimeout(() => controller.abort(), API_REQUEST_TIMEOUT_MS);
+  const timeout = globalThis.setTimeout(() => controller.abort(), timeoutMs);
 
   if (signal) {
     if (signal.aborted) {
@@ -149,7 +149,11 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
         ? 'Sessao invalida. Volta a iniciar sessao.'
         : 'Nao foi possivel concluir o pedido.';
 
-      const message =
+      const validationMessage = payload && typeof payload === 'object' && 'errors' in payload && payload.errors && typeof payload.errors === 'object'
+        ? Object.values(payload.errors as Record<string, unknown>).flat().find((value) => typeof value === 'string') as string | undefined
+        : undefined;
+
+      const message = validationMessage ||
         (payload && typeof payload === 'object' && 'message' in payload && typeof payload.message === 'string'
           ? payload.message
           : null) ||

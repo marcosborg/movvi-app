@@ -180,6 +180,9 @@ export type DriverReceiptsResponse = {
     verified_value: number | null;
     amount_transferred: number | null;
     verified: boolean;
+    status: 'submitted' | 'verified' | 'paid';
+    status_label: string;
+    verified_at: string | null;
     paid: boolean;
     created_at: string | null;
     tvde_week_id: number | null;

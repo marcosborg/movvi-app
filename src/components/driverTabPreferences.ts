@@ -11,6 +11,7 @@ import {
   helpCircleOutline,
   settingsOutline,
   swapHorizontalOutline,
+  qrCodeOutline,
 } from 'ionicons/icons';
 
 export type DriverTabPreferenceContext = {
@@ -80,6 +81,13 @@ export const DRIVER_TAB_DEFINITIONS: DriverTabDefinition[] = [
     href: '/dashboard/transfers',
     icon: swapHorizontalOutline,
     visible: (context) => context.isAdmin || context.isGestor,
+  },
+  {
+    key: 'vehicle-qr',
+    label: 'QR',
+    href: '/dashboard/vehicle-qr',
+    icon: qrCodeOutline,
+    visible: (context) => context.hasDriverProfile,
   },
   {
     key: 'weekly-evaluation',

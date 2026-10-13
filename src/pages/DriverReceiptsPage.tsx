@@ -85,6 +85,7 @@ const DriverReceiptsPage: React.FC = () => {
         method: 'POST',
         token,
         body,
+        timeoutMs: 120000,
       });
 
       setReceiptFile(null);

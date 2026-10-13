@@ -69,7 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       setUser(response.user);
       setDriver(response.driver);
-    } catch (error) {
+    } catch {
       localStorage.removeItem(TOKEN_KEY);
       setToken(null);
       setUser(null);

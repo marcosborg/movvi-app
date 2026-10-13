@@ -1,6 +1,5 @@
 import {
   IonItem,
-  IonLabel,
   IonSelect,
   IonSelectOption,
 } from '@ionic/react';
