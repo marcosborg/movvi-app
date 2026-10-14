@@ -55,7 +55,6 @@ const DriverStatementPage: React.FC = () => {
 
   const accountSummary = dashboard?.driver_hub.account_summary;
   const driverHub = dashboard?.driver_hub;
-  const totalGross = getAccountValue(accountSummary, 'total_gross');
   const totalNet = getAccountValue(accountSummary, 'total_net');
   const adjustments = getAccountValue(accountSummary, 'adjustments');
   const generalAdjustments = getAccountValue(accountSummary, 'general_adjustments', adjustments);
@@ -104,18 +103,15 @@ const DriverStatementPage: React.FC = () => {
                     <div className="card-head">
                       <h3>Atividades por operador</h3>
                     </div>
-                    <p>Uber bruto: {formatMoney(getAccountValue(accountSummary, 'uber.uber_gross', getAccountValue(accountSummary, 'uber_gross')))}</p>
-                    <p>Uber liquido: {formatMoney(getAccountValue(accountSummary, 'uber.uber_net', getAccountValue(accountSummary, 'uber_net')))}</p>
-                    <p>Bolt bruto: {formatMoney(getAccountValue(accountSummary, 'bolt.bolt_gross', getAccountValue(accountSummary, 'bolt_gross')))}</p>
-                    <p>Bolt liquido: {formatMoney(getAccountValue(accountSummary, 'bolt.bolt_net', getAccountValue(accountSummary, 'bolt_net')))}</p>
+                    <p>Uber — valor recebido: {formatMoney(getAccountValue(accountSummary, 'uber.uber_net', getAccountValue(accountSummary, 'uber_net')))}</p>
+                    <p>Bolt — valor recebido: {formatMoney(getAccountValue(accountSummary, 'bolt.bolt_net', getAccountValue(accountSummary, 'bolt_net')))}</p>
                   </article>
 
                   <article className="dashboard-card">
                     <div className="card-head">
                       <h3>Totais do extrato</h3>
                     </div>
-                    <p>Ganhos brutos: {formatMoney(totalGross)}</p>
-                    <p>Ganhos liquidos: {formatMoney(totalNet)}</p>
+                    <p>Ganhos dos operadores: {formatMoney(totalNet)}</p>
                     <p>Total da semana: {formatMoney(driverHub.statement_metrics?.total)}</p>
                     <p>KM da semana: {formatKm(weeklyKm)}</p>
                     <p>Valor por km: {formatMoney(earningsPerKm)}/km</p>
