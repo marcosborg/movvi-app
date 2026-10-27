@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { apiRequest, ApiError } from '../lib/api';
 
 const TOKEN_KEY = 'movvi.access_token';
@@ -31,6 +31,7 @@ type LoginResponse = {
   access_token: string;
   token_type: string;
   user: UserProfile;
+  driver?: DriverProfile | null;
 };
 
 type AuthContextValue = {
@@ -50,15 +51,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [driver, setDriver] = useState<DriverProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const initialToken = useRef(token).current;
 
   useEffect(() => {
-    if (!token) {
+    if (!initialToken) {
       setIsLoading(false);
       return;
     }
 
-    void loadMe(token);
-  }, [token]);
+    void loadMe(initialToken);
+  }, [initialToken]);
 
   async function loadMe(currentToken: string) {
     try {
@@ -83,29 +85,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const response = await apiRequest<LoginResponse>('/api/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
+      timeoutMs: 60000,
     });
 
     localStorage.setItem(TOKEN_KEY, response.access_token);
     setToken(response.access_token);
     setUser(response.user);
+    if ('driver' in response) {
+      setDriver(response.driver ?? null);
+      return;
+    }
 
     try {
       const me = await apiRequest<MeResponse>('/api/v1/mobile/me', {
         method: 'GET',
         token: response.access_token,
+        timeoutMs: 60000,
       });
 
       setUser(me.user);
       setDriver(me.driver);
     } catch (error) {
-      if (error instanceof ApiError) {
+      if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
         localStorage.removeItem(TOKEN_KEY);
         setToken(null);
         setUser(null);
         setDriver(null);
+        throw error;
       }
 
-      throw error;
+      // The token is valid because the login request succeeded. Keep the
+      // session available when the optional profile refresh has a temporary
+      // network error; the dashboard will retry its own data request.
+      setDriver(null);
     }
   }
 

@@ -33,7 +33,7 @@ export const PUBLIC_SITE_URL =
   import.meta.env.VITE_PUBLIC_SITE_URL?.replace(/\/$/, '') || PRODUCTION_SITE_URL;
 
 const API_ACTIVITY_EVENT = 'movvi:api-activity';
-const API_REQUEST_TIMEOUT_MS = 20000;
+const API_REQUEST_TIMEOUT_MS = 30000;
 let activeApiRequests = 0;
 
 function notifyApiActivity() {
@@ -129,10 +129,15 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
     });
   } catch (error) {
     endApiActivity();
+    const isTimeout = error instanceof Error && error.name === 'AbortError';
+    const localHelp = isLocalWebRuntime
+      ? ' Verifica se o backend local esta ativo.'
+      : ' Confirma a ligacao à internet e tenta novamente.';
+
     throw new ApiError(
-      error instanceof Error && error.name === 'AbortError'
-        ? `A API em ${API_BASE_URL} demorou demasiado a responder. Verifica se o backend local esta ativo.`
-        : `Nao foi possivel ligar a API em ${API_BASE_URL}. Verifica o host configurado para este dispositivo.`,
+      isTimeout
+        ? `O servidor demorou demasiado a responder.${localHelp}`
+        : `Nao foi possivel ligar ao servidor.${localHelp}`,
       0,
       error,
     );
@@ -142,7 +147,21 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
 
   try {
     const text = await response.text();
-    const payload = text ? JSON.parse(text) : null;
+    let payload: unknown = null;
+
+    if (text) {
+      try {
+        payload = JSON.parse(text);
+      } catch {
+        throw new ApiError(
+          response.ok
+            ? 'O servidor devolveu uma resposta invalida. Tenta novamente.'
+            : 'O servidor esta temporariamente indisponivel. Tenta novamente.',
+          response.status,
+          text,
+        );
+      }
+    }
 
     if (!response.ok) {
       const fallbackMessage = response.status === 401
