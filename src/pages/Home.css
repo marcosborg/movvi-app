@@ -425,6 +425,13 @@
   line-height: 1.4;
 }
 
+.transfer-adjustment-panel {
+  padding: 16px;
+  border: 1px solid rgba(45, 112, 94, 0.18);
+  border-radius: 18px;
+  background: rgba(45, 112, 94, 0.05);
+}
+
 .form-label {
   color: #975236;
   font-size: 0.76rem;

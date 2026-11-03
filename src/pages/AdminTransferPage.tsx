@@ -21,6 +21,7 @@ import {
 import './Home.css';
 
 type TransferMode = 'entrega' | 'recolha' | 'passagem';
+type AdjustmentType = 'refund' | 'deduct';
 
 const transferModeOptions: Array<{
   key: TransferMode;
@@ -59,6 +60,10 @@ const AdminTransferPage: React.FC = () => {
   const [operationalState, setOperationalState] = useState('');
   const [showAllOptions, setShowAllOptions] = useState(true);
   const [showInspectionChoice, setShowInspectionChoice] = useState(false);
+  const [includeAdjustment, setIncludeAdjustment] = useState(false);
+  const [adjustmentName, setAdjustmentName] = useState('');
+  const [adjustmentType, setAdjustmentType] = useState<AdjustmentType>('refund');
+  const [adjustmentAmount, setAdjustmentAmount] = useState('');
   const [form, setForm] = useState({
     vehicle_id: '',
     driver_id: '',
@@ -90,6 +95,10 @@ const AdminTransferPage: React.FC = () => {
       });
       setVehicleSearch('');
       setTargetDriverSearch('');
+      setIncludeAdjustment(false);
+      setAdjustmentName('');
+      setAdjustmentType('refund');
+      setAdjustmentAmount('');
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : 'Nao foi possivel carregar os dados de passagem.');
     } finally {
@@ -142,6 +151,22 @@ const AdminTransferPage: React.FC = () => {
       ? `${selectedDriver.name} ja esta associado a esta viatura.`
       : `${selectedDriver.name} ja tem a viatura ${selectedDriver.current_vehicle_license_plate || 'atual'} atribuida. Confirma a troca antes de continuar.`
     : null;
+  const adjustmentDriverName = mode === 'recolha' ? selectedVehicle?.driver_name : selectedDriver?.name;
+  const parsedAdjustmentAmount = Number(adjustmentAmount.replace(',', '.'));
+  const isAdjustmentValid = !includeAdjustment
+    || (Boolean(adjustmentDriverName) && adjustmentName.trim() !== '' && parsedAdjustmentAmount > 0);
+
+  function adjustmentPayload() {
+    if (!includeAdjustment) {
+      return undefined;
+    }
+
+    return {
+      name: adjustmentName.trim(),
+      type: adjustmentType,
+      amount: parsedAdjustmentAmount,
+    };
+  }
 
   function buildVehicleLabel(vehicle: InspectionCreateOptionsResponse['vehicles'][number]) {
     return `${vehicle.license_plate}${vehicle.driver_name ? ` · atual: ${vehicle.driver_name}` : ' · sem motorista'}`;
@@ -196,6 +221,7 @@ const AdminTransferPage: React.FC = () => {
             driver_id: requiresTargetDriver ? Number(form.driver_id) : null,
             source_driver_id: selectedVehicle?.driver_id ?? null,
             transfer_mode: mode,
+            adjustment: adjustmentPayload(),
           }),
         });
 
@@ -214,6 +240,7 @@ const AdminTransferPage: React.FC = () => {
           driver_id: requiresTargetDriver ? Number(form.driver_id) : null,
           source_driver_id: selectedVehicle?.driver_id ?? null,
           transfer_mode: mode,
+          adjustment: adjustmentPayload(),
         }),
       });
 
@@ -229,7 +256,7 @@ const AdminTransferPage: React.FC = () => {
   }
 
   async function handleCreateTransfer() {
-    if (!form.vehicle_id || (requiresTargetDriver && !form.driver_id)) {
+    if (!form.vehicle_id || (requiresTargetDriver && !form.driver_id) || !isAdjustmentValid) {
       return;
     }
 
@@ -440,6 +467,69 @@ const AdminTransferPage: React.FC = () => {
                   )}
                   {selectedDriverWarning ? <p className="status-warning">{selectedDriverWarning}</p> : null}
 
+                  <div className="transfer-adjustment-panel">
+                    <label className="transfer-filter-row" htmlFor="transfer-include-adjustment">
+                      <div>
+                        <strong>Lançar ajuste nesta semana</strong>
+                        <span>Adiciona ou retira um valor ao motorista desta operação.</span>
+                      </div>
+                      <IonToggle
+                        id="transfer-include-adjustment"
+                        checked={includeAdjustment}
+                        onIonChange={(event) => setIncludeAdjustment(event.detail.checked)}
+                      />
+                    </label>
+
+                    {includeAdjustment ? (
+                      <div className="form-stack">
+                        <div className="submission-meta">
+                          <span>Motorista: {adjustmentDriverName || 'Seleciona primeiro o motorista da operação'}</span>
+                          <span>Semana atual</span>
+                        </div>
+                        <label className="form-label form-label-compact" htmlFor="transfer-adjustment-name">
+                          Nome do ajuste
+                        </label>
+                        <input
+                          id="transfer-adjustment-name"
+                          className="text-field"
+                          value={adjustmentName}
+                          onChange={(event) => setAdjustmentName(event.target.value)}
+                          placeholder="Ex.: acerto combinado na entrega"
+                          maxLength={255}
+                        />
+                        <label className="form-label form-label-compact" htmlFor="transfer-adjustment-type">
+                          Tipo do ajuste
+                        </label>
+                        <select
+                          id="transfer-adjustment-type"
+                          className="text-field"
+                          value={adjustmentType}
+                          onChange={(event) => setAdjustmentType(event.target.value as AdjustmentType)}
+                        >
+                          <option value="refund">Dar dinheiro ao motorista</option>
+                          <option value="deduct">Retirar dinheiro ao motorista</option>
+                        </select>
+                        <label className="form-label form-label-compact" htmlFor="transfer-adjustment-amount">
+                          Valor
+                        </label>
+                        <input
+                          id="transfer-adjustment-amount"
+                          className="text-field"
+                          type="number"
+                          inputMode="decimal"
+                          min="0.01"
+                          step="0.01"
+                          value={adjustmentAmount}
+                          onChange={(event) => setAdjustmentAmount(event.target.value)}
+                          placeholder="0,00"
+                        />
+                        {!isAdjustmentValid ? (
+                          <p className="status-warning">Preenche o motorista, o nome e um valor superior a zero.</p>
+                        ) : null}
+                      </div>
+                    ) : null}
+                  </div>
+
                   {selectedVehicle ? (
                     <article className="receipt-item action-item">
                       <div>
@@ -455,7 +545,7 @@ const AdminTransferPage: React.FC = () => {
                     </article>
                   ) : null}
 
-                  <IonButton onClick={() => void handleCreateTransfer()} disabled={!form.vehicle_id || (requiresTargetDriver && !form.driver_id) || isCreating}>
+                  <IonButton onClick={() => void handleCreateTransfer()} disabled={!form.vehicle_id || (requiresTargetDriver && !form.driver_id) || !isAdjustmentValid || isCreating}>
                     {isCreating ? 'A iniciar...' : primaryActionLabel}
                   </IonButton>
                 </div>
