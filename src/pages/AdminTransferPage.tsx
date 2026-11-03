@@ -360,7 +360,9 @@ const AdminTransferPage: React.FC = () => {
                     />
                   </label>
 
-                  <label className="form-label form-label-compact" htmlFor="transfer-vehicle-search">Viatura</label>
+                  <label className="form-label form-label-compact" htmlFor="transfer-vehicle-search">
+                    1. Viatura
+                  </label>
                   <input
                     id="transfer-vehicle-search"
                     className="text-field"
@@ -369,8 +371,13 @@ const AdminTransferPage: React.FC = () => {
                       setVehicleSearch(event.target.value);
                       setForm((current) => ({ ...current, vehicle_id: '' }));
                     }}
-                    placeholder="Escreve a matrícula ou o nome do motorista atual"
+                    placeholder="Matricula ou motorista que tem a viatura agora"
                   />
+                  {requiresTargetDriver ? (
+                    <p className="dashboard-help">
+                      Este campo procura a viatura. Para escolher quem a vai receber, usa o campo 2 — Motorista destino.
+                    </p>
+                  ) : null}
                   <div className="transfer-picker-list">
                     {filteredVehicles.length > 0 ? filteredVehicles.map((vehicle) => (
                       <button
@@ -382,7 +389,11 @@ const AdminTransferPage: React.FC = () => {
                         <strong>{vehicle.license_plate}</strong>
                         <span>{vehicle.driver_name ? `Atual: ${vehicle.driver_name}` : 'Sem motorista'}</span>
                       </button>
-                    )) : <p className="dashboard-empty">Sem viaturas a corresponder à pesquisa.</p>}
+                    )) : (
+                      <p className="dashboard-empty">
+                        Sem viaturas a corresponder. Se procuras o motorista que vai receber a viatura, usa o campo 2 abaixo.
+                      </p>
+                    )}
                   </div>
 
                   {selectedVehicle ? (
@@ -396,7 +407,7 @@ const AdminTransferPage: React.FC = () => {
                   {requiresTargetDriver ? (
                     <>
                       <label className="form-label form-label-compact" htmlFor="transfer-driver-search">
-                        {mode === 'passagem' ? 'Motorista destino' : 'Motorista da entrega'}
+                        2. {mode === 'passagem' ? 'Motorista destino' : 'Motorista da entrega'}
                       </label>
                       <input
                         id="transfer-driver-search"
@@ -406,7 +417,7 @@ const AdminTransferPage: React.FC = () => {
                           setTargetDriverSearch(event.target.value);
                           setForm((current) => ({ ...current, driver_id: '' }));
                         }}
-                        placeholder="Escreve o nome do motorista destino"
+                        placeholder="Nome do motorista que vai receber a viatura"
                       />
                       <div className="transfer-picker-list">
                         {filteredDrivers.length > 0 ? filteredDrivers.map((driver) => (

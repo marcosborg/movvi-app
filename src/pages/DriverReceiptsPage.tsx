@@ -194,15 +194,15 @@ const DriverReceiptsPage: React.FC = () => {
                     <div className="card-head">
                       <div>
                         <h3>Recibo verde</h3>
-                        <p>O valor acompanha automaticamente o saldo da semana selecionada.</p>
+                        <p>Emita o recibo pelo valor com IVA e retencao indicado abaixo. O valor sem IVA e apenas a base da semana.</p>
                       </div>
                       <span className={`status-badge ${data.submission.can_submit_receipt ? 'status-available' : 'status-locked'}`}>
                         {data.submission.can_submit_receipt ? 'Disponivel' : 'Bloqueado'}
                       </span>
                     </div>
                     <div className="submission-meta">
-                      <span>Saldo atual: {formatMoney(data.submission.balance?.new_balance)}</span>
-                      <span>Valor final: {formatMoney(data.submission.balance?.final)}</span>
+                      <span>Valor sem IVA: {formatMoney(data.submission.balance?.new_balance)}</span>
+                      <span>Valor a emitir no recibo: {formatMoney(data.submission.balance?.final)}</span>
                     </div>
                     <div className="form-stack">
                       <ImageSourceField

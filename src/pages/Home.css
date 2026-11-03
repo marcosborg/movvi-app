@@ -230,6 +230,13 @@
   line-height: 1.55;
 }
 
+.dashboard-card .dashboard-help {
+  margin-top: -2px;
+  color: #8a4a32;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
 .card-head {
   display: flex;
   justify-content: space-between;
