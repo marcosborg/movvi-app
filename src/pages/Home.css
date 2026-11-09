@@ -432,6 +432,66 @@
   background: rgba(45, 112, 94, 0.05);
 }
 
+.assignment-health-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.assignment-health-button {
+  align-items: center;
+  background: var(--app-surface-soft, #f8f2ee);
+  border: 1px solid rgba(126, 65, 45, 0.14);
+  border-radius: 16px;
+  color: inherit;
+  display: flex;
+  font: inherit;
+  justify-content: space-between;
+  min-height: 48px;
+  padding: 11px 14px;
+  text-align: left;
+  width: 100%;
+}
+
+.assignment-health-button strong {
+  align-items: center;
+  background: #fff;
+  border-radius: 999px;
+  display: inline-flex;
+  justify-content: center;
+  min-height: 30px;
+  min-width: 30px;
+  padding: 0 9px;
+}
+
+.assignment-health-button-active {
+  background: rgba(166, 75, 43, 0.12);
+  border-color: rgba(166, 75, 43, 0.45);
+}
+
+.assignment-health-details {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.assignment-health-details p:not(.dashboard-empty) {
+  align-items: flex-start;
+  background: rgba(255, 255, 255, 0.72);
+  border-left: 3px solid var(--ion-color-primary, #a64b2b);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0;
+  padding: 10px 12px;
+}
+
+.assignment-health-details span {
+  color: var(--app-text-muted, #766a65);
+  font-size: 0.9rem;
+}
+
 .form-label {
   color: #975236;
   font-size: 0.76rem;

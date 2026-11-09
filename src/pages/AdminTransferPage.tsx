@@ -22,6 +22,7 @@ import './Home.css';
 
 type TransferMode = 'entrega' | 'recolha' | 'passagem';
 type AdjustmentType = 'refund' | 'deduct';
+type AssignmentHealthSection = 'unassigned' | 'multipleDrivers' | 'multipleVehicles';
 
 const transferModeOptions: Array<{
   key: TransferMode;
@@ -61,6 +62,7 @@ const AdminTransferPage: React.FC = () => {
   const [showAllOptions, setShowAllOptions] = useState(true);
   const [showInspectionChoice, setShowInspectionChoice] = useState(false);
   const [includeAdjustment, setIncludeAdjustment] = useState(false);
+  const [expandedHealthSection, setExpandedHealthSection] = useState<AssignmentHealthSection | null>(null);
   const [adjustmentName, setAdjustmentName] = useState('');
   const [adjustmentType, setAdjustmentType] = useState<AdjustmentType>('refund');
   const [adjustmentAmount, setAdjustmentAmount] = useState('');
@@ -166,6 +168,10 @@ const AdminTransferPage: React.FC = () => {
       type: adjustmentType,
       amount: parsedAdjustmentAmount,
     };
+  }
+
+  function toggleHealthSection(section: AssignmentHealthSection) {
+    setExpandedHealthSection((current) => current === section ? null : section);
   }
 
   function buildVehicleLabel(vehicle: InspectionCreateOptionsResponse['vehicles'][number]) {
@@ -332,17 +338,62 @@ const AdminTransferPage: React.FC = () => {
             <section className="dashboard-section">
               <article className="dashboard-card">
                 <div className="card-head"><div><h3>Estado das atribuições</h3><p>Anomalias atuais que precisam de atenção.</p></div></div>
-                <div className="submission-meta">
-                  <span>Sem motorista: {options?.assignment_health.counts.unassigned_vehicles ?? 0}</span>
-                  <span>Viaturas com vários motoristas: {options?.assignment_health.counts.vehicles_with_multiple_drivers ?? 0}</span>
-                  <span>Motoristas com várias viaturas: {options?.assignment_health.counts.drivers_with_multiple_vehicles ?? 0}</span>
+                <div className="assignment-health-actions">
+                  <button
+                    type="button"
+                    className={`assignment-health-button ${expandedHealthSection === 'unassigned' ? 'assignment-health-button-active' : ''}`}
+                    onClick={() => toggleHealthSection('unassigned')}
+                    aria-expanded={expandedHealthSection === 'unassigned'}
+                  >
+                    <span>Sem motorista</span>
+                    <strong>{options?.assignment_health.counts.unassigned_vehicles ?? 0}</strong>
+                  </button>
+                  <button
+                    type="button"
+                    className={`assignment-health-button ${expandedHealthSection === 'multipleDrivers' ? 'assignment-health-button-active' : ''}`}
+                    onClick={() => toggleHealthSection('multipleDrivers')}
+                    aria-expanded={expandedHealthSection === 'multipleDrivers'}
+                  >
+                    <span>Viaturas com vários motoristas</span>
+                    <strong>{options?.assignment_health.counts.vehicles_with_multiple_drivers ?? 0}</strong>
+                  </button>
+                  <button
+                    type="button"
+                    className={`assignment-health-button ${expandedHealthSection === 'multipleVehicles' ? 'assignment-health-button-active' : ''}`}
+                    onClick={() => toggleHealthSection('multipleVehicles')}
+                    aria-expanded={expandedHealthSection === 'multipleVehicles'}
+                  >
+                    <span>Motoristas com várias viaturas</span>
+                    <strong>{options?.assignment_health.counts.drivers_with_multiple_vehicles ?? 0}</strong>
+                  </button>
                 </div>
-                {(options?.assignment_health.vehicles_with_multiple_drivers ?? []).map((item) => (
-                  <p className="status-warning" key={`vehicle-${item.vehicle_id}`}>{item.license_plate}: {item.drivers.join(', ')}</p>
-                ))}
-                {(options?.assignment_health.drivers_with_multiple_vehicles ?? []).map((item) => (
-                  <p className="status-warning" key={`driver-${item.driver_id}`}>{item.driver_name}: {item.vehicles.join(', ')}</p>
-                ))}
+                {expandedHealthSection === 'unassigned' ? (
+                  <div className="assignment-health-details">
+                    {(options?.assignment_health.unassigned_vehicles ?? []).length > 0
+                      ? options?.assignment_health.unassigned_vehicles.map((item) => (
+                        <p key={`unassigned-${item.vehicle_id}`}><strong>{item.license_plate}</strong><span>Sem motorista atribuído</span></p>
+                      ))
+                      : <p className="dashboard-empty">Não há viaturas sem motorista.</p>}
+                  </div>
+                ) : null}
+                {expandedHealthSection === 'multipleDrivers' ? (
+                  <div className="assignment-health-details">
+                    {(options?.assignment_health.vehicles_with_multiple_drivers ?? []).length > 0
+                      ? options?.assignment_health.vehicles_with_multiple_drivers.map((item) => (
+                        <p key={`vehicle-${item.vehicle_id}`}><strong>{item.license_plate}</strong><span>{item.drivers.join(', ')}</span></p>
+                      ))
+                      : <p className="dashboard-empty">Não há viaturas com vários motoristas.</p>}
+                  </div>
+                ) : null}
+                {expandedHealthSection === 'multipleVehicles' ? (
+                  <div className="assignment-health-details">
+                    {(options?.assignment_health.drivers_with_multiple_vehicles ?? []).length > 0
+                      ? options?.assignment_health.drivers_with_multiple_vehicles.map((item) => (
+                        <p key={`driver-${item.driver_id}`}><strong>{item.driver_name}</strong><span>{item.vehicles.join(', ')}</span></p>
+                      ))
+                      : <p className="dashboard-empty">Não há motoristas com várias viaturas.</p>}
+                  </div>
+                ) : null}
               </article>
               <article className="dashboard-card transfer-mode-panel">
                 <div className="card-head">
