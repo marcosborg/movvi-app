@@ -17,6 +17,7 @@ import DriverInspectionsPage from '../pages/DriverInspectionsPage';
 import DriverGuidePage from '../pages/DriverGuidePage';
 import DriverOverviewPage from '../pages/DriverOverviewPage';
 import DriverReceiptsPage from '../pages/DriverReceiptsPage';
+import DriverReferralsPage from '../pages/DriverReferralsPage';
 import DriverStatementPage from '../pages/DriverStatementPage';
 import DriverTabPreferencesPage from '../pages/DriverTabPreferencesPage';
 import DriverWeeklyEvaluationPage from '../pages/DriverWeeklyEvaluationPage';
@@ -80,6 +81,9 @@ const DriverTabs: React.FC = () => {
         </Route>
         <Route exact path="/dashboard/receipts">
           <DriverReceiptsPage />
+        </Route>
+        <Route exact path="/dashboard/referrals">
+          {hasDriverProfile ? <DriverReferralsPage /> : <Redirect to="/dashboard" />}
         </Route>
         <Route exact path="/dashboard/inspections/:id">
           {isAdmin || isGestor ? <DriverInspectionDetailPage /> : <Redirect to="/dashboard" />}

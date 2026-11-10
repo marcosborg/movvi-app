@@ -8,6 +8,7 @@ import {
   documentTextOutline,
   documentsOutline,
   gridOutline,
+  giftOutline,
   helpCircleOutline,
   settingsOutline,
   swapHorizontalOutline,
@@ -66,6 +67,13 @@ export const DRIVER_TAB_DEFINITIONS: DriverTabDefinition[] = [
     label: 'Recibos',
     href: '/dashboard/receipts',
     icon: documentTextOutline,
+    visible: (context) => context.hasDriverProfile,
+  },
+  {
+    key: 'referrals',
+    label: 'Indique',
+    href: '/dashboard/referrals',
+    icon: giftOutline,
     visible: (context) => context.hasDriverProfile,
   },
   {

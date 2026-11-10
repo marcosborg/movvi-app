@@ -230,6 +230,127 @@
   line-height: 1.55;
 }
 
+.referral-hero {
+  align-items: center;
+}
+
+.referral-reward-badge {
+  min-width: 150px;
+  padding: 18px 22px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1d2440;
+  text-align: center;
+  box-shadow: 0 16px 30px rgba(23, 35, 74, 0.14);
+}
+
+.referral-reward-badge strong,
+.referral-reward-badge span {
+  display: block;
+}
+
+.referral-reward-badge strong {
+  font-size: 2rem;
+}
+
+.referral-reward-badge span {
+  margin-top: 4px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #69708a;
+}
+
+.referral-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.referral-form-grid label > span {
+  display: block;
+  margin-bottom: 7px;
+  color: #333b59;
+  font-size: 0.83rem;
+  font-weight: 800;
+}
+
+.referral-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 4px 0 18px;
+  color: #5f6680;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.referral-consent ion-checkbox {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.referral-list-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.referral-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+  border-bottom: 1px solid #edf0f7;
+}
+
+.referral-list-item:last-child {
+  border-bottom: 0;
+}
+
+.referral-list-item strong,
+.referral-list-item span {
+  display: block;
+}
+
+.referral-list-item > div:first-child span {
+  margin-top: 4px;
+  color: #737a91;
+  font-size: 0.82rem;
+}
+
+.referral-list-status {
+  text-align: right;
+}
+
+.referral-list-status small {
+  display: block;
+  margin-top: 5px;
+  color: #646c86;
+  font-weight: 800;
+}
+
+.referral-status-eligible,
+.referral-status-paid {
+  background: #daf5e4;
+  color: #176b3a;
+}
+
+.referral-status-rejected {
+  background: #fde2e2;
+  color: #9a2b2b;
+}
+
+@media (max-width: 640px) {
+  .referral-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .referral-reward-badge {
+    width: 100%;
+  }
+}
+
 .dashboard-card .dashboard-help {
   margin-top: -2px;
   color: #8a4a32;
