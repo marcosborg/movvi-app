@@ -443,7 +443,8 @@
   background: var(--app-surface-soft, #f8f2ee);
   border: 1px solid rgba(126, 65, 45, 0.14);
   border-radius: 16px;
-  color: inherit;
+  color: #2f2926;
+  -webkit-text-fill-color: #2f2926;
   display: flex;
   font: inherit;
   justify-content: space-between;
@@ -451,6 +452,11 @@
   padding: 11px 14px;
   text-align: left;
   width: 100%;
+}
+
+.assignment-health-button span {
+  color: #2f2926;
+  -webkit-text-fill-color: #2f2926;
 }
 
 .assignment-health-button strong {
@@ -462,11 +468,36 @@
   min-height: 30px;
   min-width: 30px;
   padding: 0 9px;
+  color: #7e412d;
+  -webkit-text-fill-color: #7e412d;
 }
 
 .assignment-health-button-active {
   background: rgba(166, 75, 43, 0.12);
   border-color: rgba(166, 75, 43, 0.45);
+}
+
+.adjustment-breakdown {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 12px;
+}
+
+.adjustment-breakdown p {
+  align-items: center;
+  background: rgba(126, 65, 45, 0.06);
+  border-radius: 10px;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin: 0;
+  padding: 8px 10px;
+}
+
+.adjustment-breakdown span,
+.adjustment-breakdown strong {
+  color: #2f2926;
+  -webkit-text-fill-color: #2f2926;
 }
 
 .assignment-health-details {

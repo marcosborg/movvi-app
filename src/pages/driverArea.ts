@@ -141,6 +141,8 @@ export type DriverAccountSummary = {
   percent_value?: number;
   driver_total?: number;
   total?: number;
+  adjustment_details?: DriverAdjustmentDetail[];
+  adjustments_array?: DriverAdjustmentDetail[];
   uber?: {
     uber_gross?: number;
     uber_net?: number;
@@ -150,6 +152,16 @@ export type DriverAccountSummary = {
     bolt_net?: number;
   };
   [key: string]: unknown;
+};
+
+export type DriverAdjustmentDetail = {
+  id?: number | null;
+  name?: string | null;
+  type?: 'deduct' | 'refund' | string | null;
+  amount?: number | string | null;
+  signed_amount?: number | string | null;
+  category?: string | null;
+  category_label?: string | null;
 };
 
 export type DriverWeekSummary = {
@@ -298,4 +310,39 @@ export function getAccountValue(accountSummary: DriverAccountSummary | null | un
 
   const value = Number(current);
   return Number.isFinite(value) ? value : fallback;
+}
+
+export function getGeneralAdjustmentDetails(accountSummary: DriverAccountSummary | null | undefined) {
+  if (!accountSummary) {
+    return [];
+  }
+
+  const raw = Array.isArray(accountSummary.adjustment_details)
+    ? accountSummary.adjustment_details
+    : (Array.isArray(accountSummary.adjustments_array) ? accountSummary.adjustments_array : []);
+  const generalCategories = new Set(['general', 'ajuste_manual', 'quilometros_excedentes']);
+
+  return raw.flatMap((item, index) => {
+    if (!item || typeof item !== 'object') {
+      return [];
+    }
+
+    const category = item.category || 'general';
+    if (!generalCategories.has(category)) {
+      return [];
+    }
+
+    const amount = Number(item.amount ?? 0);
+    const hasExplicitSignedAmount = item.signed_amount !== null && item.signed_amount !== undefined;
+    const explicitSignedAmount = Number(item.signed_amount);
+    const signedAmount = hasExplicitSignedAmount && Number.isFinite(explicitSignedAmount)
+      ? explicitSignedAmount
+      : (item.type === 'deduct' ? -Math.abs(amount) : Math.abs(amount));
+
+    return [{
+      id: item.id ?? `${item.name || 'adjustment'}-${index}`,
+      name: item.name?.trim() || item.category_label?.trim() || 'Ajuste',
+      signedAmount: Number.isFinite(signedAmount) ? signedAmount : 0,
+    }];
+  });
 }

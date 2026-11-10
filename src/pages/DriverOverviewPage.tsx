@@ -13,7 +13,7 @@ import DriverWeekPicker from '../components/DriverWeekPicker';
 import { useDriverWeek } from '../components/DriverWeekContext';
 import DriverPageHeader from '../components/DriverPageHeader';
 import { apiRequest } from '../lib/api';
-import { DriverDashboardResponse, formatKm, formatMoney, formatNumber, getAccountValue } from './driverArea';
+import { DriverDashboardResponse, formatKm, formatMoney, formatNumber, getAccountValue, getGeneralAdjustmentDetails } from './driverArea';
 import './Home.css';
 
 function formatDateTime(value?: string | null) {
@@ -79,6 +79,7 @@ const DriverOverviewPage: React.FC = () => {
   const activeRoles = dashboard?.viewer.roles ?? user?.roles ?? [];
   const accountSummary = driverHub?.account_summary;
   const generalAdjustments = getAccountValue(accountSummary, 'general_adjustments', getAccountValue(accountSummary, 'adjustments'));
+  const adjustmentDetails = getGeneralAdjustmentDetails(accountSummary);
   const rentDiscount = getAccountValue(accountSummary, 'abatimento_aluguer');
   const minimumBillingDifference = getAccountValue(accountSummary, 'diferenca_faturacao_minima');
   const cautionReceived = getAccountValue(accountSummary, 'caucao_recebida');
@@ -294,6 +295,16 @@ const DriverOverviewPage: React.FC = () => {
                           <span className="status-pill">Categorias</span>
                         </div>
                         <p>Ajustes gerais: {formatMoney(generalAdjustments)}</p>
+                        {adjustmentDetails.length > 0 ? (
+                          <div className="adjustment-breakdown" aria-label="Detalhe dos ajustes">
+                            {adjustmentDetails.map((adjustment) => (
+                              <p key={adjustment.id}>
+                                <span>{adjustment.name}</span>
+                                <strong>{formatMoney(adjustment.signedAmount)}</strong>
+                              </p>
+                            ))}
+                          </div>
+                        ) : null}
                         <p>Abatimento de aluguer: {formatMoney(rentDiscount)}</p>
                         <p>Fat. minima: {formatMoney(minimumBillingDifference)}</p>
                         <p>Caucao recebida: {formatMoney(cautionReceived)}</p>

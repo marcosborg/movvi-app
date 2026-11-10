@@ -12,7 +12,7 @@ import DriverWeekPicker from '../components/DriverWeekPicker';
 import { useDriverWeek } from '../components/DriverWeekContext';
 import DriverPageHeader from '../components/DriverPageHeader';
 import { apiRequest } from '../lib/api';
-import { DriverDashboardResponse, formatKm, formatMoney, getAccountValue } from './driverArea';
+import { DriverDashboardResponse, formatKm, formatMoney, getAccountValue, getGeneralAdjustmentDetails } from './driverArea';
 import './Home.css';
 
 const DriverStatementPage: React.FC = () => {
@@ -58,6 +58,7 @@ const DriverStatementPage: React.FC = () => {
   const totalNet = getAccountValue(accountSummary, 'total_net');
   const adjustments = getAccountValue(accountSummary, 'adjustments');
   const generalAdjustments = getAccountValue(accountSummary, 'general_adjustments', adjustments);
+  const adjustmentDetails = getGeneralAdjustmentDetails(accountSummary);
   const rentDiscount = getAccountValue(accountSummary, 'abatimento_aluguer');
   const minimumBillingDifference = getAccountValue(accountSummary, 'diferenca_faturacao_minima');
   const cautionReceived = getAccountValue(accountSummary, 'caucao_recebida');
@@ -148,6 +149,16 @@ const DriverStatementPage: React.FC = () => {
                     </div>
                     <p>Acertos: {formatMoney(adjustments)}</p>
                     <p>Ajustes gerais: {formatMoney(generalAdjustments)}</p>
+                    {adjustmentDetails.length > 0 ? (
+                      <div className="adjustment-breakdown" aria-label="Detalhe dos ajustes">
+                        {adjustmentDetails.map((adjustment) => (
+                          <p key={adjustment.id}>
+                            <span>{adjustment.name}</span>
+                            <strong>{formatMoney(adjustment.signedAmount)}</strong>
+                          </p>
+                        ))}
+                      </div>
+                    ) : null}
                     {minimumBillingDifference !== 0 ? (
                       <p>Diferenca de faturacao minima: {formatMoney(minimumBillingDifference)}</p>
                     ) : null}
