@@ -71,6 +71,7 @@ const DriverStatementPage: React.FC = () => {
   const percentValue = getAccountValue(accountSummary, 'percent_value');
   const weeklyKm = driverHub?.statement_metrics?.weekly_km ?? getAccountValue(accountSummary, 'weekly_km');
   const earningsPerKm = driverHub?.statement_metrics?.earnings_per_km ?? getAccountValue(accountSummary, 'earnings_per_km');
+  const referralBonus = getAccountValue(accountSummary, 'referral_bonus');
 
   return (
     <IonPage>
@@ -174,6 +175,7 @@ const DriverStatementPage: React.FC = () => {
                     <p>Caucao recebida: {formatMoney(cautionReceived)}</p>
                     <p>Caucao devolvida: {formatMoney(cautionReturned)}</p>
                     <p>Gorjetas: {formatMoney(getAccountValue(accountSummary, 'tips_total'))}</p>
+                    <p>Bónus, promoções e desafios: {formatMoney(referralBonus)}</p>
                   </article>
                 </div>
               </section>

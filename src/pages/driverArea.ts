@@ -137,6 +137,7 @@ export type DriverAccountSummary = {
   weekly_km?: number;
   earnings_per_km?: number;
   tips_total?: number;
+  referral_bonus?: number;
   iva_value?: number;
   percent_value?: number;
   driver_total?: number;
