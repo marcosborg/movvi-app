@@ -161,14 +161,9 @@ const DriverOverviewPage: React.FC = () => {
                         <span>Total do extrato semanal</span>
                       </article>
                       <article className="dashboard-card dashboard-metric-card">
-                        <p className="metric-label">Saldo atual</p>
-                        <strong>{formatMoney(driverHub.balance?.new_balance)}</strong>
-                        <span>Saldo antes de impostos finais</span>
-                      </article>
-                      <article className="dashboard-card dashboard-metric-card">
-                        <p className="metric-label">Saldo final</p>
+                        <p className="metric-label">Valor do recibo</p>
                         <strong>{formatMoney(driverHub.balance?.final)}</strong>
-                        <span>Com IVA e retencao aplicados</span>
+                        <span>Valor final com IVA e retencao a emitir no recibo</span>
                       </article>
                       <article className="dashboard-card dashboard-metric-card">
                         <p className="metric-label">Estado semanal</p>
