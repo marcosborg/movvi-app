@@ -11,6 +11,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import DriverPageHeader from '../components/DriverPageHeader';
+import VehiclePlateScanner from '../components/VehiclePlateScanner';
 import { apiRequest } from '../lib/api';
 import {
   InspectionCreateOptionsResponse,
@@ -77,7 +78,7 @@ const DriverInspectionsPage: React.FC = () => {
           method: 'GET',
           token,
         }),
-        apiRequest<InspectionCreateOptionsResponse>('/api/v1/mobile/inspections/create-options', {
+        apiRequest<InspectionCreateOptionsResponse>('/api/v1/mobile/inspections/create-options?show_all=1', {
           method: 'GET',
           token,
         }),
@@ -243,6 +244,14 @@ const DriverInspectionsPage: React.FC = () => {
                       <div className="search-grid">
                         <div>
                           <label className="form-label" htmlFor="inspection-search-plate">Pesquisar matrícula</label>
+                          <VehiclePlateScanner
+                            vehicles={options?.vehicles ?? []}
+                            onVehicleSelected={(vehicle) => {
+                              setPlateQuery(vehicle.license_plate);
+                              handleVehicleChange(String(vehicle.id));
+                            }}
+                            disabled={isCreating}
+                          />
                           <input
                             id="inspection-search-plate"
                             className="text-field"

@@ -24,6 +24,7 @@ echo "Synchronizing the iOS project and local Swift packages..."
 npx cap sync ios
 
 echo "Verifying Capacitor Swift package dependencies..."
-for package in app barcode-scanner haptics keyboard status-bar; do
+for package in app camera haptics keyboard status-bar; do
     test -f "node_modules/@capacitor/$package/Package.swift"
 done
+test -f "node_modules/capacitor-native-ocr/Package.swift"

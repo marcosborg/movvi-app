@@ -539,6 +539,28 @@
   color: inherit;
 }
 
+.vehicle-plate-scanner {
+  display: grid;
+  gap: 6px;
+}
+
+.vehicle-plate-scanner ion-button {
+  margin: 0;
+}
+
+.vehicle-plate-scanner ion-spinner,
+.vehicle-plate-scanner-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+.vehicle-plate-scanner .dashboard-help,
+.vehicle-plate-scanner .status-success,
+.vehicle-plate-scanner .status-warning {
+  margin: 0;
+}
+
 .transfer-filter-row span {
   margin-top: 4px;
   color: #6b554a;

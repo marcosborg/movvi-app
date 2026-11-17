@@ -4,6 +4,7 @@ import {
   analyticsOutline,
   barChartOutline,
   carSportOutline,
+  cameraOutline,
   clipboardOutline,
   documentTextOutline,
   documentsOutline,
@@ -12,7 +13,6 @@ import {
   helpCircleOutline,
   settingsOutline,
   swapHorizontalOutline,
-  qrCodeOutline,
 } from 'ionicons/icons';
 
 export type DriverTabPreferenceContext = {
@@ -91,10 +91,10 @@ export const DRIVER_TAB_DEFINITIONS: DriverTabDefinition[] = [
     visible: (context) => context.isAdmin || context.isGestor,
   },
   {
-    key: 'vehicle-qr',
-    label: 'QR',
-    href: '/dashboard/vehicle-qr',
-    icon: qrCodeOutline,
+    key: 'vehicle-plate',
+    label: 'Matrícula',
+    href: '/dashboard/vehicle-plate',
+    icon: cameraOutline,
     visible: (context) => context.hasDriverProfile,
   },
   {
@@ -143,7 +143,11 @@ export function readDriverTabOrder(): string[] {
 
   try {
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === 'string') : [];
+    return Array.isArray(parsed)
+      ? parsed
+        .filter((item): item is string => typeof item === 'string')
+        .map((item) => item === 'vehicle-qr' ? 'vehicle-plate' : item)
+      : [];
   } catch {
     return [];
   }

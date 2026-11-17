@@ -13,6 +13,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import DriverPageHeader from '../components/DriverPageHeader';
+import VehiclePlateScanner from '../components/VehiclePlateScanner';
 import { apiRequest } from '../lib/api';
 import {
   InspectionCreateOptionsResponse,
@@ -441,6 +442,11 @@ const AdminTransferPage: React.FC = () => {
                   <label className="form-label form-label-compact" htmlFor="transfer-vehicle-search">
                     1. Viatura
                   </label>
+                  <VehiclePlateScanner
+                    vehicles={options?.vehicles ?? []}
+                    onVehicleSelected={(vehicle) => selectVehicle(String(vehicle.id))}
+                    disabled={isCreating}
+                  />
                   <input
                     id="transfer-vehicle-search"
                     className="text-field"
