@@ -26,7 +26,6 @@ jobs:
       APP_BUNDLE_ID: pt.movvi.app
       ARCHIVE_PATH: build/App.xcarchive
       EXPORT_PATH: build/export
-      KEYCHAIN_PATH: ${{ runner.temp }}/app-signing.keychain-db
 
     steps:
       - name: Checkout
@@ -67,6 +66,7 @@ jobs:
           PP_PATH="${RUNNER_TEMP}/profile.mobileprovision"
           PP_PLIST_PATH="${RUNNER_TEMP}/profile.plist"
           PP_DIR="${HOME}/Library/MobileDevice/Provisioning Profiles"
+          KEYCHAIN_PATH="${RUNNER_TEMP}/app-signing.keychain-db"
 
           echo "${BUILD_CERTIFICATE_BASE64}" | base64 -D > "${CERTIFICATE_PATH}"
           echo "${BUILD_PROVISION_PROFILE_BASE64}" | base64 -D > "${PP_PATH}"
