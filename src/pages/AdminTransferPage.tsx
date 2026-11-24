@@ -303,7 +303,7 @@ const AdminTransferPage: React.FC = () => {
 
   return (
     <IonPage>
-      <DriverPageHeader title="Passagens" subtitle="Entrega, recolha e troca de utilizacao" />
+      <DriverPageHeader title="Viaturas" subtitle="Entrega, recolha, manutenção e fim de utilização" />
       <IonContent fullscreen className="home-page">
         <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
           <IonRefresherContent />
@@ -312,7 +312,7 @@ const AdminTransferPage: React.FC = () => {
         <div className="home-shell home-shell-with-tabs">
           <section className="hero-panel">
             <div className="hero-copy-block">
-              <p className="hero-eyebrow">Passagens</p>
+              <p className="hero-eyebrow">Viaturas</p>
               <h1>Registar utilizacao da viatura</h1>
               <p className="hero-copy">
                 Usa este fluxo para registar uma entrega, uma recolha ou uma passagem, deixando a inspecao e a utilizacao alinhadas.
@@ -609,14 +609,22 @@ const AdminTransferPage: React.FC = () => {
               </article>
 
               <article className="dashboard-card">
-                <div className="card-head"><div><h3>Estado operacional</h3><p>Marca a viatura como manutenção, sinistrada, sem utilização, uso pessoal ou utilização normal.</p></div></div>
+                <div className="card-head"><div><h3>Manutenção ou finalizar utilização</h3><p>Lê a matrícula acima ou escolhe a viatura e atualiza imediatamente o estado também no site.</p></div></div>
                 <div className="form-stack">
                   <select className="text-field" value={operationalState} onChange={(event) => setOperationalState(event.target.value)}>
                     <option value="">Selecionar estado</option>
-                    {(options?.usage_states ?? []).map((state) => <option key={state.key} value={state.key}>{state.label}</option>)}
+                    {(options?.usage_states ?? []).map((state) => (
+                      <option key={state.key} value={state.key}>
+                        {state.key === 'unassigned' ? 'Finalizar utilização' : state.label}
+                      </option>
+                    ))}
                   </select>
                   <IonButton fill="outline" onClick={() => void applyOperationalState()} disabled={!form.vehicle_id || !operationalState || (operationalState === 'usage' && !form.driver_id) || isCreating}>
-                    Atualizar estado da viatura selecionada
+                    {operationalState === 'maintenance'
+                      ? 'Enviar viatura para manutenção'
+                      : operationalState === 'unassigned'
+                        ? 'Finalizar utilização da viatura'
+                        : 'Atualizar estado da viatura selecionada'}
                   </IonButton>
                 </div>
               </article>

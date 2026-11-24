@@ -85,7 +85,7 @@ export const DRIVER_TAB_DEFINITIONS: DriverTabDefinition[] = [
   },
   {
     key: 'transfers',
-    label: 'Passagens',
+    label: 'Viaturas',
     href: '/dashboard/transfers',
     icon: swapHorizontalOutline,
     visible: (context) => context.isAdmin || context.isGestor,

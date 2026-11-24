@@ -318,7 +318,11 @@ const DriverInspectionDetailPage: React.FC = () => {
       <div className="inspection-thumb-grid">
         {items.map((photo) => (
           <a key={photo.id} href={photo.url} target="_blank" rel="noreferrer" className="inspection-thumb-card">
-            {/\.(pdf)(\?|$)/i.test(photo.url) ? (
+            {photo.mime?.startsWith('video/') ? (
+              <video controls preload="metadata" aria-label={photo.original_name || 'Vídeo da vistoria'}>
+                <source src={photo.url} type={photo.mime} />
+              </video>
+            ) : /\.(pdf)(\?|$)/i.test(photo.url) ? (
               <span className="inspection-file-link">{photo.original_name || 'Abrir ficheiro'}</span>
             ) : (
               <img src={photo.url} alt={photo.original_name || photo.slot || category} />
@@ -548,10 +552,10 @@ const DriverInspectionDetailPage: React.FC = () => {
           <label className="form-label" htmlFor="extra-observations">Observacoes finais</label>
           <textarea id="extra-observations" className="text-field text-area-field" value={extraObservations} onChange={(event) => setExtraObservations(event.target.value)} />
           <ImageSourceField
-            label="Fotos extra"
+            label="Fotos, vídeos ou ficheiros extra"
             multiple
-            galleryAccept=".pdf,image/*"
-            galleryLabel="Galeria / ficheiros"
+            galleryAccept=".pdf,image/*,video/*"
+            galleryLabel="Importar fotos / vídeos"
             onFilesSelected={(files) => setFileBucket('extra_photos', files)}
           />
           {renderPhotoThumbs('extra')}

@@ -146,6 +146,27 @@ const DriverOverviewPage: React.FC = () => {
 
           {error ? <p className="status-error">{error}</p> : null}
 
+          {!isLoading && !error ? (
+            <section className="dashboard-section">
+              <article className="dashboard-card">
+                <div className="card-head">
+                  <div>
+                    <h3>Acessos Movvi</h3>
+                    <p>Consulta carregamentos, desempenho e os postos Movvi em Gaia.</p>
+                  </div>
+                </div>
+                <div className="dashboard-actions">
+                  <IonButton href="https://dashboard.movvi.com.pt/motorista" target="_blank" rel="noopener noreferrer">
+                    Carregamentos e desempenho
+                  </IonButton>
+                  <IonButton href="https://charge.movvi.com.pt/" target="_blank" rel="noopener noreferrer" fill="outline">
+                    Carregar nos postos Movvi
+                  </IonButton>
+                </div>
+              </article>
+            </section>
+          ) : null}
+
           {!isLoading && !error && driverHub ? (
             <>
               {driverHub.status === 'configuration_required' ? (

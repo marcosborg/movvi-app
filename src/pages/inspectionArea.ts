@@ -143,6 +143,7 @@ export type InspectionShowResponse = {
     slot: string | null;
     url: string;
     original_name: string | null;
+    mime: string | null;
   }>;
   damages: Array<{
     id: number;
