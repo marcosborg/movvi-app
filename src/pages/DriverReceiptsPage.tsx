@@ -31,6 +31,10 @@ const DriverReceiptsPage: React.FC = () => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [submittingKey, setSubmittingKey] = useState<string | null>(null);
+  const currentReceipt = data?.receipts[0] ?? null;
+  const currentReceiptValue = currentReceipt
+    ? (currentReceipt.amount_transferred ?? currentReceipt.verified_value ?? currentReceipt.value)
+    : data?.submission.balance?.final;
 
   useEffect(() => {
     void loadReceipts();
@@ -194,15 +198,17 @@ const DriverReceiptsPage: React.FC = () => {
                     <div className="card-head">
                       <div>
                         <h3>Recibo verde</h3>
-                        <p>Emita o recibo pelo valor com IVA e retencao indicado abaixo. O valor sem IVA e apenas a base da semana.</p>
+                        <p>{currentReceipt
+                          ? 'Consulte o valor e o estado do recibo submetido nesta semana.'
+                          : 'Emita o recibo pelo valor com IVA e retencao indicado abaixo. O valor sem IVA e apenas a base da semana.'}</p>
                       </div>
                       <span className={`status-badge ${data.submission.can_submit_receipt ? 'status-available' : 'status-locked'}`}>
-                        {data.submission.can_submit_receipt ? 'Disponivel' : 'Bloqueado'}
+                        {currentReceipt?.status_label ?? (data.submission.can_submit_receipt ? 'Disponivel' : 'Sem recibo pendente')}
                       </span>
                     </div>
                     <div className="submission-meta">
                       <span>Valor sem IVA: {formatMoney(data.submission.balance?.new_balance)}</span>
-                      <span>Valor a emitir no recibo: {formatMoney(data.submission.balance?.final)}</span>
+                      <span>{currentReceipt ? 'Valor do recibo' : 'Valor a emitir no recibo'}: {formatMoney(currentReceiptValue)}</span>
                     </div>
                     <div className="form-stack">
                       <ImageSourceField

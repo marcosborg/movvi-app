@@ -83,6 +83,18 @@ export type DriverDashboardResponse = {
       manual_status: string | null;
       manual_status_label: string | null;
     } | null;
+    current_receipt: {
+      id: number;
+      value: number;
+      verified_value: number | null;
+      amount_transferred: number | null;
+      verified: boolean;
+      paid: boolean;
+      status: 'submitted' | 'verified' | 'paid';
+      status_label: string;
+      created_at: string | null;
+      file_url: string | null;
+    } | null;
     vehicle: {
       id: number;
       license_plate: string;

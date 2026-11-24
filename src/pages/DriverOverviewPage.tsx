@@ -84,6 +84,13 @@ const DriverOverviewPage: React.FC = () => {
   const minimumBillingDifference = getAccountValue(accountSummary, 'diferenca_faturacao_minima');
   const cautionReceived = getAccountValue(accountSummary, 'caucao_recebida');
   const cautionReturned = getAccountValue(accountSummary, 'caucao_devolvida');
+  const currentReceipt = driverHub?.current_receipt;
+  const receiptValue = currentReceipt
+    ? (currentReceipt.amount_transferred ?? currentReceipt.verified_value ?? currentReceipt.value)
+    : driverHub?.balance?.final;
+  const weeklyStatus = currentReceipt?.status_label
+    ?? driverHub?.balance?.manual_status_label
+    ?? ((driverHub?.balance?.new_balance ?? 0) > 0 ? 'Recibo pendente' : 'Sem recibo necessário');
 
   return (
     <IonPage>
@@ -162,13 +169,18 @@ const DriverOverviewPage: React.FC = () => {
                       </article>
                       <article className="dashboard-card dashboard-metric-card">
                         <p className="metric-label">Valor do recibo</p>
-                        <strong>{formatMoney(driverHub.balance?.final)}</strong>
-                        <span>Valor final com IVA e retencao a emitir no recibo</span>
+                        <strong>{formatMoney(receiptValue)}</strong>
+                        <span>{currentReceipt ? 'Valor do recibo submetido nesta semana' : 'Valor a emitir no recibo'}</span>
                       </article>
                       <article className="dashboard-card dashboard-metric-card">
                         <p className="metric-label">Estado semanal</p>
-                        <strong>{driverHub.balance?.manual_status_label || 'Sem estado'}</strong>
-                        <span>Definido manualmente pelo administrador</span>
+                        <strong>{weeklyStatus}</strong>
+                        <span>{currentReceipt ? 'Estado do recibo desta semana' : 'Estado financeiro da semana'}</span>
+                      </article>
+                      <article className="dashboard-card dashboard-metric-card">
+                        <p className="metric-label">Gorjetas</p>
+                        <strong>{formatMoney(getAccountValue(accountSummary, 'tips_total'))}</strong>
+                        <span>Incluídas no total da semana</span>
                       </article>
                       <article className="dashboard-card dashboard-metric-card">
                         <p className="metric-label">KM da semana</p>
