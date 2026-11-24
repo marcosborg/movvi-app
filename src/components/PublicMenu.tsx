@@ -21,6 +21,7 @@ import {
   sparklesOutline,
 } from 'ionicons/icons';
 import { useLocation } from 'react-router-dom';
+import { useAuth } from '../auth/AuthContext';
 import { brandAssets, supportContacts } from '../lib/publicContent';
 
 const menuItems = [
@@ -33,6 +34,7 @@ const menuItems = [
 const driverShortcuts = [
   {
     title: 'Carregamentos e desempenho',
+    subtitle: 'Portal externo · início de sessão próprio',
     href: 'https://dashboard.movvi.com.pt/motorista',
     icon: speedometerOutline,
     external: true,
@@ -45,7 +47,7 @@ const driverShortcuts = [
   },
   {
     title: 'Manutenção e viaturas',
-    href: '/dashboard/transfers',
+    href: '/dashboard/maintenance',
     icon: buildOutline,
     external: false,
   },
@@ -53,6 +55,7 @@ const driverShortcuts = [
 
 const PublicMenu: React.FC = () => {
   const location = useLocation();
+  const { isAuthenticated } = useAuth();
 
   return (
     <IonMenu contentId="main-content" type="overlay" className="public-menu">
@@ -67,9 +70,6 @@ const PublicMenu: React.FC = () => {
           </div>
         </div>
 
-        <div className="menu-intro">
-          <p>Explore a área pública com a mesma visão da página inicial e entre na conta apenas quando precisar acessar dados reservados.</p>
-        </div>
 
         <IonList inset className="menu-section-list">
           <IonListHeader>Navegacao</IonListHeader>
@@ -81,7 +81,7 @@ const PublicMenu: React.FC = () => {
                 className={`menu-link-item ${location.pathname === item.url ? 'selected' : ''}`}
               >
                 <IonIcon slot="start" icon={item.icon} />
-                <IonLabel>{item.title}</IonLabel>
+                <IonLabel>{isAuthenticated && item.url === '/tabs/account' ? 'A minha conta' : item.title}</IonLabel>
               </IonItem>
             </IonMenuToggle>
           ))}
@@ -99,7 +99,10 @@ const PublicMenu: React.FC = () => {
                 className="menu-link-item"
               >
                 <IonIcon slot="start" icon={item.icon} />
-                <IonLabel>{item.title}</IonLabel>
+                <IonLabel className="ion-text-wrap">
+                  {item.title}
+                  {'subtitle' in item && <p>{item.subtitle}</p>}
+                </IonLabel>
               </IonItem>
             </IonMenuToggle>
           ))}

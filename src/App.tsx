@@ -66,11 +66,13 @@ const App: React.FC = () => {
             <PublicTabs />
           </Route>
           <Route exact path="/login">
-            {isAuthenticated ? <Redirect to="/dashboard" /> : <Login />}
+            <Login />
           </Route>
-          <Route path="/dashboard">
-            {isAuthenticated ? <DriverTabs /> : <Redirect to="/login" />}
-          </Route>
+          <Route path="/dashboard" render={({ location }) => (
+            isAuthenticated ? <DriverTabs /> : /^\/dashboard(?:\/|$)/.test(location.pathname) ? (
+              <Redirect to={`/login?returnTo=${encodeURIComponent(location.pathname)}`} />
+            ) : null
+          )} />
           <Route exact path="/">
             <Redirect to="/tabs/home" />
           </Route>

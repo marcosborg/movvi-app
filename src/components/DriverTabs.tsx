@@ -1,11 +1,18 @@
 import {
   IonIcon,
+  IonContent,
+  IonItem,
   IonLabel,
+  IonList,
+  IonPage,
   IonRouterOutlet,
   IonTabBar,
   IonTabButton,
   IonTabs,
 } from '@ionic/react';
+import { ellipsisHorizontalOutline } from 'ionicons/icons';
+import DriverPageHeader from './DriverPageHeader';
+import DriverMaintenancePage from '../pages/DriverMaintenancePage';
 import { useAuth } from '../auth/AuthContext';
 import { Redirect, Route } from 'react-router-dom';
 import { FinancePeriodProvider } from './FinancePeriodContext';
@@ -94,6 +101,27 @@ const DriverTabs: React.FC = () => {
         <Route exact path="/dashboard/transfers">
           {isAdmin || isGestor ? <AdminTransferPage /> : <Redirect to="/dashboard" />}
         </Route>
+        <Route exact path="/dashboard/maintenance">
+          <DriverMaintenancePage canManageFleet={isAdmin || isGestor} hasDriverProfile={hasDriverProfile} />
+        </Route>
+        <Route exact path="/dashboard/more">
+          <IonPage>
+            <DriverPageHeader title="Mais opções" />
+            <IonContent>
+              <IonList>
+                {visibleTabs.map((tab) => (
+                  <IonItem key={tab.key} routerLink={tab.href}>
+                    <IonIcon slot="start" icon={tab.icon} />
+                    <IonLabel className="ion-text-wrap">{tab.label}</IonLabel>
+                  </IonItem>
+                ))}
+                <IonItem routerLink="/dashboard/maintenance">
+                  <IonLabel className="ion-text-wrap">Manutenção e viaturas</IonLabel>
+                </IonItem>
+              </IonList>
+            </IonContent>
+          </IonPage>
+        </Route>
         <Route exact path="/dashboard/documents">
           <DriverDocumentsPage />
         </Route>
@@ -123,12 +151,16 @@ const DriverTabs: React.FC = () => {
       </IonRouterOutlet>
 
       <IonTabBar slot="bottom" className="driver-tabbar">
-        {visibleTabs.map((tab) => (
+        {visibleTabs.slice(0, 3).map((tab) => (
           <IonTabButton key={tab.key} tab={tab.key} href={tab.href}>
             <IonIcon icon={tab.icon} />
             <IonLabel>{tab.label}</IonLabel>
           </IonTabButton>
         ))}
+        <IonTabButton tab="more" href="/dashboard/more">
+          <IonIcon icon={ellipsisHorizontalOutline} />
+          <IonLabel>Mais</IonLabel>
+        </IonTabButton>
       </IonTabBar>
       </IonTabs>
       </FinancePeriodProvider>

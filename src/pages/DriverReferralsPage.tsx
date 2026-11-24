@@ -9,11 +9,14 @@ import {
   IonSpinner,
 } from '@ionic/react';
 import type { RefresherEventDetail } from '@ionic/core';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { FormEvent } from 'react';
 import { useAuth } from '../auth/AuthContext';
 import DriverPageHeader from '../components/DriverPageHeader';
 import { apiRequest } from '../lib/api';
 import './Home.css';
+
+const referralsPath = '/api/v1/mobile/driver/referrals';
 
 type DriverReferral = {
   id: number;
@@ -46,27 +49,33 @@ const DriverReferralsPage: React.FC = () => {
   const [consent, setConsent] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const saving = useRef(false);
+  const loadSequence = useRef(0);
+  const canSubmit = name.trim().length >= 3 && phone.replace(/\D/g, '').length >= 9 && consent;
 
   useEffect(() => {
     void loadReferrals();
   }, [token]);
 
   async function loadReferrals() {
-    if (!token) return;
+    if (!token || saving.current) return;
 
+    const sequence = ++loadSequence.current;
     setIsLoading(true);
-    setError(null);
+    setLoadError(false);
     try {
-      setData(await apiRequest<ReferralListResponse>('/api/v1/mobile/driver/referrals', {
+      const result = await apiRequest<ReferralListResponse>(referralsPath, {
         method: 'GET',
         token,
-      }));
-    } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : 'Nao foi possivel carregar as indicacoes.');
+      });
+      if (sequence === loadSequence.current) setData(result);
+    } catch {
+      if (sequence === loadSequence.current) setLoadError(true);
     } finally {
-      setIsLoading(false);
+      if (sequence === loadSequence.current) setIsLoading(false);
     }
   }
 
@@ -75,28 +84,38 @@ const DriverReferralsPage: React.FC = () => {
     event.detail.complete();
   }
 
-  async function handleSubmit() {
-    if (!token || isSaving) return;
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!token || saving.current || !canSubmit) return;
 
+    saving.current = true;
     setIsSaving(true);
-    setError(null);
+    setSaveError(null);
     setSuccess(null);
 
     try {
-      const response = await apiRequest<ReferralCreateResponse>('/api/v1/mobile/driver/referrals', {
+      const response = await apiRequest<ReferralCreateResponse>(referralsPath, {
         method: 'POST',
         token,
-        body: JSON.stringify({ name, phone, consent }),
+        body: JSON.stringify({ name: name.trim(), phone: phone.trim(), consent }),
       });
+      loadSequence.current += 1;
+      setIsLoading(false);
+      setData((previous) => ({
+        reward_amount: previous?.reward_amount ?? response.referral.reward_amount,
+        qualification_days: previous?.qualification_days ?? 30,
+        referrals: [response.referral, ...(previous?.referrals.filter(({ id }) => id !== response.referral.id) ?? [])],
+      }));
       setSuccess(response.message);
       setName('');
       setPhone('');
       setConsent(false);
-      await loadReferrals();
-    } catch (saveError) {
-      setError(saveError instanceof Error ? saveError.message : 'Nao foi possivel registar a indicacao.');
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : 'Não foi possível registar a indicação.');
     } finally {
+      saving.current = false;
       setIsSaving(false);
+      void loadReferrals();
     }
   }
 
@@ -123,9 +142,6 @@ const DriverReferralsPage: React.FC = () => {
             </div>
           </section>
 
-          {error ? <p className="status-error">{error}</p> : null}
-          {success ? <p className="status-success">{success}</p> : null}
-
           <section className="dashboard-section">
             <article className="dashboard-card referral-form-card">
               <div className="card-head">
@@ -135,44 +151,43 @@ const DriverReferralsPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="referral-form-grid">
-                <label>
-                  <span>Nome</span>
+              <form onSubmit={handleSubmit}>
+                <div className="referral-form-grid">
                   <IonInput
+                    label="Nome"
+                    labelPlacement="stacked"
                     fill="outline"
                     value={name}
+                    disabled={isSaving}
+                    maxlength={160}
                     placeholder="Nome da pessoa"
                     onIonInput={(event) => setName(String(event.detail.value ?? ''))}
                   />
-                </label>
-                <label>
-                  <span>Telefone</span>
                   <IonInput
+                    label="Telefone"
+                    labelPlacement="stacked"
                     fill="outline"
                     type="tel"
                     inputmode="tel"
                     value={phone}
+                    disabled={isSaving}
+                    maxlength={40}
                     placeholder="Ex.: 912 345 678"
                     onIonInput={(event) => setPhone(String(event.detail.value ?? ''))}
                   />
-                </label>
-              </div>
+                </div>
 
-              <label className="referral-consent">
-                <IonCheckbox
-                  checked={consent}
-                  onIonChange={(event) => setConsent(event.detail.checked)}
-                />
-                <span>Confirmo que esta pessoa autorizou a Movvi a contactá-la sobre esta oportunidade.</span>
-              </label>
+                <IonCheckbox className="referral-consent" labelPlacement="end" justify="start"
+                  checked={consent} disabled={isSaving} onIonChange={(event) => setConsent(event.detail.checked)}>
+                  <span className="ion-text-wrap">Confirmo que esta pessoa autorizou a Movvi a contactá-la sobre esta oportunidade.</span>
+                </IonCheckbox>
 
-              <IonButton
-                expand="block"
-                onClick={handleSubmit}
-                disabled={isSaving || name.trim().length < 3 || phone.trim().length < 9 || !consent}
-              >
-                {isSaving ? <IonSpinner name="crescent" /> : 'Enviar indicação'}
-              </IonButton>
+                <IonButton expand="block" type="submit" disabled={isSaving || !canSubmit}>
+                  {isSaving ? 'A enviar indicação…' : 'Enviar indicação'}
+                </IonButton>
+                {saveError ? <p className="status-error" role="alert">{saveError}</p> : null}
+                {success ? <p className="status-success" role="status">{success}</p> : null}
+              </form>
             </article>
           </section>
 
@@ -184,7 +199,13 @@ const DriverReferralsPage: React.FC = () => {
               </div>
             </div>
 
-            {isLoading ? (
+            {loadError ? (
+              <div className="dashboard-empty">
+                Não foi possível atualizar a lista de indicações.
+                <IonButton fill="clear" onClick={loadReferrals}>Tentar novamente</IonButton>
+              </div>
+            ) : null}
+            {isLoading && !data ? (
               <div className="loading-state"><IonSpinner name="crescent" /></div>
             ) : data && data.referrals.length > 0 ? (
               <div className="dashboard-card referral-list-card">
@@ -201,9 +222,9 @@ const DriverReferralsPage: React.FC = () => {
                   </div>
                 ))}
               </div>
-            ) : (
+            ) : !loadError ? (
               <p className="dashboard-empty">Ainda não enviaste nenhuma indicação.</p>
-            )}
+            ) : null}
           </section>
         </div>
       </IonContent>

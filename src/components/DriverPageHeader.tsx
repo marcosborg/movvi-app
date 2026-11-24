@@ -1,15 +1,12 @@
 import {
   IonAvatar,
-  IonButton,
   IonButtons,
   IonHeader,
-  IonIcon,
   IonMenuButton,
   IonNote,
   IonTitle,
   IonToolbar,
 } from '@ionic/react';
-import { lockClosedOutline } from 'ionicons/icons';
 import { brandAssets } from '../lib/publicContent';
 
 type DriverPageHeaderProps = {
@@ -34,11 +31,6 @@ const DriverPageHeader: React.FC<DriverPageHeaderProps> = ({ title, subtitle = '
           </div>
         </div>
       </IonTitle>
-      <IonButtons slot="end">
-        <IonButton className="public-header-action public-header-lock" routerLink="/tabs/account" aria-label="Entrar na conta">
-          <IonIcon icon={lockClosedOutline} />
-        </IonButton>
-      </IonButtons>
     </IonToolbar>
   </IonHeader>
 );

@@ -157,7 +157,7 @@ const DriverOverviewPage: React.FC = () => {
                 </div>
                 <div className="dashboard-actions">
                   <IonButton href="https://dashboard.movvi.com.pt/motorista" target="_blank" rel="noopener noreferrer">
-                    Carregamentos e desempenho
+                    Carregamentos e desempenho (portal externo)
                   </IonButton>
                   <IonButton href="https://charge.movvi.com.pt/" target="_blank" rel="noopener noreferrer" fill="outline">
                     Carregar nos postos Movvi

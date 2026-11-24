@@ -267,27 +267,28 @@
   margin: 18px 0;
 }
 
-.referral-form-grid label > span {
-  display: block;
-  margin-bottom: 7px;
-  color: #333b59;
-  font-size: 0.83rem;
-  font-weight: 800;
+.referral-form-grid ion-input {
+  --background: #fffaf6;
+  --color: #2e1d18;
+  --placeholder-color: #6b554b;
+  --placeholder-opacity: 1;
+  --border-color: #86685a;
+  color-scheme: light;
 }
 
 .referral-consent {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
+  --checkbox-background: #fffaf6;
+  --border-color: #86685a;
+  --checkmark-color: #fff;
+  max-width: 100%;
   margin: 4px 0 18px;
   color: #5f6680;
   font-size: 0.82rem;
   line-height: 1.45;
 }
 
-.referral-consent ion-checkbox {
-  flex: 0 0 auto;
-  margin-top: 2px;
+.referral-consent::part(label) {
+  white-space: normal;
 }
 
 .referral-list-card {

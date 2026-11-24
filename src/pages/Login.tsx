@@ -13,9 +13,10 @@ import {
   IonLabel,
   IonPage,
   IonText,
+  useIonViewWillEnter,
 } from '@ionic/react';
 import { chevronBackOutline, eyeOffOutline, eyeOutline } from 'ionicons/icons';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { apiRequest } from '../lib/api';
 import { brandAssets } from '../lib/publicContent';
@@ -23,7 +24,8 @@ import './Login.css';
 
 const Login: React.FC = () => {
   const history = useHistory();
-  const { login } = useAuth();
+  const { isAuthenticated, login } = useAuth();
+  const { search } = useLocation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -33,6 +35,12 @@ const Login: React.FC = () => {
   const [isRecovering, setIsRecovering] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const returnTo = new URLSearchParams(search).get('returnTo');
+  const destination = returnTo?.startsWith('/dashboard/') ? returnTo : '/dashboard';
+
+  useIonViewWillEnter(() => {
+    if (isAuthenticated) history.replace(destination);
+  }, [isAuthenticated, destination, history]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -41,7 +49,7 @@ const Login: React.FC = () => {
 
     try {
       await login(email, password);
-      history.replace('/dashboard/transfers');
+      history.replace(destination);
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : 'Nao foi possivel iniciar sessao.');
     } finally {

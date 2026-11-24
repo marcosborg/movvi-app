@@ -15,7 +15,7 @@ const AccountPage: React.FC = () => {
 
   return (
     <IonPage>
-      <PublicPageHeader title="Entrar na conta" />
+      <PublicPageHeader title={isAuthenticated ? 'A minha conta' : 'Entrar na conta'} />
       <IonContent fullscreen className="public-page">
         <div className="public-shell">
           <section className="public-section surface-panel reserved-panel">

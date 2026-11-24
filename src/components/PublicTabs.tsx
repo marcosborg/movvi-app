@@ -13,7 +13,11 @@ import ServicesPage from '../pages/ServicesPage';
 import StoriesPage from '../pages/StoriesPage';
 import AccountPage from '../pages/AccountPage';
 
-const PublicTabs: React.FC = () => (
+import { useAuth } from '../auth/AuthContext';
+
+const PublicTabs: React.FC = () => {
+  const { isAuthenticated } = useAuth();
+  return (
   <IonTabs>
     <IonRouterOutlet id="tabs-content">
       <Route exact path="/tabs/home">
@@ -48,10 +52,11 @@ const PublicTabs: React.FC = () => (
       </IonTabButton>
       <IonTabButton tab="account" href="/tabs/account">
         <IonIcon icon={logInOutline} />
-        <IonLabel>Entrar</IonLabel>
+        <IonLabel>{isAuthenticated ? 'Conta' : 'Entrar'}</IonLabel>
       </IonTabButton>
     </IonTabBar>
   </IonTabs>
-);
+  );
+};
 
 export default PublicTabs;

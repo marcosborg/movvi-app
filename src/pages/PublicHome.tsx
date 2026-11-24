@@ -7,11 +7,13 @@ import {
   IonPage,
 } from '@ionic/react';
 import PublicPageHeader from '../components/PublicPageHeader';
+import { useAuth } from '../auth/AuthContext';
 import ContactModal from '../components/ContactModal';
 import { aboutContent, heroSlides, serviceCards, testimonials } from '../lib/publicContent';
 import './PublicPages.css';
 
 const PublicHome: React.FC = () => {
+  const { isAuthenticated } = useAuth();
   const [isContactOpen, setIsContactOpen] = useState(false);
 
   return (
@@ -27,7 +29,9 @@ const PublicHome: React.FC = () => {
                   <p className="hero-kicker">Mobilidade a sua medida</p>
                   <h1>{slide.title}</h1>
                   <p>{slide.subtitle}</p>
-                  <IonButton routerLink={slide.href}>{slide.cta}</IonButton>
+                  <IonButton routerLink={slide.href}>
+                    {isAuthenticated && slide.href === '/tabs/account' ? 'A minha conta' : slide.cta}
+                  </IonButton>
                 </div>
               </article>
             ))}
