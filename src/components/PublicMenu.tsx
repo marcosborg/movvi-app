@@ -10,7 +10,16 @@ import {
   IonMenuToggle,
   IonNote,
 } from '@ionic/react';
-import { carSportOutline, logInOutline, logoWhatsapp, newspaperOutline, sparklesOutline } from 'ionicons/icons';
+import {
+  buildOutline,
+  carSportOutline,
+  flashOutline,
+  logInOutline,
+  logoWhatsapp,
+  newspaperOutline,
+  speedometerOutline,
+  sparklesOutline,
+} from 'ionicons/icons';
 import { useLocation } from 'react-router-dom';
 import { brandAssets, supportContacts } from '../lib/publicContent';
 
@@ -19,6 +28,27 @@ const menuItems = [
   { title: 'Servicos', url: '/tabs/services', icon: carSportOutline },
   { title: 'Noticias', url: '/tabs/stories', icon: newspaperOutline },
   { title: 'Entrar na conta', url: '/tabs/account', icon: logInOutline },
+];
+
+const driverShortcuts = [
+  {
+    title: 'Carregamentos e desempenho',
+    href: 'https://dashboard.movvi.com.pt/motorista',
+    icon: speedometerOutline,
+    external: true,
+  },
+  {
+    title: 'Carregar nos postos Movvi',
+    href: 'https://charge.movvi.com.pt/',
+    icon: flashOutline,
+    external: true,
+  },
+  {
+    title: 'Manutenção e viaturas',
+    href: '/dashboard/transfers',
+    icon: buildOutline,
+    external: false,
+  },
 ];
 
 const PublicMenu: React.FC = () => {
@@ -49,6 +79,24 @@ const PublicMenu: React.FC = () => {
                 routerLink={item.url}
                 detail={false}
                 className={`menu-link-item ${location.pathname === item.url ? 'selected' : ''}`}
+              >
+                <IonIcon slot="start" icon={item.icon} />
+                <IonLabel>{item.title}</IonLabel>
+              </IonItem>
+            </IonMenuToggle>
+          ))}
+        </IonList>
+
+        <IonList inset className="menu-section-list">
+          <IonListHeader>Área do motorista</IonListHeader>
+          {driverShortcuts.map((item) => (
+            <IonMenuToggle autoHide={true} key={item.href}>
+              <IonItem
+                {...(item.external
+                  ? { href: item.href, target: '_blank', rel: 'noreferrer' }
+                  : { routerLink: item.href })}
+                detail={false}
+                className="menu-link-item"
               >
                 <IonIcon slot="start" icon={item.icon} />
                 <IonLabel>{item.title}</IonLabel>
