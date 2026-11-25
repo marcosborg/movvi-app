@@ -107,8 +107,8 @@ const DriverTabs: React.FC = () => {
         <Route exact path="/dashboard/more">
           <IonPage>
             <DriverPageHeader title="Mais opções" />
-            <IonContent>
-              <IonList>
+            <IonContent className="driver-action-content">
+              <IonList className="driver-action-list">
                 {visibleTabs.map((tab) => (
                   <IonItem key={tab.key} routerLink={tab.href}>
                     <IonIcon slot="start" icon={tab.icon} />

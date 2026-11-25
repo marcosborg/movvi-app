@@ -21,6 +21,14 @@ function openMenu() {
 }
 
 describe('Correções reportadas pelo Adelmo', () => {
+  function setColorScheme(scheme: 'light' | 'dark') {
+    cy.then(() => Cypress.automation('remote:debugger:protocol', {
+      command: 'Emulation.setEmulatedMedia',
+      params: { features: [{ name: 'prefers-color-scheme', value: scheme }] },
+    }));
+    cy.window().then((win) => expect(win.matchMedia(`(prefers-color-scheme: ${scheme})`).matches).to.be.true);
+  }
+
   it('abre manutenção do menu público com uma sessão ativa e respeita as permissões', () => {
     visitSignedIn('/tabs/account');
     cy.contains('h1', 'Acesso pronto').should('be.visible');
@@ -30,10 +38,16 @@ describe('Correções reportadas pelo Adelmo', () => {
     cy.contains('ion-item', 'Carregamentos e desempenho')
       .should('contain.text', 'início de sessão próprio')
       .and('have.attr', 'href', 'https://dashboard.movvi.com.pt/motorista');
+    cy.contains('ion-item', 'Gestão de frota e manutenção')
+      .should('contain.text', '+351 925 120 962')
+      .and('have.attr', 'href', 'https://wa.me/351925120962');
+    cy.contains('ion-menu ion-item', 'Richard').should('not.exist');
     cy.contains('ion-menu ion-label', 'Manutenção e viaturas').click();
     cy.location('pathname').should('eq', '/dashboard/maintenance');
     cy.get('ion-menu').should('not.have.class', 'show-menu');
     cy.contains('ion-item', 'Ler matrícula').should('be.visible');
+    cy.contains('ion-item', 'Contactar apoio de manutenção')
+      .should('have.attr', 'href', 'https://dashboard.movvi.com.pt/apoio');
     cy.contains('ion-item', 'Trocas e atribuições de viaturas').should('not.exist');
     cy.get('ion-button[aria-label="Entrar na conta"]:visible').should('not.exist');
   });
@@ -77,6 +91,20 @@ describe('Correções reportadas pelo Adelmo', () => {
     cy.contains('ion-item', 'Documentos').should('exist');
   });
 
+  (['light', 'dark'] as const).forEach((scheme) => {
+    it(`mantém manutenção e Mais legíveis em modo ${scheme}`, () => {
+      setColorScheme(scheme);
+      visitSignedIn('/dashboard/maintenance');
+      cy.contains('ion-item', 'Contactar apoio de manutenção').shadow().find('[part="native"]')
+        .should('have.css', 'color', 'rgb(46, 29, 24)')
+        .and('have.css', 'background-color', 'rgb(255, 250, 246)');
+      cy.contains('ion-tab-button', 'Mais').click();
+      cy.contains('ion-item', 'Indique').shadow().find('[part="native"]')
+        .should('have.css', 'color', 'rgb(46, 29, 24)')
+        .and('have.css', 'background-color', 'rgb(255, 250, 246)');
+    });
+  });
+
   it('mostra o texto no tema escuro e mantém a indicação visível se a atualização falhar', () => {
     const referral = { id: 42, name: 'Contacto Teste', phone: '910000000', status: 'submitted', status_label: 'Recebida', reward_amount: 50 };
     cy.intercept('GET', referralPath, { reward_amount: 50, qualification_days: 30, referrals: [] });
@@ -85,11 +113,7 @@ describe('Correções reportadas pelo Adelmo', () => {
       request.reply({ statusCode: 201, body: { message: 'Indicação registada.', referral } });
     }).as('saveReferral');
     visitSignedIn('/dashboard/referrals');
-    cy.then(() => Cypress.automation('remote:debugger:protocol', {
-        command: 'Emulation.setEmulatedMedia',
-        params: { features: [{ name: 'prefers-color-scheme', value: 'dark' }] },
-    }));
-    cy.window().then((win) => expect(win.matchMedia('(prefers-color-scheme: dark)').matches).to.be.true);
+    setColorScheme('dark');
     cy.contains('Ainda não enviaste nenhuma indicação.').should('exist');
     cy.intercept('GET', referralPath, { statusCode: 503, body: { message: 'Indisponível' } }).as('refreshReferral');
     cy.get('.referral-form-grid input').first().type(referral.name).should('have.css', 'color', 'rgb(46, 29, 24)');
@@ -100,7 +124,8 @@ describe('Correções reportadas pelo Adelmo', () => {
     cy.wait('@saveReferral');
     cy.wait('@refreshReferral');
     cy.contains('Indicação registada.').should('be.visible');
-    cy.contains('.referral-list-item', 'Contacto Teste').should('exist');
+    cy.contains('.referral-list-item strong', 'Contacto Teste').should('have.css', 'color', 'rgb(46, 29, 24)');
+    cy.contains('.referral-list-item', 'Recebida').should('exist');
     cy.contains('Não foi possível atualizar a lista').should('exist');
   });
 });

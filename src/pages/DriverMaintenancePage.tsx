@@ -1,6 +1,6 @@
 import { IonContent, IonItem, IonLabel, IonList, IonPage } from '@ionic/react';
 import DriverPageHeader from '../components/DriverPageHeader';
-import { supportContacts } from '../lib/publicContent';
+import { driverSupportPortal } from '../lib/publicContent';
 
 type DriverMaintenancePageProps = {
   canManageFleet: boolean;
@@ -8,13 +8,11 @@ type DriverMaintenancePageProps = {
 };
 
 export default function DriverMaintenancePage({ canManageFleet, hasDriverProfile }: DriverMaintenancePageProps) {
-  const [fleetSupport] = supportContacts;
-
   return (
     <IonPage>
       <DriverPageHeader title="Manutenção e viaturas" subtitle="Apoio e operações de frota" />
-      <IonContent>
-        <IonList>
+      <IonContent className="driver-action-content">
+        <IonList className="driver-action-list">
           {hasDriverProfile && (
             <IonItem routerLink="/dashboard/vehicle-plate">
               <IonLabel className="ion-text-wrap">Ler matrícula</IonLabel>
@@ -30,7 +28,7 @@ export default function DriverMaintenancePage({ canManageFleet, hasDriverProfile
               </IonItem>
             </>
           )}
-          <IonItem href={fleetSupport.href} target="_blank" rel="noopener noreferrer">
+          <IonItem href={driverSupportPortal} target="_blank" rel="noopener noreferrer">
             <IonLabel className="ion-text-wrap">Contactar apoio de manutenção</IonLabel>
           </IonItem>
         </IonList>

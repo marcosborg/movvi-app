@@ -105,6 +105,21 @@ ion-toolbar.driver-toolbar {
   --background: rgba(255, 247, 240, 0.97);
 }
 
+.driver-action-content {
+  --background: #f7f0e8;
+  --color: #2e1d18;
+}
+
+.driver-action-list {
+  background: #fffaf6;
+}
+
+.driver-action-list ion-item {
+  --background: #fffaf6;
+  --color: #2e1d18;
+  --border-color: #dbc9bd;
+}
+
 ion-tab-bar.public-tabbar {
   border-top: 1px solid rgba(121, 80, 61, 0.08);
   box-shadow: 0 -8px 28px rgba(59, 34, 22, 0.08);

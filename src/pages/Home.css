@@ -294,6 +294,7 @@
 .referral-list-card {
   padding: 0;
   overflow: hidden;
+  color: #2e1d18;
 }
 
 .referral-list-item {
@@ -316,7 +317,7 @@
 
 .referral-list-item > div:first-child span {
   margin-top: 4px;
-  color: #737a91;
+  color: #535b73;
   font-size: 0.82rem;
 }
 
@@ -327,7 +328,7 @@
 .referral-list-status small {
   display: block;
   margin-top: 5px;
-  color: #646c86;
+  color: #535b73;
   font-weight: 800;
 }
 

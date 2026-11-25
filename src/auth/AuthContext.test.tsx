@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { vi } from 'vitest';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, vi } from 'vitest';
 import { apiRequest, ApiError } from '../lib/api';
 import { AuthProvider, useAuth } from './AuthContext';
+
+afterEach(cleanup);
 
 vi.mock('../lib/api', async () => {
   const actual = await vi.importActual<typeof import('../lib/api')>('../lib/api');

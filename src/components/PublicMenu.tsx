@@ -122,7 +122,7 @@ const PublicMenu: React.FC = () => {
               <IonIcon slot="start" icon={logoWhatsapp} />
               <IonLabel>
                 <h3>{contact.name}</h3>
-                <p>{contact.role}</p>
+                {contact.role && <p>{contact.role}</p>}
                 <p>{contact.phone}</p>
               </IonLabel>
             </IonItem>

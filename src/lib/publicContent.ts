@@ -21,10 +21,10 @@ export const publicLinks = {
 
 export const supportContacts = [
   {
-    name: 'Richard',
-    role: 'Gestao de Frota & Manutencao',
-    phone: '926 008 575',
-    href: 'https://wa.me/351926008575',
+    name: 'Gestão de frota e manutenção',
+    role: null,
+    phone: '+351 925 120 962',
+    href: 'https://wa.me/351925120962',
   },
   {
     name: 'Karla',
@@ -39,6 +39,8 @@ export const supportContacts = [
     href: 'https://wa.me/351913606800',
   },
 ] as const;
+
+export const driverSupportPortal = 'https://dashboard.movvi.com.pt/apoio';
 
 export const brandAssets = {
   logo: toAbsolute('/assets/website/assets/img/logo.png'),
