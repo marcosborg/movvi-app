@@ -38,7 +38,7 @@ describe('Correções reportadas pelo Adelmo', () => {
     cy.contains('ion-item', 'Carregamentos e desempenho')
       .should('contain.text', 'início de sessão próprio')
       .and('have.attr', 'href', 'https://dashboard.movvi.com.pt/motorista');
-    cy.contains('ion-menu ion-item', 'Indique e ganhe').should('be.visible');
+    cy.contains('ion-menu ion-item', 'Indique e ganhe').scrollIntoView().should('be.visible');
     cy.contains('ion-item', 'Gestão de frota e manutenção')
       .should('contain.text', '+351 925 120 962')
       .and('have.attr', 'href', 'https://wa.me/351925120962');
@@ -88,7 +88,7 @@ describe('Correções reportadas pelo Adelmo', () => {
       });
     });
     cy.contains('ion-tab-button', 'Mais').click();
-    cy.contains('.driver-action-list:visible ion-item', 'Indique e ganhe').should('be.visible');
+    cy.contains('.driver-action-list ion-item', 'Indique e ganhe').scrollIntoView().should('be.visible');
     cy.contains('ion-item', 'Documentos').should('exist');
   });
 
