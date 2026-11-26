@@ -15,6 +15,7 @@ import {
   carSportOutline,
   flashOutline,
   logInOutline,
+  giftOutline,
   logoWhatsapp,
   newspaperOutline,
   speedometerOutline,
@@ -49,6 +50,12 @@ const driverShortcuts = [
     title: 'Manutenção e viaturas',
     href: '/dashboard/maintenance',
     icon: buildOutline,
+    external: false,
+  },
+  {
+    title: 'Indique e ganhe',
+    href: '/dashboard/referrals',
+    icon: giftOutline,
     external: false,
   },
 ];

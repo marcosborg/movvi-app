@@ -1,11 +1,12 @@
 :root {
+  color-scheme: light;
   --ion-font-family: 'Kanit', sans-serif;
-  --ion-color-primary: #b55338;
-  --ion-color-primary-rgb: 181, 83, 56;
+  --ion-color-primary: #934427;
+  --ion-color-primary-rgb: 147, 68, 39;
   --ion-color-primary-contrast: #fff8f4;
   --ion-color-primary-contrast-rgb: 255, 248, 244;
-  --ion-color-primary-shade: #9f4931;
-  --ion-color-primary-tint: #bd654c;
+  --ion-color-primary-shade: #813c22;
+  --ion-color-primary-tint: #9e573d;
 
   --ion-color-secondary: #3f6c5c;
   --ion-color-secondary-rgb: 63, 108, 92;

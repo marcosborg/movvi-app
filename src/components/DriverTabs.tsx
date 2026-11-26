@@ -109,7 +109,7 @@ const DriverTabs: React.FC = () => {
             <DriverPageHeader title="Mais opções" />
             <IonContent className="driver-action-content">
               <IonList className="driver-action-list">
-                {visibleTabs.map((tab) => (
+                {visibleTabs.filter((tab) => tab.key !== 'referrals').map((tab) => (
                   <IonItem key={tab.key} routerLink={tab.href}>
                     <IonIcon slot="start" icon={tab.icon} />
                     <IonLabel className="ion-text-wrap">{tab.label}</IonLabel>
@@ -118,6 +118,11 @@ const DriverTabs: React.FC = () => {
                 <IonItem routerLink="/dashboard/maintenance">
                   <IonLabel className="ion-text-wrap">Manutenção e viaturas</IonLabel>
                 </IonItem>
+                {hasDriverProfile && (
+                  <IonItem routerLink="/dashboard/referrals">
+                    <IonLabel className="ion-text-wrap">Indique e ganhe</IonLabel>
+                  </IonItem>
+                )}
               </IonList>
             </IonContent>
           </IonPage>

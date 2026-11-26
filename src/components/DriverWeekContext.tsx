@@ -1,6 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-
-const STORAGE_KEY = 'movvi.driver.selected_week';
+import { createContext, useContext, useState } from 'react';
 
 type DriverWeekContextValue = {
   selectedWeek: string | null;
@@ -10,16 +8,7 @@ type DriverWeekContextValue = {
 const DriverWeekContext = createContext<DriverWeekContextValue | undefined>(undefined);
 
 export function DriverWeekProvider({ children }: { children: React.ReactNode }) {
-  const [selectedWeek, setSelectedWeekState] = useState<string | null>(() => localStorage.getItem(STORAGE_KEY));
-
-  useEffect(() => {
-    if (selectedWeek) {
-      localStorage.setItem(STORAGE_KEY, selectedWeek);
-      return;
-    }
-
-    localStorage.removeItem(STORAGE_KEY);
-  }, [selectedWeek]);
+  const [selectedWeek, setSelectedWeekState] = useState<string | null>(null);
 
   return (
     <DriverWeekContext.Provider

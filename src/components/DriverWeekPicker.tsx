@@ -11,6 +11,7 @@ import { useDriverWeek } from './DriverWeekContext';
 
 type DriverWeeksResponse = {
   weeks: DriverWeekSummary[];
+  default_week?: string | null;
 };
 
 const DriverWeekPicker: React.FC = () => {
@@ -28,7 +29,7 @@ const DriverWeekPicker: React.FC = () => {
     }
 
     try {
-      const response = await apiRequest<DriverWeeksResponse>('/api/v1/weeks', {
+      const response = await apiRequest<DriverWeeksResponse>('/api/v1/mobile/driver/weeks', {
         method: 'GET',
         token,
       });
@@ -44,7 +45,8 @@ const DriverWeekPicker: React.FC = () => {
         : false;
 
       if (!hasSelectedWeek) {
-        setSelectedWeek(response.weeks[0].date_key);
+        const defaultWeek = response.weeks.find((week) => week.date_key === response.default_week);
+        setSelectedWeek((defaultWeek ?? response.weeks[0]).date_key);
       }
     } catch {
       setWeeks([]);
