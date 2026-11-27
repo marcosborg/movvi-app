@@ -93,6 +93,16 @@ describe('Correções reportadas pelo Adelmo', () => {
   });
 
   (['light', 'dark'] as const).forEach((scheme) => {
+    it(`mantém a barra pública legível em modo ${scheme}`, () => {
+      setColorScheme(scheme);
+      visitSignedIn('/tabs/account');
+      cy.get('ion-tab-bar.public-tabbar').should('have.css', 'background-color', 'rgb(255, 249, 245)');
+      cy.contains('ion-tab-button', 'Conta').shadow().find('[part="native"]')
+        .should('have.css', 'color', 'rgb(141, 62, 37)');
+      cy.contains('ion-tab-button', 'Início').shadow().find('[part="native"]')
+        .should('have.css', 'color', 'rgb(87, 61, 49)');
+    });
+
     it(`mantém manutenção e Mais legíveis em modo ${scheme}`, () => {
       setColorScheme(scheme);
       visitSignedIn('/dashboard/maintenance');

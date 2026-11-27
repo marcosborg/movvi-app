@@ -122,6 +122,7 @@ ion-toolbar.driver-toolbar {
 }
 
 ion-tab-bar.public-tabbar {
+  --background: #fff9f5;
   border-top: 1px solid rgba(121, 80, 61, 0.08);
   box-shadow: 0 -8px 28px rgba(59, 34, 22, 0.08);
 }
